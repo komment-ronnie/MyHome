@@ -567,6 +567,15 @@ class UserSDJpaServiceTest {
         .build();
   }
 
+  /**
+   * creates a `User` object from a provided `UserDto` instance, setting its name, ID,
+   * email, and password fields. It also initializes additional fields with default values.
+   * 
+   * @param request `UserDto` object passed to the function, providing the necessary
+   * data to create a new `User` instance.
+   * 
+   * @returns a `User` object with name, ID, email, and other properties.
+   */
   private User getUserFromDto(UserDto request) {
     return new User(
         request.getName(),
@@ -579,6 +588,20 @@ class UserSDJpaServiceTest {
     );
   }
 
+  /**
+   * retrieves a security token associated with a user based on its type, filtering and
+   * finding the token in the user's token collection if it exists.
+   * 
+   * @param user User object whose user tokens will be searched for in the getUserTokens()
+   * stream.
+   * 
+   * @param tokenType type of security token that the function is searching for, and
+   * it determines the filter criteria applied to the user's token collection when
+   * searching for the matching token.
+   * 
+   * @returns a `SecurityToken` object representing the user's security token of the
+   * specified type, or `null` if no such token exists.
+   */
   private SecurityToken getUserSecurityToken(User user, SecurityTokenType tokenType) {
     return user.getUserTokens()
         .stream()
@@ -604,12 +627,46 @@ class UserSDJpaServiceTest {
         LocalDate.now().minusDays(TOKEN_LIFETIME.toDays()), false, null);
   }
 
+  /**
+   * generates a new security token with the specified type and lifetime, along with
+   * an expiration date and user information.
+   * 
+   * @param tokenType type of security token being generated, which determines the
+   * format and contents of the token.
+   * 
+   * @param lifetime duration of validity for the generated security token, which is
+   * calculated by adding the number of days represented by the `Duration` object to
+   * the current date.
+   * 
+   * @param token 12-byte hexadecimal string that will be used as the security token value.
+   * 
+   * @param user user who is requesting the security token.
+   * 
+   * @returns a `SecurityToken` object representing a security token with a specified
+   * type, token, and lifetime.
+   */
   private SecurityToken getSecurityToken(SecurityTokenType tokenType, Duration lifetime,
       String token, User user) {
     LocalDate expireDate = LocalDate.now().plusDays(lifetime.toDays());
     return new SecurityToken(tokenType, token, LocalDate.now(), expireDate, false, user);
   }
 
+  /**
+   * creates a new security token instance with the specified `tokenType`, `token`, and
+   * `user`. The `expireDate` is set to the current date plus one day, indicating that
+   * the token will expire in one day.
+   * 
+   * @param tokenType type of security token being generated, which determines its
+   * properties and behavior.
+   * 
+   * @param token 16-digit alphanumeric security token that is used to authenticate the
+   * user.
+   * 
+   * @param user user who owns the security token being generated.
+   * 
+   * @returns a new security token instance with specified token type and token value,
+   * expiration date, and other properties.
+   */
   private SecurityToken getSecurityToken(SecurityTokenType tokenType, String token, User user) {
     LocalDate expireDate = LocalDate.now().plusDays(Duration.ofDays(1).toDays());
     return new SecurityToken(tokenType, token, LocalDate.now(), expireDate, false, user);

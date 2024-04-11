@@ -47,6 +47,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+/**
+ * is a JUnit test class that verifies the behavior of the HouseSDJpaService class.
+ * The tests cover various scenarios such as listing all houses, adding and deleting
+ * members from a house, and deleting a member from a house that does not exist. The
+ * tests use mock objects to verify the interactions with the underlying repositories
+ * and ensure that the service behaves correctly in different situations.
+ */
 class HouseSDJpaServiceTest {
 
   private final int TEST_HOUSES_COUNT = 10;
@@ -63,11 +70,20 @@ class HouseSDJpaServiceTest {
   @InjectMocks
   private HouseSDJpaService houseSDJpaService;
 
+  /**
+   * initializes mock objects using MockitoAnnotations, allowing for effective testing
+   * of code under various conditions.
+   */
   @BeforeEach
   void setUp() {
     MockitoAnnotations.initMocks(this);
   }
 
+  /**
+   * retrieves a set of community houses from the database using `houseSDJpaService`,
+   * compares it with the expected result, and verifies that the repository method
+   * `findAll()` was called once to retrieve the houses.
+   */
   @Test
   void listAllHousesDefault() {
     // given
@@ -84,6 +100,10 @@ class HouseSDJpaServiceTest {
     verify(communityHouseRepository).findAll();
   }
 
+  /**
+   * lists all houses from a database using a page request and compares the result with
+   * the expected list of houses to verify its correctness.
+   */
   @Test
   void listAllHousesCustomPageable() {
     // given
@@ -105,6 +125,11 @@ class HouseSDJpaServiceTest {
     verify(communityHouseRepository).findAll(pageRequest);
   }
 
+  /**
+   * adds a set of HouseMembers to an existing CommunityHouse, updates the CommunityHouse's
+   * `houseMembers` list, and saves both the CommunityHouse and the added HouseMembers
+   * in the database.
+   */
   @Test
   void addHouseMembers() {
     // given
@@ -128,6 +153,11 @@ class HouseSDJpaServiceTest {
     verify(communityHouseRepository).findByHouseIdWithHouseMembers(HOUSE_ID);
   }
 
+  /**
+   * tests the addHouseMembers method when the house with the given ID does not exist
+   * in the repository. It verifies that no members are added and interacts with the
+   * repository to simulate the expected behavior.
+   */
   @Test
   void addHouseMembersHouseNotExists() {
     // given
@@ -146,6 +176,11 @@ class HouseSDJpaServiceTest {
     verifyNoInteractions(houseMemberRepository);
   }
 
+  /**
+   * deletes a specified member from a community house. It first retrieves the community
+   * house and its members, then deletes the member from the house members list, saves
+   * the community house, and finally verifies the delete operation.
+   */
   @Test
   void deleteMemberFromHouse() {
     // given
@@ -173,6 +208,10 @@ class HouseSDJpaServiceTest {
     verify(houseMemberRepository).save(memberToDelete);
   }
 
+  /**
+   * verifies that a member is not deleted from a house when the member does not exist
+   * in the house's membership list.
+   */
   @Test
   void deleteMemberFromHouseNotExists() {
     // given
@@ -189,6 +228,11 @@ class HouseSDJpaServiceTest {
     verifyNoInteractions(houseMemberRepository);
   }
 
+  /**
+   * tests whether a member can be deleted from a house when the member is not present
+   * in the house's member list. It does this by deleting a member from the house and
+   * verifying that the member is not found in the house's member list after deletion.
+   */
   @Test
   void deleteMemberFromHouseMemberNotPresent() {
     // given

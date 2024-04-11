@@ -20,6 +20,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * represents a data transfer object (DTO) for a community house with an ID and name
+ * attributes.
+ * Fields:
+ * 	- houseId (String): in the CommunityHouseDto class represents an identifier for
+ * a specific community house.
+ * 	- name (String): in the `CommunityHouseDto` class is a string representing the
+ * name of a house.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -23,6 +23,9 @@ import org.mapstruct.Mapping;
 /**
  * Provides conversion between DTO and entity object
  */
+/**
+ * provides conversion between a DTO (PaymentDto) and an entity object (Payment).
+ */
 @Mapper
 public interface PaymentMapper {
   Payment paymentDtoToPayment(PaymentDto paymentDto);

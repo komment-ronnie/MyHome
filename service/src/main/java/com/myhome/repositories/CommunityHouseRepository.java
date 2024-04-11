@@ -26,6 +26,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * provides methods for interacting with CommunityHouse objects, including finding
+ * individual CommunityHouses by houseId, and retrieving all CommunityHouses in a
+ * community by communityId.
+ */
 @Repository
 public interface CommunityHouseRepository extends PagingAndSortingRepository<CommunityHouse, Long> {
 

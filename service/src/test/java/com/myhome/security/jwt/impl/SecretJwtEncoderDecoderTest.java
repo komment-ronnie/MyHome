@@ -23,6 +23,12 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * is a unit test class for testing the SecretJwtEncoderDecoder class. The tests cover
+ * various scenarios such as successful jwt encoding and decoding, invalid secret
+ * key, expired jwt, and others. The tests verify the functionality of the
+ * SecretJwtEncoderDecoder class and ensure it works correctly in different situations.
+ */
 class SecretJwtEncoderDecoderTest {
   private static final String TEST_USER_ID = "test-user-id";
 
@@ -37,6 +43,9 @@ class SecretJwtEncoderDecoderTest {
       + "secretsecretsecretsecretsecretsecretsecretsecret"
       + "secretsecretsecretsecretsecretsecretsecretsecret";
 
+  /**
+   * tests the successful encoding of a JWT using the `SecretJwtEncoderDecoder`.
+   */
   @Test
   void jwtEncodeSuccess() {
     // given
@@ -49,6 +58,10 @@ class SecretJwtEncoderDecoderTest {
     Assertions.assertNotNull(jwtEncoderDecoder.encode(appJwt, VALID_SECRET));
   }
 
+  /**
+   * tests whether an exception is thrown when a secret key is invalid during JWT
+   * encoding using the `SecretJwtEncoderDecoder`.
+   */
   @Test
   void jwtEncodeFailWithException() {
     // given
@@ -60,6 +73,11 @@ class SecretJwtEncoderDecoderTest {
         () -> jwtEncoderDecoder.encode(appJwt, INVALID_SECRET));
   }
 
+  /**
+   * tests the decode functionality of the `SecretJwtEncoderDecoder`. It provides an
+   * encoded JWT, decodes it successfully with the valid secret key, and verifies that
+   * the resulting `AppJwt` object has the expected user ID and expiration time.
+   */
   @Test
   void jwtDecodeSuccess() {
     // given
@@ -77,6 +95,9 @@ class SecretJwtEncoderDecoderTest {
     Assertions.assertNotNull(decodedJwt.getExpiration());
   }
 
+  /**
+   * tests whether an exception is thrown when decoding an expired JWT using the `SecretJwtEncoderDecoder`.
+   */
   @Test
   void jwtDecodeFailWithExpiredJwt() {
     // given

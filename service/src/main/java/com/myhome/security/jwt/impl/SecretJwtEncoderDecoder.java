@@ -30,10 +30,36 @@ import org.springframework.stereotype.Component;
 /**
  * Concrete implementation of {@link AppJwtEncoderDecoder}.
  */
+/**
+ * is an implementation of the AppJwtEncoderDecoder interface that provides methods
+ * for encoding and decoding JSON Web Tokens (JWTs). The class uses the HmacShaKeyFor
+ * method to generate a signing key for the JWT, and the Jwts builder class to parse
+ * and generate JWT claims.
+ */
 @Component
 @Profile("default")
 public class SecretJwtEncoderDecoder implements AppJwtEncoderDecoder {
 
+  /**
+   * takes an encoded JWT and a secret, uses JWT parser to extract claims from the JWT,
+   * and creates a new AppJwt instance with the extracted information.
+   * 
+   * @param encodedJwt JSON Web Token (JWT) that is being decoded and parsed by the
+   * `decode()` method.
+   * 
+   * @param secret secret key used for HMAC-SHA256 signature verification when decoding
+   * the JWT.
+   * 
+   * @returns an instance of `AppJwt` with user ID and expiration date reconstructed
+   * from the input JWT.
+   * 
+   * 	- `userId`: The subject claim in the JWT, representing the user's ID.
+   * 	- `expiration`: The expiration date and time of the JWT, represented as an Instant
+   * in the function.
+   * 
+   * The output is constructed by combining these two properties using the `builder`
+   * pattern, creating a new `AppJwt` instance with the specified properties.
+   */
   @Override public AppJwt decode(String encodedJwt, String secret) {
     Claims claims = Jwts.parserBuilder()
         .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -48,6 +74,22 @@ public class SecretJwtEncoderDecoder implements AppJwtEncoderDecoder {
         .build();
   }
 
+  /**
+   * takes a `Jwt` object and a secret as input, creates a new JWT with an updated
+   * expiration date based on the current time zone, and signs it using HMAC-SHA-512
+   * algorithm with the provided secret.
+   * 
+   * @param jwt JSON Web Token to be encoded, which includes the user ID and expiration
+   * date.
+   * 
+   * 	- `jwt`: A `AppJwt` object containing the JWT claim set and expiration date.
+   * 	- `secret`: The secret key used for signing the JWT.
+   * 
+   * @param secret 30-byte HMAC key used for signing the JWT token.
+   * 
+   * @returns a compact JWT containing the user ID, expiration date, and HMAC-SHA512
+   * signature, all generated using the provided secret.
+   */
   @Override public String encode(AppJwt jwt, String secret) {
     Date expiration = Date.from(jwt.getExpiration().atZone(ZoneId.systemDefault()).toInstant());
     return Jwts.builder()

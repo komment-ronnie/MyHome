@@ -34,6 +34,25 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
 
+/**
+ * represents an amenity that can be booked by guests at a community or community
+ * house, with fields for its unique ID, name, description, price, and relationships
+ * to the community and community house.
+ * Fields:
+ * 	- amenityId (String): represents a unique identifier for an amenity.
+ * 	- name (String): in the Amenity class represents a string value representing the
+ * name of an amenity.
+ * 	- description (String): in the Amenity class represents a brief summary of the
+ * amenity's features or characteristics.
+ * 	- price (BigDecimal): represents a decimal value that represents the cost of an
+ * amenity.
+ * 	- community (Community): in the Amenity class represents an instance of the
+ * Community entity.
+ * 	- communityHouse (CommunityHouse): represents a reference to a CommunityHouse
+ * object within the Amenity entity.
+ * 	- bookingItems (Set<AmenityBookingItem>): is a set of AmenityBookingItem objects
+ * associated with each amenity instance.
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

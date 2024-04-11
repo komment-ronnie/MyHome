@@ -19,6 +19,10 @@ import com.myhome.domain.Payment;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * extends JpaRepository and provides two methods for interacting with payments:
+ * findByPaymentId and deleteByPaymentId.
+ */
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
   Optional<Payment> findByPaymentId(String paymentId);
 

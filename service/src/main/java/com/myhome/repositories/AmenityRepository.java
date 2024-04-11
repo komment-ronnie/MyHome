@@ -23,6 +23,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * provides methods for querying and retrieving amenities based on their amenity ID,
+ * along with an optional community graph.
+ */
 public interface AmenityRepository extends JpaRepository<Amenity, Long> {
 
   @Query("from Amenity amenity where amenity.amenityId = :amenityId")

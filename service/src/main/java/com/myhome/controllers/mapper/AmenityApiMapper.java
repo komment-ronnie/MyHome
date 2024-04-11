@@ -23,6 +23,11 @@ import com.myhome.model.UpdateAmenityRequest;
 import java.util.Set;
 import org.mapstruct.Mapper;
 
+/**
+ * defines a set of methods for mapping between various types of data related to
+ * amenities, including converting from an Amenity object to a GetAmenityDetailsResponse
+ * object, and vice versa.
+ */
 @Mapper
 public interface AmenityApiMapper {
 

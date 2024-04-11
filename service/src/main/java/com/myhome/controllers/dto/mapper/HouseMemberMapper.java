@@ -21,6 +21,11 @@ import com.myhome.model.HouseMemberDto;
 import java.util.Set;
 import org.mapstruct.Mapper;
 
+/**
+ * defines a set of methods for mapping between sets of HouseMembers and related data
+ * structures, including converting between HouseMember objects and their corresponding
+ * DTOs, as well as adding new HouseMembers to a response.
+ */
 @Mapper
 public interface HouseMemberMapper {
   Set<com.myhome.model.HouseMember> houseMemberSetToRestApiResponseHouseMemberSet(
