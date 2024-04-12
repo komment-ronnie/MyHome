@@ -41,6 +41,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * tests the PaymentSDJpaService class's methods for fetching data from the database.
+ * The test cases cover scenarios where the method is called with different parameters,
+ * such as member ID, and administrator user ID. The tests verify that the correct
+ * data is retrieved from the database and passed to the calling method.
+ */
 class PaymentSDJpaServiceTest {
 
   private final BigDecimal TEST_PAYMENT_CHARGE = new BigDecimal(1000);
@@ -65,11 +71,21 @@ class PaymentSDJpaServiceTest {
   @InjectMocks
   private PaymentSDJpaService paymentSDJpaService;
 
+  /**
+   * initializes Mockito annotations for the current class, enabling mocking of components
+   * and behaviors during testing.
+   */
   @BeforeEach
   private void init() {
     MockitoAnnotations.initMocks(this);
   }
 
+  /**
+   * schedules a payment by converting the provided `PaymentDto` to a `Payment` object,
+   * then saving both the user and the payment to the database. The payment is persisted
+   * with a unique ID, and the function returns the scheduled payment in its original
+   * form.
+   */
   @Test
   void schedulePayment() {
     //given
@@ -89,6 +105,11 @@ class PaymentSDJpaServiceTest {
     assertEquals(basePaymentDto,testPaymentScheduled); //Completion: method returns what is expected
   }
 
+  /**
+   * retrieves payment details for a given `paymentId` using JPA repository and mapping
+   * techniques. It verifies the presence of the payment data and returns an optional
+   * `PaymentDto`.
+   */
   @Test
   void getPaymentDetails() {
     //when
@@ -108,6 +129,11 @@ class PaymentSDJpaServiceTest {
     assertEquals(optionalOfTestPaymentDto,testPaymentDetails); //Completion: method returns what is expected
   }
 
+  /**
+   * retrieves a `HouseMember` object from the repository based on the given member ID,
+   * verifies its presence in the repository using a mocking strategy, and returns it
+   * in an optional form.
+   */
   @Test
   void getHouseMember() {
     //given
@@ -126,6 +152,11 @@ class PaymentSDJpaServiceTest {
     assertEquals(baseHouseMemberOptional,testHouseMember); //Completion: method returns what is expected
   }
 
+  /**
+   * queries the payment repository to retrieve payments belonging to a given member.
+   * It makes two calls to the repository, captures the parameters and returns the
+   * expected results.
+   */
   @Test
   void getPaymentsByMember() {
     //given
@@ -159,6 +190,10 @@ class PaymentSDJpaServiceTest {
     assertEquals(expectedReturn1,testPaymentByMember1); //Completion: method returns what is expected
   }
 
+  /**
+   * retrieves a list of payments belonging to a specific administrator by querying the
+   * payment repository using JPA.
+   */
   @Test
   void getPaymentsByAdmin() {
     //given

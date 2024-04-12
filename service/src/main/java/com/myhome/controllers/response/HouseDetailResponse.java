@@ -21,6 +21,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * encapsulates a CommunityHouseDto object for storing and retrieving house details.
+ * Fields:
+ * 	- house (CommunityHouseDto): in the HouseDetailResponse class contains an instance
+ * of the CommunityHouseDto class, which likely represents a detailed summary of a
+ * specific house.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

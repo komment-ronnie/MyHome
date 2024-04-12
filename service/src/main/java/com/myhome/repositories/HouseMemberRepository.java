@@ -22,6 +22,10 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * provides methods for interacting with the HouseMember entity in a Spring Data
+ * repository context.
+ */
 public interface HouseMemberRepository extends CrudRepository<HouseMember, Long> {
   Optional<HouseMember> findByMemberId(String memberId);
 

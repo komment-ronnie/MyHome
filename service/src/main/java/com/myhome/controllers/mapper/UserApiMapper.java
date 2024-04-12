@@ -27,6 +27,10 @@ import org.mapstruct.Mapper;
 /**
  * Interface to automatic conversion by Mapstruct
  */
+/**
+ * provides automatic conversions between Java domain models and RESTful API responses
+ * using Mapstruct's functionality.
+ */
 @Mapper
 public interface UserApiMapper {
 

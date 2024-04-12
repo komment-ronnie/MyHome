@@ -104,6 +104,15 @@ class CommunityControllerTest {
     return communityDto;
   }
 
+  /**
+   * creates a new instance of `CommunityHouse`, populated with data from the given
+   * `Community` object, and returns it.
+   * 
+   * @param community Community object that the function will create a test instance of.
+   * 
+   * @returns a new `CommunityHouse` instance representing the given community with a
+   * unique name and ID.
+   */
   private CommunityHouse createTestCommunityHouse(Community community) {
     return new CommunityHouse(community, COMMUNITY_HOUSE_NAME, COMMUNITY_HOUSE_ID, new HashSet<>(),
         new HashSet<>());
@@ -579,6 +588,15 @@ class CommunityControllerTest {
     return communityHouse;
   }
 
+  /**
+   * creates a new `Community` object with a set of admins, a name, ID, district, and
+   * a house, and then adds it to the community's list of admins and houses.
+   * 
+   * @param admins set of users who will be administrators for the generated Community,
+   * and it is used to populate the Community's admin list.
+   * 
+   * @returns a mock Community object containing admins and houses.
+   */
   private Community getMockCommunity(Set<User> admins) {
     Community community =
         new Community(admins, new HashSet<>(), COMMUNITY_NAME, COMMUNITY_ID,

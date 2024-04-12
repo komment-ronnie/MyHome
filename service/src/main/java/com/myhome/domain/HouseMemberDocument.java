@@ -24,6 +24,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * is a Java entity class with two fields: documentFilename and documentContent, both
+ * of which are persisted to the database using JPA (Java Persistence API).
+ * Fields:
+ * 	- documentFilename (String): in the HouseMemberDocument class represents a unique
+ * name for a file containing document content, which is stored as a binary large
+ * object (Lob) in the byte array format.
+ * 	- documentContent (byte[]): in the HouseMemberDocument class is an array of bytes
+ * with a default size of 0, indicating that it may contain any type of data, including
+ * images, videos, or documents.
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

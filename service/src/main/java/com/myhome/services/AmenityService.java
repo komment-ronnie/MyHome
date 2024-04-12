@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * provides methods for creating, retrieving, deleting, listing, and updating amenities
+ * in a community.
+ */
 public interface AmenityService {
 
   Optional<List<AmenityDto>> createAmenities(Set<AmenityDto> amenities, String communityId);

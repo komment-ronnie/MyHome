@@ -25,6 +25,11 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * provides a set of methods for managing communities in a Spring Data-based application,
+ * including creating new communities, listing all communities, and deleting existing
+ * communities.
+ */
 public interface CommunityService {
   Community createCommunity(CommunityDto communityDto);
 

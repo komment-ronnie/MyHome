@@ -27,6 +27,11 @@ import org.springframework.data.domain.Pageable;
 /**
  * Interface for service layer.
  */
+/**
+ * provides methods for creating users, resending email confirmations, listing all
+ * users, and resetting passwords, as well as retrieving user details and confirming
+ * email addresses.
+ */
 public interface UserService {
   Optional<UserDto> createUser(UserDto request);
 

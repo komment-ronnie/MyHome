@@ -33,6 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+/**
+ * is a test class for the House Member Document controller in a Spring Boot application.
+ * The class contains tests for various use cases of the controller, including
+ * retrieving a document, uploading a new document, updating an existing document,
+ * deleting a document, and handling errors. The tests verifies that the controller
+ * returns the expected status code and document content for each use case.
+ */
 class HouseMemberDocumentTest {
 
   private static final String MEMBER_ID = "test-member-id";
@@ -48,11 +55,20 @@ class HouseMemberDocumentTest {
   @InjectMocks
   private HouseMemberDocumentController houseMemberDocumentController;
 
+  /**
+   * initializes Mockito mocking utilizing the `MockitoAnnotations.initMocks()` method,
+   * enabling the usage of mock objects during testing.
+   */
   @BeforeEach
   private void init() {
     MockitoAnnotations.initMocks(this);
   }
 
+  /**
+   * verifies that the `getHouseMemberDocument` endpoint returns a successful response
+   * with the expected document content and content type, and also verifies that the
+   * `findHouseMemberDocument` method is called with the correct member ID.
+   */
   @Test
   void shouldGetDocumentSuccess() {
     // given
@@ -68,6 +84,11 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).findHouseMemberDocument(MEMBER_ID);
   }
 
+  /**
+   * tests whether the `getHouseMemberDocument` method returns a response with a
+   * `HttpStatus.NOT_FOUND` status code when the house member document with the given
+   * ID is not found in the database.
+   */
   @Test
   void shouldGetDocumentFailure() {
     // given
@@ -81,6 +102,10 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).findHouseMemberDocument(MEMBER_ID);
   }
 
+  /**
+   * verifies that uploading a house member document to the controller results in a
+   * `NO_CONTENT` status code and the successful creation of the document in the service.
+   */
   @Test
   void shouldPostDocumentSuccess() {
     // given
@@ -94,6 +119,10 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).createHouseMemberDocument(MULTIPART_FILE, MEMBER_ID);
   }
 
+  /**
+   * tests whether the `uploadHouseMemberDocument` method returns a `HttpStatus.NOT_FOUND`
+   * status code when the document creation fails and no document is created in the database.
+   */
   @Test
   void shouldPostDocumentFailureNotFound() {
     // given
@@ -107,6 +136,11 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).createHouseMemberDocument(MULTIPART_FILE, MEMBER_ID);
   }
 
+  /**
+   * tests the `updateHouseMemberDocument` controller method by updating a house member
+   * document and verifying that the document is updated successfully and the response
+   * status code is `NO_CONTENT`.
+   */
   @Test
   void shouldPutDocumentSuccess() {
     // given
@@ -120,6 +154,10 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).updateHouseMemberDocument(MULTIPART_FILE, MEMBER_ID);
   }
 
+  /**
+   * tests whether an update request for a house member document returns a
+   * `HttpStatus.NOT_FOUND` status code when the document is not found in the service.
+   */
   @Test
   void shouldPutDocumentFailureNotFound() {
     // given
@@ -133,6 +171,12 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).updateHouseMemberDocument(MULTIPART_FILE, MEMBER_ID);
   }
 
+  /**
+   * tests the delete House Member Document controller by calling the delete method and
+   * asserting that the response status code is HTTP status NO_CONTENT. Additionally,
+   * it verifies that the house member document service was called with the correct
+   * member ID.
+   */
   @Test
   void shouldDeleteDocumentSuccess() {
     // given
@@ -146,6 +190,10 @@ class HouseMemberDocumentTest {
     verify(houseMemberDocumentService).deleteHouseMemberDocument(MEMBER_ID);
   }
 
+  /**
+   * tests whether the `deleteHouseMemberDocument` method returns a `HttpStatus.NOT_FOUND`
+   * status code when the document to be deleted is not found in the database.
+   */
   @Test
   void shouldDeleteDocumentFailureNotFound() {
     // given

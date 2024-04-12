@@ -23,12 +23,34 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
 
+/**
+ * is a configuration class that enables the maximum file size and request size for
+ * multipart requests in Spring Boot. The class has one field and one method: the
+ * field stores the maximum size of files in kilobytes, and the method creates a
+ * MultipartConfigElement instance with the set maximum file size and request size.
+ */
 @Configuration
 public class FileUploadConfig {
 
   @Value("${files.maxSizeKBytes}")
   private int maxSizeKBytes;
 
+  /**
+   * creates a `MultipartConfig` object for use in Spring WebFlux. The created config
+   * element sets maximum file size and request size limits in kilobytes, respectively.
+   * 
+   * @returns a `MultipartConfig` instance with configuration settings for maximum file
+   * size and request size.
+   * 
+   * 	- `MultipartConfigFactory`: This is the class that provides methods for configuring
+   * multipart content.
+   * 	- `setMaxFileSize()` and `setMaxRequestSize()`: These two methods set the maximum
+   * file size and maximum request size for multipart content, respectively. The values
+   * are specified in kilobytes (KB).
+   * 
+   * The output of this function is a `MultipartConfig` object, which represents the
+   * configuration for handling multipart content.
+   */
   @Bean
   public MultipartConfigElement multipartConfigElement() {
     MultipartConfigFactory factory = new MultipartConfigFactory();
