@@ -33,9 +33,9 @@ import lombok.With;
  * Fields:
  * 	- memberId (String): in the HouseMember class represents a unique identifier for
  * each member of a community house.
- * 	- houseMemberDocument (HouseMemberDocument): represents a relationship between a
- * House Member entity and a House Member Document entity, allowing for the association
- * of a member with a specific document.
+ * 	- houseMemberDocument (HouseMemberDocument): in the HouseMember class represents
+ * a relationship between a House Member entity and a specific document, allowing for
+ * the association of a member with a particular document.
  * 	- name (String): in the HouseMember class represents a string value that identifies
  * an individual member of a community house.
  * 	- communityHouse (CommunityHouse): in the HouseMember class represents a reference

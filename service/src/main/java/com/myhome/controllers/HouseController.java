@@ -41,11 +41,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * is responsible for handling requests related to houses and their members. It
- * provides endpoints for listing all houses, getting details of a specific house,
- * adding members to a house, and deleting members from a house. The controller uses
- * dependencies such as the HouseMemberMapper and the HouseService to perform these
- * operations.
+ * in Spring Boot handles various operations related to houses and their members. The
+ * controller provides functions for listing all members of a house, adding new members
+ * to a house, and deleting members from a house. The functions take the house ID and
+ * member details as input and return the updated member list or a response indicating
+ * whether the operation was successful or not.
  */
 @RestController
 @RequiredArgsConstructor
@@ -56,26 +56,30 @@ public class HouseController implements HousesApi {
   private final HouseApiMapper houseApiMapper;
 
   /**
-   * receives a pageable request from the client and list all houses from the service,
-   * then maps them to the REST API response format using the provided mapper, and
-   * returns the response to the client.
+   * retrieves a list of houses from the service layer and maps them to a response
+   * object using API mapper, before returning it as a HTTP OK status response with the
+   * list of houses in the body.
    * 
-   * @param pageable page size and sort order for listing all houses.
+   * @param pageable default page size and sort order for listing all houses, which is
+   * used by the `houseService.listAllHouses()` method to retrieve a paginated list of
+   * community houses from the database.
    * 
-   * 	- `@PageableDefault(size = 200)` - This annotation sets the default page size for
-   * listings to 200.
+   * 	- `PageableDefault(size = 200)`: This method sets the default page size to 200.
+   * The `pageable` object can be used to paginate the result set by calling its
+   * `getPageNumber()` and `getPageSize()` methods.
    * 
-   * @returns a list of `GetHouseDetailsResponseCommunityHouseSet`.
+   * @returns a list of `GetHouseDetailsResponse` objects containing house details.
    * 
-   * 	- `response`: This is the main output of the function, which is a `GetHouseDetailsResponse`
-   * object.
-   * 	- `setHouses`: This is a set of `CommunityHouse` objects, which are the details
-   * of each house listed in the response.
-   * 	- `pageable`: This is an optional parameter that represents the page size and
-   * sort order for the list of houses.
-   * 	- `houseService`: This is the service used to retrieve the list of houses.
-   * 	- `houseApiMapper`: This is the mapper used to transform the list of `CommunityHouse`
-   * objects into a set of `GetHouseDetailsResponseCommunityHouse` objects.
+   * 	- `response`: an instance of `GetHouseDetailsResponse`, representing the list of
+   * houses with their details.
+   * 	- `pageable`: an instance of `Pageable`, used to control the pagination of the
+   * house list.
+   * 	- `houseService`: a service that provides access to the houses data.
+   * 	- `houseApiMapper`: a mapper that converts the house data from the local API
+   * format to the REST API format.
+   * 	- `CommunityHouse`: an entity representing a house with its details.
+   * 	- `GetHouseDetailsResponseCommunityHouseSet`: a set of `GetHouseDetailsResponseCommunityHouse`
+   * objects, each representing a single house with its details.
    */
   @Override
   public ResponseEntity<GetHouseDetailsResponse> listAllHouses(
@@ -95,34 +99,29 @@ public class HouseController implements HousesApi {
   }
 
   /**
-   * receives a house ID and returns a `GetHouseDetailsResponse` object with a list of
-   * houses matching the provided ID. It uses service-level methods to retrieve the
-   * details and map them to a rest API response.
+   * receives a `houseId` and retrieves the details of the corresponding house from the
+   * `houseService`. It then maps the house details to a `GetHouseDetailsResponse`
+   * object and returns it as a `ResponseEntity`.
    * 
-   * @param houseId unique identifier of the house for which details are requested, and
-   * it is used to retrieve the corresponding house details from the service.
+   * @param houseId ID of the house for which details are being requested.
    * 
    * @returns a `GetHouseDetailsResponse` object containing a list of houses with their
    * details.
    * 
    * 	- `ResponseEntity<GetHouseDetailsResponse>`: This is a generic type that represents
-   * an entity with a response body containing a `GetHouseDetailsResponse` object.
-   * 	- `GetHouseDetailsResponse`: This class represents the response body of the entity,
-   * which contains a list of `CommunityHouse` objects.
-   * 	- `CommunityHouse`: This class represents a single house in the community, with
-   * attributes such as id, name, and location.
-   * 	- `map(Function<T, R> mapper)`: This method applies a mapping function to the
-   * output of the `getHouseDetails` method, which transforms the response body into a
-   * new form. In this case, the function maps each `CommunityHouse` object to a
-   * `GetHouseDetailsResponse` object.
-   * 	- `map(Supplier<T> supplier)`: This method returns a stream of `T` objects, where
-   * `T` is the type of the output of the `getHouseDetails` method. In this case, the
-   * supplier returns an empty stream, which means that the output of the method will
-   * be an empty list.
-   * 	- `orElse(T otherValue)`: This method returns a new response entity if the result
-   * of the previous mapping operation is not present, or the specified `otherValue`
-   * otherwise. In this case, if the `getHouseDetails` method does not return a response
-   * body, the resulting entity will be an `ResponseEntity.notFound().build()`.
+   * an entity with a response body containing the details of a house.
+   * 	- `getHouseDetailsResponseCommunityHouses`: This is a list of community houses,
+   * which are the details of individual houses returned in the response body.
+   * 	- `houses(getHouseDetailsResponseCommunityHouses)`: This is a method that takes
+   * a list of community houses as input and returns a list of houses with their details.
+   * 	- `map(Function<GetHouseDetailsResponse, ResponseEntity<GetHouseDetailsResponse>>
+   * mapper)`: This line uses the `map` method to apply a mapping function to the output
+   * of the previous line. The mapping function takes the `getHouseDetailsResponseCommunityHouses`
+   * list and returns a `ResponseEntity<GetHouseDetailsResponse>` entity with the details
+   * of each house in the list.
+   * 	- `orElse(ResponseEntity.notFound().build());`: This line provides an alternative
+   * output if the original mapping function fails. It returns a `ResponseEntity.notFound()`
+   * entity, which indicates that the requested house could not be found.
    */
   @Override
   public ResponseEntity<GetHouseDetailsResponse> getHouseDetails(String houseId) {
@@ -136,30 +135,38 @@ public class HouseController implements HousesApi {
   }
 
   /**
-   * retrieves the members of a house with a given ID and returns them as a list of
-   * `HouseMember` objects in a `ListHouseMembersResponse` message.
+   * retrieves all members associated with a specific house and returns them as a list
+   * in a `ListHouseMembersResponse` object.
    * 
-   * @param houseId unique identifier of the house for which members are to be listed.
+   * @param houseId ID of the house for which the members are to be listed.
    * 
-   * @param pageable page request parameters, such as the page number and size of the
-   * result set, which are used to filter and limit the response from the
-   * `houseService.getHouseMembersById()` method.
+   * @param pageable Pageable object that specifies the page size and other pagination
+   * settings for retrieving the members of the house.
    * 
-   * 	- `size`: The number of elements to be returned in each page of results.
-   * 	- `sort`: The field by which the results should be sorted.
-   * 	- `direction`: The direction of sorting (ascending or descending).
+   * The `@PageableDefault` annotation specifies the default page size for the response,
+   * which is 200 in this case. The `pageable` parameter is a `Pageable` object that
+   * represents the pagination settings for the request. It has several properties and
+   * attributes, including:
    * 
-   * @returns a `ListHouseMembersResponse` object containing the list of members of the
-   * specified house.
+   * 	- `size`: The number of elements to fetch per page (default: 200)
+   * 	- `sort`: A sort specification in the format `{field}: {order}` (e.g., `'name':
+   * 'ASC'`)
+   * 	- `direction`: The direction of the sort (e.g., `'ASC'` or `'DESC')`
+   * 	- `pageable`: A `Pageable` object that represents the current page and can be
+   * used to navigate through pages
    * 
-   * 	- `ResponseEntity<ListHouseMembersResponse>`: This is the type of the output
-   * returned by the function, which represents a response entity containing a list of
-   * members of a house.
-   * 	- `ListHouseMembersResponse`: This is a class that contains properties related
-   * to the list of members of a house. The properties include:
-   * 	+ `members`: A list of `HouseMember` objects, representing the members of the house.
-   * 	- `ok`: This is a boolean property indicating whether the response was successful
-   * or not. If the response was not successful, the value of this property will be `false`.
+   * In summary, the `pageable` parameter is a pagination object that provides information
+   * about the number of elements to fetch per page, the sort specification, and the
+   * direction of the sort.
+   * 
+   * @returns a `List<HouseMember>` object containing all members of the specified house.
+   * 
+   * 	- `ResponseEntity`: This is the top-level entity of the response, representing
+   * either a successful response or an error.
+   * 	- `ok`: This is a subfield of the `ResponseEntity`, indicating that the request
+   * was successful and the response contains the expected data.
+   * 	- `members`: This is a list of `HouseMember` objects, which represent the members
+   * of the house requested in the function parameters.
    */
   @Override
   public ResponseEntity<ListHouseMembersResponse> listAllMembersOfHouse(
@@ -176,49 +183,36 @@ public class HouseController implements HousesApi {
   }
 
   /**
-   * takes a house ID and a request with member details, adds the members to the house,
-   * and returns the updated member list in the response.
+   * receives a request to add members to a house, validates the request, adds the
+   * members to the house database, and returns the updated member list in response.
    * 
-   * @param houseId identifier of the house to which the members will be added.
+   * @param houseId ID of the house for which members are being added.
    * 
-   * @param request AddHouseMemberRequest object that contains the member details to
-   * be added to the house.
+   * @param request AddHouseMemberRequest object containing the member information to
+   * be added to the specified house.
    * 
-   * 	- `houseId`: A string representing the unique identifier of the house to which
-   * members will be added.
-   * 	- `request.getMembers()`: An array of `AddHouseMemberRequest.Members` objects
-   * containing the details of the members to be added to the house. Each `Members`
-   * object has the following properties:
-   * 	+ `member`: A string representing the unique identifier of the member to be added.
-   * 	+ `email`: A string representing the email address of the member.
-   * 	+ `firstName`: A string representing the first name of the member.
-   * 	+ `lastName`: A string representing the last name of the member.
-   * 	+ `phoneNumber`: A string representing the phone number of the member.
+   * 	- `houseId`: A string representing the ID of the house for which members are being
+   * added.
+   * 	- `request.getMembers()`: A set of `HouseMemberDTO` objects that contain the
+   * details of the members to be added to the house.
+   * 	- `houseService.addHouseMembers(houseId, members)`: A call to the `addHouseMembers`
+   * method of the `houseService` class, which adds the members provided in the `request`
+   * to the house with the specified ID. The method returns a set of `HouseMember`
+   * objects representing the newly added members.
    * 
-   * In summary, the `addHouseMembers` function takes a house ID and a list of members
-   * to be added to that house, processes them, and returns a response indicating whether
-   * the operation was successful or not.
+   * @returns a `ResponseEntity` object with a status code and a body containing an
+   * `AddHouseMemberResponse` object.
    * 
-   * @returns a `ResponseEntity` object containing the response to the request, which
-   * includes the added house members in a JSON format.
+   * 	- `response`: This is an instance of `AddHouseMemberResponse`, which contains the
+   * updated member list for the specified house ID.
+   * 	- `savedHouseMembers`: This is a set of `HouseMember` objects that represent the
+   * members added to the house.
+   * 	- `size()`: This is the number of members added to the house. If no members were
+   * added, this will be 0.
    * 
-   * 	- `response`: This is an instance of the `AddHouseMemberResponse` class, which
-   * contains information about the added members.
-   * 	- `members`: This is a set of `HouseMember` objects, which represent the added
-   * members to the house.
-   * 	- `size`: The size of the `members` set, indicating the number of added members.
-   * 
-   * The output is structured in the following way:
-   * 
-   * {
-   * response: {
-   * members: [...],
-   * size: 3
-   * }
-   * }
-   * 
-   * Where `[...]` represents the contents of the `members` set. The `size` property
-   * indicates the number of added members.
+   * In summary, the function returns an instance of `AddHouseMemberResponse` containing
+   * the updated member list for the specified house ID, along with information on the
+   * number of members added.
    */
   @Override
   public ResponseEntity<AddHouseMemberResponse> addHouseMembers(
@@ -240,25 +234,23 @@ public class HouseController implements HousesApi {
   }
 
   /**
-   * deletes a member from a house based on the house ID and member ID provided in the
-   * request. If the member is successfully deleted, a `NO_CONTENT` status code is
-   * returned. If the member cannot be found, a `NOT_FOUND` status code is returned.
+   * deletes a member from a house based on the provided house ID and member ID, returning
+   * a HTTP status code indicating the result of the operation.
    * 
-   * @param houseId ID of the house for which a member is being deleted.
+   * @param houseId identifier of the house for which the member is being deleted.
    * 
    * @param memberId ID of the member to be deleted from the specified house.
    * 
-   * @returns a `ResponseEntity` object with a status code of either `NO_CONTENT` or
-   * `NOT_FOUND`, depending on whether the member was successfully deleted or not.
+   * @returns a response entity with a HTTP status code of either `NO_CONTENT` or
+   * `NOT_FOUND`, depending on whether the member was successfully deleted.
    * 
-   * 	- `ResponseEntity`: This is an object that represents the response to the delete
-   * request. It has a `status` field that indicates the HTTP status code of the response,
-   * and a `body` field that contains the response entity itself.
-   * 	- `HttpStatus`: This is an enum that defines the possible HTTP status codes that
-   * can be returned by the function. The function returns `NO_CONTENT` if the member
-   * was successfully deleted, and `NOT_FOUND` otherwise.
-   * 	- ` Void`: This is a type parameter of the `ResponseEntity` class, which represents
-   * the void value returned by the function.
+   * 	- `ResponseEntity`: This is an instance of the `ResponseEntity` class, which
+   * represents a response to a HTTP request. It has a status code and a body, which
+   * in this case is an empty `Void` value.
+   * 	- `HttpStatus`: This is the HTTP status code associated with the response, which
+   * indicates whether the request was successful (NO_CONTENT) or not found (NOT_FOUND).
+   * 	- `build()`: This is a method that creates a new instance of the `ResponseEntity`
+   * class based on the properties of the output.
    */
   @Override
   public ResponseEntity<Void> deleteHouseMember(String houseId, String memberId) {

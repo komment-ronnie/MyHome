@@ -37,11 +37,9 @@ import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * is responsible for handling the creation and management of documents associated
- * with house members in a Java application. It provides methods for finding and
- * deleting documents, as well as creating new documents through the use of MultipartFiles.
- * The service also compresses images before saving them to avoid exceeding file size
- * limits.
+ * provides methods for writing an image to a byte stream and compressing it using
+ * an ImageWriter object, as well as reading an image from an input stream provided
+ * by a MultipartFile object and returning a BufferedImage.
  */
 @Service
 public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentService {
@@ -62,21 +60,26 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * retrieves a `HouseMemberDocument` object associated with a given `memberId`. It
-   * first queries the `houseMemberRepository` for the `HouseMember` object using the
-   * `memberId`, and then maps the `HouseMember` object to its corresponding `House
-   * Member Document`. The function returns an optional `HouseMemberDocument` object
-   * containing the mapped data.
+   * maps the result of `houseMemberRepository.findByMemberId(memberId)` to
+   * `HouseMemberDocument` by calling the `getHouseMemberDocument` method.
    * 
-   * @param memberId unique identifier of the member for which the corresponding House
-   * Member Document is being searched.
+   * @param memberId unique identifier of a member in the HouseMemberRepository, which
+   * is used to retrieve the corresponding `HouseMemberDocument`.
    * 
-   * @returns an optional `HouseMemberDocument`.
+   * @returns an optional instance of `HouseMemberDocument`.
    * 
-   * The returned Optional object represents an optional HouseMemberDocument. If a
-   * HouseMemberDocument is found, the Optional will be Some(HouseMemberDocument),
-   * otherwise it will be None. The HouseMemberDocument contained in the Optional has
-   * a getHouseMemberDocument() method that returns the HouseMember document itself.
+   * 	- `Optional<HouseMemberDocument>` is the type of the output, which indicates that
+   * the function either returns an instance of `HouseMemberDocument` or `None`.
+   * 	- `houseMemberRepository.findByMemberId(memberId)` is a method call that retrieves
+   * a `List` of `House Member` objects based on the `memberId` parameter.
+   * 	- `.map(HouseMember::getHouseMemberDocument)` is a method call that applies the
+   * `getHouseMemberDocument` method to each element in the `List` and returns an
+   * `Optional` containing the result. The `getHouseMemberDocument` method is explained
+   * below:
+   * 
+   * The `getHouse MemberDocument` method of the `House Member` class returns a `House
+   * Member Document` object, which contains information about the house member, such
+   * as their name, address, and other relevant details.
    */
   @Override
   public Optional<HouseMemberDocument> findHouseMemberDocument(String memberId) {
@@ -85,14 +88,14 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * deletes a House Member Document associated with a given member ID by finding the
-   * document, setting it to null, and then saving the updated member entity back to
-   * the repository. If the document is successfully deleted, the function returns `true`.
+   * deletes a house member's document by finding the member in the repository, setting
+   * their document to null, and saving the updated member to the repository. It returns
+   * `true` if successful or `false` otherwise.
    * 
-   * @param memberId ID of the member whose House Member Document is to be deleted.
+   * @param memberId ID of a house member whose House Member Document is to be deleted.
    * 
    * @returns a boolean value indicating whether the house member document was successfully
-   * deleted.
+   * deleted or not.
    */
   @Override
   public boolean deleteHouseMemberDocument(String memberId) {
@@ -107,43 +110,41 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * updates a house member's document by finding the member in the repository, creating
-   * a new document if necessary, and adding it to the member's record.
+   * updates a house member's document by retrieving the member from the repository,
+   * creating a new document if necessary, and adding it to the member's record.
    * 
-   * @param multipartFile file to be updated for the associated member.
+   * @param multipartFile file containing the updated House Member document to be
+   * processed by the `updateHouseMemberDocument()` method.
    * 
-   * 	- `multipartFile`: A `MultipartFile` object representing the uploaded document.
-   * It has various attributes such as `filename`, `contentType`, `body`, and `originalFilename`.
+   * 	- `multipartFile`: A `MultipartFile` object representing a file uploaded by the
+   * user. It has several attributes such as `getOriginalFilename()`, `getSize()`,
+   * `getContentType()`, and `getBytes()`.
    * 
-   * @param memberId id of the member whose House Member Document is being updated.
+   * @param memberId unique identifier of the member whose House Member Document will
+   * be updated.
    * 
-   * @returns an Optional object containing a House Member Document, created or updated
-   * based on the provided Multipart File and member ID.
+   * @returns an optional `House Member Document` object representing the updated
+   * document for the specified member.
    * 
-   * 	- `Optional<HouseMemberDocument>` is the type of the output returned by the
-   * function. This means that the function may or may not return a `HouseMemberDocument`,
-   * depending on whether a document was found and created successfully.
-   * 	- `houseMemberRepository.findByMemberId(memberId)` returns an `Optional` containing
-   * a `HouseMember` object if a member with the given `memberId` exists in the repository,
-   * or `empty()` otherwise. This step is necessary to check whether there is a member
-   * with the given `memberId` before attempting to create a document for that member.
-   * 	- `map(member -> { ... })` is used to transform the `Optional<HouseMember>`
-   * returned by `houseMemberRepository.findBy MemberId()` into an `Optional<HouseMemberDocument>`.
-   * This involves calling the `tryCreateDocument` method on the `HouseMember` object
-   * and storing the resulting `Optional<HouseMemberDocument>` in a variable named `houseMemberDocument`.
-   * 	- `houseMemberDocument.ifPresent(document -> addDocumentToHouseMember(document,
-   * member))` is used to add the created document to the House Member object if the
-   * `houseMemberDocument` Optional is not empty. This involves calling the
-   * `addDocumentToHouseMember` method on the `HouseMember` object and passing in the
-   * `document` and `member` parameters.
-   * 	- `orElse(Optional.empty())` is used to return an `Optional` containing the result
-   * of the `tryCreateDocument` method if the `house MemberDocument` Optional is empty.
-   * This ensures that the function always returns a non-empty `Optional`, even if there
-   * was no document found or created.
-   * 
-   * In summary, the `updateHouseMemberDocument` function takes a `MultipartFile` and
-   * a `String memberId` as input, and returns an `Optional<HouseMemberDocument>`
-   * representing the created document, or `empty()` if no document was found or created.
+   * 	- `Optional<HouseMemberDocument>`: The output is an optional reference to a
+   * `HouseMemberDocument`, indicating that it may or may not be present depending on
+   * the result of the operation.
+   * 	- `houseMemberRepository.findByMemberId(memberId)`: This is a call to the
+   * `houseMemberRepository` method `findByMemberId`, which retrieves a `HouseMember`
+   * object based on the `memberId` parameter. The method returns an `Optional<HouseMember>`
+   * reference, indicating that the object may or may not be present in the repository.
+   * 	- `map(member -> { ... })`: This is a call to the `map` method of the `Optional`
+   * reference, which applies the provided function to the contained object and returns
+   * a new `Optional` reference. In this case, the function is a closure that creates
+   * a new `HouseMemberDocument` instance based on the `multipartFile` and `member`
+   * parameters, and then adds the document to the `HouseMember` object using the
+   * `addDocumentToHouse Member` method.
+   * 	- `orElse(Optional.empty())`: This is a call to the `orElse` method of the
+   * `Optional` reference, which returns a new `Optional` reference if the contained
+   * object is present, or an empty reference if it is absent. In this case, the function
+   * is called with an empty `Optional` reference as the default value, indicating that
+   * if no `HouseMemberDocument` instance is found in the repository, the output will
+   * be an empty reference.
    */
   @Override
   public Optional<HouseMemberDocument> updateHouseMemberDocument(MultipartFile multipartFile,
@@ -156,47 +157,33 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * takes a `MultipartFile` and a `String` member ID as input, and returns an optional
-   * `HouseMemberDocument`. It first retrieves the member from the repository based on
-   * the ID, then creates a new document if not already present, adds it to the member,
-   * and returns the resulting document.
+   * creates a new `HouseMemberDocument` if it doesn't exist for the given `memberId`.
+   * It first queries the `houseMemberRepository` to retrieve the member record, then
+   * tries to create the document using the provided multipart file. If successful, it
+   * adds the document to the member record and returns the resulting `HouseMemberDocument`.
+   * Otherwise, it returns an empty `Optional`.
    * 
-   * @param multipartFile file containing the HouseMember document that needs to be
-   * created or updated.
+   * @param multipartFile file containing the House Member Document to be created or updated.
    * 
-   * 	- `multipartFile`: A deserialized `MultipartFile` object representing a file
-   * upload. Its properties may include:
-   * 	+ `file`: The original file uploaded by the user.
-   * 	+ `originalFilename`: The original filename of the file as provided by the user.
-   * 	+ `filename`: The filename of the file after processing, if applicable.
-   * 	+ `contentType`: The content type of the file, such as "image/jpeg".
-   * 	+ `size`: The size of the file in bytes.
-   * 	+ `error`: Any error messages related to the file upload, if applicable.
+   * 	- `multipartFile`: A `MultipartFile` object containing the uploaded file data.
+   * The file type is determined by its content type header, which can be retrieved
+   * through the `getContentType()` method.
    * 
-   * @param memberId ID of the member for whom the HouseMemberDocument is to be created.
+   * @param memberId ID of the member for which the House Member Document is to be created.
    * 
-   * @returns an `Optional` of a `HouseMemberDocument`.
+   * @returns an `Optional` instance containing a `HouseMemberDocument` object, created
+   * by merging the provided multipart file with the specified member ID.
    * 
-   * 	- `Optional<HouseMemberDocument>`: This represents an optional instance of
-   * `HouseMemberDocument`, which means that the function may or may not return a valid
-   * document depending on the input.
-   * 	- `houseMemberRepository.findBy MemberId(memberId)`: This is a call to the `findBy
-   * MemberId` method of the `houseMemberRepository`, which returns an `Optional<HouseMember>`
-   * object representing a house member with the given `memberId`.
-   * 	- `map(member -> { ... })`: This is a call to the `map` method, which takes a
-   * function as an argument that transforms the `Optional<HouseMember>` object into
-   * an `Optional<HouseMemberDocument>`. The function is applied to the `house Member`
-   * object and returns an `Optional<HouseMemberDocument>` object if the transformation
-   * was successful.
-   * 	- `ifPresent(document -> addDocumentToHouseMember(document, member))` : This line
-   * adds an optional `HouseMemberDocument` to a `HouseMember` object if the
-   * `Optional<HouseMemberDocument>` output from the previous step is present. The
-   * `addDocumentToHouseMember` method takes the `HouseMemberDocument` and `House Member`
-   * objects as arguments and performs the necessary operations to add the document to
-   * the member's profile.
-   * 	- `orElse(Optional.empty())`: This line returns an `Optional<HouseMemberDocument>`
-   * object that is either empty or contains a valid `HouseMemberDocument` if the
-   * previous steps were successful in finding a house member with the given `memberId`.
+   * 	- The first element is an Optional<HouseMemberDocument>, indicating that the
+   * method may return either a HouseMemberDocument or an empty Optional.
+   * 	- The `findByMemberId` method call in the `map` block returns an Optional<HouseMember>
+   * representing a member with the specified ID.
+   * 	- The `tryCreateDocument` method creates a new HouseMemberDocument for the provided
+   * multipartFile and member, or returns an empty Optional if creation failed.
+   * 	- The `addDocumentToHouse Member` method adds the created HouseMemberDocument to
+   * the member's list of documents.
+   * 	- The `orElse` method is used to return an emptyOptional if no HouseMemberDocument
+   * could be created for the provided multipartFile and member.
    */
   @Override
   public Optional<HouseMemberDocument> createHouseMemberDocument(MultipartFile multipartFile,
@@ -209,40 +196,45 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * takes a multipart file and a member object as input, creates an image from the
-   * file, compresses it if necessary, saves it to a file, and returns an optional
-   * document object if successful or an empty optional otherwise.
+   * creates a document for a HouseMember by reading an image from a MultipartFile,
+   * compressing it if necessary, and saving it as a JPEG file. If successful, it returns
+   * an Optional<HouseMemberDocument>.
    * 
-   * @param multipartFile file to be processed, which contains an image of a member's
-   * document.
+   * @param multipartFile multipart file containing an image of a member's document,
+   * which is being processed and converted into a byte array for storage or further processing.
    * 
-   * 	- `multipartFile.getSize()`: The size of the multipart file in bytes.
-   * 	- `DataSize.ofKilobytes(compressionBorderSizeKBytes)`: A constant representing a
-   * kilobyte-sized buffer for compression.
-   * 	- `DataSize.ofKilobytes(maxFileSizeKBytes)`: A constant representing a kilobyte-sized
-   * buffer for saving the document to file.
+   * 	- `multipartFile`: A `MultipartFile` object representing a file uploaded by the
+   * user in the HTML form.
+   * 	- `member`: An instance of `HouseMember` class, which contains information about
+   * the member who is uploading the document.
    * 
-   * @param member HouseMember for which an image document is being created.
+   * @param member HouseMember for which an image document will be created.
    * 
-   * 	- `member`: A HouseMember object representing the member whose document is being
-   * created.
-   * 	- `multipartFile`: A MultipartFile object containing the image file to be processed.
-   * 	- `compressionBorderSizeKBytes`: The size threshold for compressing an image,
-   * represented in bytes.
-   * 	- `maxFileSizeKBytes`: The maximum file size allowed for a HouseMember document,
-   * represented in bytes.
+   * 	- `member`: The HouseMember object that contains information about a member of a
+   * house.
+   * 	- `multipartFile`: A MultipartFile object containing an image file related to the
+   * member.
+   * 	- `imageByteStream`: A ByteArrayOutputStream instance used to store the image data.
+   * 	- `documentImage`: A BufferedImage object containing the image data read from the
+   * input file.
+   * 	- `compressionBorderSizeKBytes`: The size of the compression border in kilobytes,
+   * which is used to determine if the image needs to be compressed.
+   * 	- `maxFileSizeKBytes`: The maximum file size in kilobytes, which is used to
+   * determine if the image needs to be compressed or saved directly.
+   * 	- `saveHouseMemberDocument`: A method that saves the image data to a file with a
+   * specified name.
    * 
-   * @returns an optional `HouseMemberDocument`, which represents a document containing
-   * a member's image.
+   * @returns an optional `HouseMemberDocument`, which represents a document created
+   * from a member's image.
    * 
-   * 	- The `Optional` object contains a `HouseMemberDocument` object if the image was
-   * successfully compressed and saved to file, or it is empty if an error occurred
-   * during compression or saving.
-   * 	- The `HouseMemberDocument` object has a `memberId` field that represents the ID
-   * of the member whose document was created, and a `documentPath` field that contains
-   * the path to the saved document file.
-   * 	- The `documentPath` field is a string that includes the format string
-   * `"member_%s_document.jpg"` where `%s` is the value of the `memberId` field.
+   * 	- The `Optional` object contains a `HouseMemberDocument` element, which is created
+   * by saving the image to a file using the `saveHouseMemberDocument` method.
+   * 	- The `HouseMemberDocument` element has a `memberId` attribute, which is the ID
+   * of the member whose document was created.
+   * 	- The `imageByteStream` attribute contains the binary data of the compressed image
+   * file.
+   * 	- The `maxFileSizeKBytes` attribute represents the maximum size of the file that
+   * can be saved in bytes.
    */
   private Optional<HouseMemberDocument> tryCreateDocument(MultipartFile multipartFile,
       HouseMember member) {
@@ -267,36 +259,29 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * updates a `HouseMember` instance's `HouseMemberDocument` field and saves it to the
-   * repository, creating or updating the associated document in the database.
+   * updates a `HouseMember` object's `HouseMemberDocument` field and saves it to the
+   * repository, effectively linking the member with the document.
    * 
-   * @param houseMemberDocument HouseMemberDocument object that contains information
-   * about the member's documents, which is being added to the member's record in the
-   * database through the `save()` method of the `houseMemberRepository`.
+   * @param houseMemberDocument HouseMember's document that is being added to the
+   * member's record.
    * 
-   * 	- `HouseMemberDocument`: This is a class that represents a document related to a
-   * house member.
-   * 	- `member`: This is an instance of the `HouseMember` class, which represents a
-   * member of a house.
-   * 	- `house MemberRepository`: This is an interface or class that provides methods
-   * for saving and retrieving house members from a repository.
+   * 	- `HouseMemberDocument`: represents a document related to a House Member
+   * 	- `houseMember`: references a specific House Member object
+   * 	- `save()`: saves the updated House Member object in the repository
    * 
-   * @param member HouseMember that will have its `HouseMemberDocument` associated with
-   * it set to the provided `houseMemberDocument`.
+   * @param member HouseMember object that will have its `HouseMemberDocument` attribute
+   * set to the provided `HouseMemberDocument` object and then saved in the repository.
    * 
-   * 	- `setHouseMemberDocument(houseMemberDocument)` sets the `HouseMemberDocument`
-   * field of the `member` object to the provided `houseMemberDocument`.
-   * 	- `save()` saves the updated `member` object in the repository.
+   * 	- `member`: A `HouseMember` object that represents a member of a house.
+   * 	- `houseMemberDocument`: A `HouseMemberDocument` object that contains information
+   * about the member and their documents.
    * 
-   * @returns a saved HouseMember object containing the updated document information.
+   * @returns a saved HouseMember object with the associated HouseMemberDocument.
    * 
-   * 	- The `houseMemberDocument` parameter is a `HouseMemberDocument` object that
-   * represents the document related to the specified `HouseMember`.
-   * 	- The `member` parameter is a `HouseMember` object that represents the member for
-   * whom the document is being added.
-   * 	- The `houseMemberRepository` is a `HouseMemberRepository` interface that provides
-   * methods for saving and retrieving `HouseMember` objects. The `save()` method is
-   * used to save the updated `HouseMember` object in the database.
+   * 	- `houseMemberRepository`: This is an instance of `HouseMemberRepository`, which
+   * is responsible for managing HouseMembers and their associated documents.
+   * 	- `save()`: This method is used to save or update a House Member in the repository.
+   * It returns the saved House Member object.
    */
   private HouseMember addDocumentToHouseMember(HouseMemberDocument houseMemberDocument,
       HouseMember member) {
@@ -305,25 +290,29 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * saves a HouseMemberDocument to the repository, given an image byte stream and a filename.
+   * saves a HouseMemberDocument to the repository, taking an image byte stream and
+   * filename as input and returning the newly created document.
    * 
-   * @param imageByteStream image data of the HouseMemberDocument that needs to be saved.
+   * @param imageByteStream image data of the House Member document to be saved, which
+   * is converted into a ByteArrayOutputStream and then stored in the repository along
+   * with the filename.
    * 
-   * 	- ` ByteArrayOutputStream imageByteStream`: This is an output stream that contains
-   * the serialized image data in a byte array. The size of the byte array can be
-   * determined by calling the `toByteArray()` method on the output stream, which returns
-   * a raw byte array representation of the image data.
+   * 	- ` ByteArrayOutputStream imageByteStream`: Represents an output stream that
+   * writes bytes to a byte array.
+   * 	- `filename`: The name of the file to which the `imageByteStream` contents will
+   * be written.
    * 
-   * @param filename name of the file that contains the image data to be saved.
+   * @param filename file name of the image being saved.
    * 
-   * @returns a saved HouseMemberDocument entity in the repository.
+   * @returns a newly created `HouseMemberDocument` object, which is then saved to the
+   * repository.
    * 
-   * 	- `HouseMemberDocument`: This is the type of object that is being saved in the
-   * `houseMemberDocumentRepository`. It has a filename and an image byte array.
-   * 	- `newDocument`: This is the newly created House Member Document object that is
-   * being saved. It has a filename and an image byte array.
-   * 	- `houseMemberDocumentRepository`: This is the repository where the document is
-   * being saved. It is responsible for storing the document in the database.
+   * The HouseMemberDocument object returned by the function represents a new document
+   * added to the repository. The document's filename and image byte array are obtained
+   * from the input parameters.
+   * 
+   * The `houseMemberDocumentRepository.save()` method is called to persist the document
+   * in the repository, ensuring its persistence and availability in the system.
    */
   private HouseMemberDocument saveHouseMemberDocument(ByteArrayOutputStream imageByteStream,
       String filename) {
@@ -333,26 +322,25 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * writes a `BufferedImage` object to a `ByteArrayOutputStream` by calling the
-   * `ImageIO.write()` method with the image format as `"jpg"` and the output stream
-   * as the specified `ByteArrayOutputStream`.
+   * writes a `BufferedImage` to a byte stream using the `ImageIO.write` method and
+   * specifying "jpg" as the image format.
    * 
-   * @param documentImage 2D image that is to be written to a byte stream as a JPEG file.
+   * @param documentImage 2D graphics or other image data to be written to a byte stream
+   * using the `ImageIO.write()` method.
    * 
-   * 	- The `BufferedImage` object `documentImage` contains an image representation of
-   * data.
-   * 	- The image is serialized to a ` ByteArrayOutputStream` object `imageByteStream`.
-   * 	- The `ImageIO` class writes the image representation from `documentImage` to a
-   * JPEG file in `imageByteStream`.
+   * The `BufferedImage` object `documentImage` represents an image that has been loaded
+   * from a file or some other source. This image can have any format like JPEG, PNG,
+   * GIF, TIFF, BMP, etc.
+   * The `ByteArrayOutputStream` variable `imageByteStream` serves as a container to
+   * hold the binary data of the written image. It is used to store the output from the
+   * `ImageIO.write()` method in a byte array.
    * 
-   * @param imageByteStream byte array that will store the image data after it has been
-   * written by the `ImageIO.write()` method.
+   * @param imageByteStream ByteArrayOutputStream where the image will be written to.
    * 
-   * 	- `imageByteStream` is an instance of `ByteArrayOutputStream`, which means it can
-   * be used to create a byte array containing the serialized image data.
-   * 	- The method `write(Image image, String format, OutputStream outputStream)` is
-   * called with the input `documentImage` as the Image object and `"jpg"` as the format
-   * string. This writes the image data to the `imageByteStream` instance in JPEG format.
+   * 	- It is an instance of `ByteArrayOutputStream`, which is a class in Java for
+   * converting a byte stream into an array of bytes.
+   * 	- The class has several attributes, including `count`, `empty`, `toByteArray()`,
+   * and `writeTo()` methods.
    */
   private void writeImageToByteStream(BufferedImage documentImage,
       ByteArrayOutputStream imageByteStream)
@@ -361,44 +349,32 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * compresses a `BufferedImage` using an `ImageWriter` and writes it to a byte stream,
-   * allowing for flexible control over compression mode and quality.
+   * compresses an input `BufferedImage` using the JPEG compression algorithm and writes
+   * the compressed data to a `ByteArrayOutputStream`.
    * 
-   * @param bufferedImage 2D graphics image to be compressed and written to an output
-   * stream.
+   * @param bufferedImage 2D image to be compressed and is used by the `ImageWriter`
+   * to write the compressed image to a byte stream.
    * 
-   * The `BufferedImage` object represents an image that has been loaded into memory
-   * using the `BufferedImage` class. The `BufferedImage` object has various attributes
-   * such as height, width, and depth, which correspond to the dimensions of the image
-   * in pixels. Additionally, it may have other properties or methods associated with
-   * its loading or manipulation.
+   * 	- The `BufferedImage` object represents an image that has been loaded from an
+   * external source and buffered for efficient access.
+   * 	- The `ImageIO` class is used to read and write image files in various formats,
+   * including JPEG.
+   * 	- The `ImageOutputStream` object is a stream that can be used to write an image
+   * file. It is created by calling the `ImageIO.createImageOutputStream()` method and
+   * passed as a parameter to the ` ImageWriter` constructor.
+   * 	- The `ImageWriter` class is responsible for writing an image file to a stream.
+   * It takes a `BufferedImage` object as input, modifies its properties according to
+   * user preferences, and writes the modified image to the output stream using the
+   * appropriate image format.
    * 
-   * The `ImageOutputStream` object is an output stream for images that allows for the
-   * writing of image data to a file or memory buffer. It provides methods for setting
-   * image write parameters and writing image data to the output stream.
+   * @param imageByteStream 10-byte stream where the compressed image will be written.
    * 
-   * The `ImageWriter` class represents an image writer that can be used to write image
-   * data to a variety of image file formats. The `ImageWriteParam` class defines the
-   * parameters for writing an image, including compression mode and quality.
-   * 
-   * In summary, the `compressImageToByteStream` function is a method that takes in an
-   * `BufferedImage` object and an ` ByteArrayOutputStream` object as input and writes
-   * the image data to a memory buffer in a compressed format using an `ImageWriter`.
-   * 
-   * @param imageByteStream byte array that will be used to store the compressed image
-   * data.
-   * 
-   * 	- The `BufferedImage` parameter `bufferedImage` is converted into an IIOImage
-   * object, which serves as the input for the image compression.
-   * 	- The `ByteArrayOutputStream` object `imageByteStream` is used to store the
-   * compressed image data in a byte array format.
-   * 	- The `ImageWriter` instance `imageWriter` is created with the JPEG format, and
-   * its default write parameters are retrieved using the `getDefaultWriteParam()` method.
-   * 	- The compression mode can be set explicitly using the `setCompressionMode()`
-   * method, and the compression quality can be adjusted using the `setCompressionQuality()`
-   * method.
-   * 	- Finally, the compressed image data is written to the output stream using the
-   * `write()` method, and the image writer is disposed of using the `dispose()` method.
+   * 1/ It is a `ByteArrayOutputStream`, which means it is an output stream that stores
+   * data in a byte array.
+   * 2/ It is created using the `ImageIO.createImageOutputStream()` method, indicating
+   * that it is used for writing image data.
+   * 3/ It has various attributes, such as its size, buffer size, and whether it is
+   * resetable or not, which are not explicitly stated in the code snippet provided.
    */
   private void compressImageToByteStream(BufferedImage bufferedImage,
       ByteArrayOutputStream imageByteStream) throws IOException {
@@ -419,24 +395,24 @@ public class HouseMemberDocumentSDJpaService implements HouseMemberDocumentServi
   }
 
   /**
-   * reads an image from an input stream provided by a `MultipartFile` object and returns
-   * a `BufferedImage`.
+   * reads an image from an input stream generated by a `MultipartFile` object and
+   * returns a `BufferedImage`.
    * 
-   * @param multipartFile MultipartFile object containing the image data that will be
-   * read and returned as a BufferedImage.
+   * @param multipartFile file that is being uploaded through a multipart form, and it
+   * is used to retrieve the image data from the file using `ImageIO.read()`.
    * 
    * 	- `InputStream multipartFileStream`: This is an input stream obtained from the
-   * `getInputStream()` method of the `MultipartFile` object. It provides access to the
-   * file's contents as a sequence of bytes.
-   * 	- The function then uses the `ImageIO` class to read the contents of the input
-   * stream and returns a `BufferedImage`.
+   * `getInputStream` method of the `MultipartFile` object.
+   * 	- `ImageIO.read()`: This is a method that reads an image from the input stream
+   * and returns a `BufferedImage`.
    * 
-   * @returns a `BufferedImage` object containing the image data from the provided
-   * Multipart File.
+   * @returns a buffered image object read from an input stream.
    * 
-   * 	- The output is an instance of `BufferedImage`, which represents a raster image.
-   * 	- The image has been read from the input stream using `ImageIO.read()` method.
-   * 	- The image is stored in memory for further processing or display.
+   * 	- The input stream is obtained from the `MultipartFile` object using the
+   * `getInputStream()` method.
+   * 	- The `ImageIO` class is used to read the image data from the input stream.
+   * 	- The resulting image is a `BufferedImage` object, which represents an image that
+   * can be displayed or manipulated in various ways.
    */
   private BufferedImage getImageFromMultipartFile(MultipartFile multipartFile) throws IOException {
     try (InputStream multipartFileStream = multipartFile.getInputStream()) {

@@ -24,10 +24,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
 
 /**
- * is a configuration class that enables the maximum file size and request size for
- * multipart requests in Spring Boot. The class has one field and one method: the
- * field stores the maximum size of files in kilobytes, and the method creates a
- * MultipartConfigElement instance with the set maximum file size and request size.
+ * is a configuration class that sets maximum file size and request size limits for
+ * multipart requests in Spring Boot. The class creates a `MultipartConfig` instance
+ * with configuration settings for maximum file size and request size, respectively.
  */
 @Configuration
 public class FileUploadConfig {
@@ -36,20 +35,17 @@ public class FileUploadConfig {
   private int maxSizeKBytes;
 
   /**
-   * creates a `MultipartConfig` object for use in Spring WebFlux. The created config
-   * element sets maximum file size and request size limits in kilobytes, respectively.
+   * creates a `MultipartConfig` instance with customized maximum file and request
+   * sizes, allowing for efficient handling of multipart requests in a Spring Boot application.
    * 
-   * @returns a `MultipartConfig` instance with configuration settings for maximum file
-   * size and request size.
+   * @returns a `MultipartConfig` object, which can be used to configure multipart form
+   * data processing in a Spring Boot application.
    * 
-   * 	- `MultipartConfigFactory`: This is the class that provides methods for configuring
-   * multipart content.
-   * 	- `setMaxFileSize()` and `setMaxRequestSize()`: These two methods set the maximum
-   * file size and maximum request size for multipart content, respectively. The values
-   * are specified in kilobytes (KB).
-   * 
-   * The output of this function is a `MultipartConfig` object, which represents the
-   * configuration for handling multipart content.
+   * The MultipartConfigFactory object creates a new instance of MultipartConfig, which
+   * is an immutable configuration object that manages file uploads in a web application.
+   * The setMaxFileSize() method sets the maximum size of files that can be uploaded
+   * in kilobytes (KB), while the setMaxRequestSize() method sets the maximum total
+   * size of all files and data in the request in KB.
    */
   @Bean
   public MultipartConfigElement multipartConfigElement() {

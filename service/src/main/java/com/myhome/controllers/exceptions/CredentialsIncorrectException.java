@@ -3,8 +3,9 @@ package com.myhome.controllers.exceptions;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * extends AuthenticationException and has a constructor that logs an error message
- * for incorrect credentials for a specified user ID.
+ * is an extension of AuthenticationException with a constructor logging an error
+ * message for incorrect credentials of a specified user ID using Lombok's @Slf4j
+ * annotation to log the error message.
  */
 @Slf4j
 public class CredentialsIncorrectException extends AuthenticationException {

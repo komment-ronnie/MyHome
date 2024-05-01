@@ -22,23 +22,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * represents a DTO (Data Transfer Object) for a user, including their unique identifier,
- * user ID, name, email, password, and community IDs, as well as a boolean flag
- * indicating whether their email has been confirmed.
+ * represents a data transfer object for a user containing their unique identifier,
+ * user ID, name, email, password, community IDs, and an email confirmed status.
  * Fields:
  * 	- id (Long): represents a unique identifier for a user in the system.
- * 	- userId (String): in the UserDto class represents a unique identifier for a user.
+ * 	- userId (String): in the UserDto class represents a unique identifier for a user
+ * within the system.
  * 	- name (String): in the UserDto class represents a string value containing the
  * user's name.
- * 	- email (String): in the UserDto class is used to store the user's email address.
+ * 	- email (String): in the UserDto class represents a string value containing the
+ * user's email address.
  * 	- password (String): in the UserDto class stores a string value representing a
  * user's password.
- * 	- encryptedPassword (String): stores an encrypted version of the user's password
- * in the UserDto class.
+ * 	- encryptedPassword (String): in the UserDto class stores an encrypted version
+ * of the user's password.
  * 	- communityIds (Set<String>): in the UserDto class represents a set of strings
  * indicating the user's membership in various communities.
- * 	- emailConfirmed (boolean): in the UserDto class indicates whether the user's
- * email address has been confirmed through a verification process.
+ * 	- emailConfirmed (boolean): in the UserDto class indicates whether a user's email
+ * address has been confirmed through a verification process.
  */
 @Builder
 @Getter

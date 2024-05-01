@@ -23,21 +23,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * represents a payment record with relevant details such as payment ID, charge amount,
- * payment type, description, recurrence status, due date, and user and member information.
+ * represents a payment record with various details such as payment ID, charge amount,
+ * type, description, recurrence status, due date, and user and member information
+ * in a structured format.
  * Fields:
- * 	- paymentId (String): represents a unique identifier for a payment transaction
- * within the PaymentDto class.
+ * 	- paymentId (String): in the PaymentDto class represents a unique identifier for
+ * a payment transaction.
  * 	- charge (BigDecimal): in the PaymentDto class represents a monetary value,
- * specifically a BigDecimal object, which is used to represent a payment amount.
+ * specifically a BigDecimal object, used to represent a payment amount.
  * 	- type (String): in the PaymentDto class represents a categorical label or category
  * for the payment, such as "rent", "utility bill", or "invoice".
  * 	- description (String): in the PaymentDto class represents a brief textual
  * description of the payment.
- * 	- recurring (boolean): indicates whether the payment is a recurring one.
- * 	- dueDate (String): in the PaymentDto class represents the date on which a payment
- * is due or has to be made.
- * 	- admin (UserDto): represents an entity of type `UserDto` in the PaymentDto class.
+ * 	- recurring (boolean): in the PaymentDto class represents whether a payment is a
+ * recurring one.
+ * 	- dueDate (String): represents a string value representing the date on which a
+ * payment is due or has to be made.
+ * 	- admin (UserDto): in the PaymentDto class represents an entity of type `UserDto`.
  * 	- member (HouseMemberDto): in the PaymentDto class represents an association with
  * a HouseMemberDto object containing information about a member of a household.
  */

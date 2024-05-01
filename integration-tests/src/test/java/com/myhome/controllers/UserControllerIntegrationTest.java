@@ -21,11 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * tests the successful sign-up of a new user through the API registration path. The
- * test creates a request body with name, email, and password and posts it to the
- * registration URL, verifying that the response status code is HTTP 201 Created and
- * the returned user ID refers to a user stored in the database, with corresponding
- * fields matching the input values.
+ * tests the successful creation of a new user through the REST API, verifying the
+ * response status code, the created user's details, and the corresponding values in
+ * the database. The test creates a request body with name, email, and password and
+ * posts it to the registration URL, asserting that the response status code is HTTP
+ * 201 Created and the returned user ID refers to a user stored in the database with
+ * matching input values.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -49,9 +50,9 @@ class UserControllerIntegrationTest {
   private UserRepository userRepository;
 
   /**
-   * tests the successful creation of a new user through the REST API, verifying the
-   * response status code, the created user's details, and the corresponding values in
-   * the database.
+   * tests the successful sign-up of a new user through a REST API. It verifies that
+   * the response status code is `HttpStatus.CREATED`, and that the created user has
+   * the same name and email as the input parameters, and has a unique user ID.
    */
   @Test
   void shouldSignUpSuccessful() {

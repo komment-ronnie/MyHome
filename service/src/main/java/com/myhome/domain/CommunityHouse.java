@@ -34,13 +34,13 @@ import lombok.Setter;
 import lombok.With;
 
 /**
- * represents a house within a community and contains fields for the house ID, name,
- * and community, as well as relationships with HouseMembers and Amenities.
+ * represents a house within a community and contains relationships with HouseMembers
+ * and Amenities.
  * Fields:
- * 	- community (Community): represents an association between a CommunityHouse entity
- * and a single Community instance.
+ * 	- community (Community): in the CommunityHouse class represents an association
+ * between a CommunityHouse entity and a single Community instance.
  * 	- name (String): in the CommunityHouse class represents a unique identifier for
- * a specific community house.
+ * a specific community house within a community.
  * 	- houseId (String): represents a unique identifier for each CommunityHouse instance
  * in the system.
  * 	- houseMembers (Set<HouseMember>): in the CommunityHouse class represents a set

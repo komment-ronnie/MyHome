@@ -21,7 +21,7 @@ import com.myhome.domain.Community;
 import org.mapstruct.Mapper;
 
 /**
- * defines a mapping between the CommunityDto and Community entities.
+ * defines a mapping between the CommunityDto and Community entities using Mapper functionality.
  */
 @Mapper
 public interface CommunityMapper {

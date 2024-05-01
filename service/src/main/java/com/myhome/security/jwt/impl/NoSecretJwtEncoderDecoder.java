@@ -26,10 +26,10 @@ import org.springframework.stereotype.Component;
  * Concrete implementation of {@link AppJwtEncoderDecoder}. Use this only in testing.
  */
 /**
- * is an implementation of the AppJwtEncoderDecoder interface, designed to work only
- * in testing environments. It splits the encoded JWT into two parts using a separator,
- * and then parses the user ID and expiration time from the resulting array. Finally,
- * it returns a new AppJwt object with the extracted values.
+ * is an implementation of the AppJwtEncoderDecoder interface that handles JSON Web
+ * Token (JWT) encoding and decoding without using secrets. It provides methods for
+ * encoding and decoding JWTs, as well as creating new `AppJwt` objects from decoded
+ * JWTs.
  */
 @Profile("test")
 @Component
@@ -37,27 +37,24 @@ public class NoSecretJwtEncoderDecoder implements AppJwtEncoderDecoder {
   private static final String SEPARATOR = "\\+";
 
   /**
-   * takes an encoded JWT and a secret, splits the encoded JWT into a array of strings
-   * using the specified separator, and then creates a new `AppJwt` object with the
-   * user ID and expiration time extracted from the array.
+   * decodes a JSON Web Token (JWT) string and returns an instance of the `AppJwt` class
+   * with extracted user ID and expiration date.
    * 
-   * @param encodedJwt JSON Web Token (JWT) that needs to be decoded and returned as
+   * @param encodedJwt JSON Web Token (JWT) that is to be decoded and converted into
    * an instance of the `AppJwt` class.
    * 
-   * @param secret secret key used to decode the JWT.
+   * @param secret decryption secret used to extract the user ID and expiration time
+   * from the encoded JWT.
    * 
-   * @returns an instance of `AppJwt` with user ID and expiration time extracted from
-   * the encoded JWT.
+   * @returns an instance of the `AppJwt` class with a user ID and expiration time
+   * extracted from the encoded JWT.
    * 
-   * 	- `AppJwt`: This is the class that represents an JSON Web Token (JWT), which is
-   * the type of token being decoded. It has fields for the user ID and expiration time.
-   * 	- `userId(strings[0])`: This field represents the user ID extracted from the split
-   * `encodedJwt` string.
-   * 	- `expiration(LocalDateTime.parse(strings[1]))`: This field represents the
-   * expiration time of the JWT, which is also extracted from the split `encodedJwt` string.
-   * 
-   * The output of the `decode` function is an instance of `AppJwt`, which contains the
-   * user ID and expiration time of the decoded JWT.
+   * 	- The `AppJwt` object is constructed using the `builder()` method, which allows
+   * for flexible configuration and customization of the resulting object.
+   * 	- The `userId` attribute represents the user ID associated with the JWT token.
+   * 	- The `expiration` attribute contains the expiration time of the JWT token in the
+   * form of a `LocalDateTime` object, representing the point in time when the token
+   * will become invalid.
    */
   @Override public AppJwt decode(String encodedJwt, String secret) {
     String[] strings = encodedJwt.split(SEPARATOR);
@@ -65,21 +62,19 @@ public class NoSecretJwtEncoderDecoder implements AppJwtEncoderDecoder {
   }
 
   /**
-   * takes a JWT object `jwt` and a secret as input, and returns an encoded string
-   * consisting of the user ID and expiration date.
+   * takes a `AppJwt` object and a secret as input and returns a encoded string consisting
+   * of the user ID and expiration time.
    * 
-   * @param jwt Java Transcrypting Worry Token containing information about the user
-   * and expiration date, which is used to generate the encoded token returned by the
-   * function.
+   * @param jwt JWT (JSON Web Token) object containing information about the user and
+   * its expiration date, which is used to generate a unique identifier for the user.
    * 
-   * 	- `jwt`: The input parameter is an instance of `AppJwt`, which contains user-related
-   * information such as `getUserId()` and `getExpiration()`.
-   * 	- `secret`: The secret key used for signing the JWT.
+   * 	- `jwt`: This is an instance of the `AppJwt` class, which contains properties
+   * such as `getUserId()` and `getExpiration()`.
    * 
-   * @param secret secret key used for signing the JWT.
+   * @param secret symmetric key used for signing the JWT token.
    * 
-   * @returns a base64-encoded string representing the user ID and expiration date of
-   * the JWT.
+   * @returns a string consisting of the `userId` and `expiration` values concatenated
+   * with a separator.
    */
   @Override public String encode(AppJwt jwt, String secret) {
     return jwt.getUserId() + SEPARATOR + jwt.getExpiration();

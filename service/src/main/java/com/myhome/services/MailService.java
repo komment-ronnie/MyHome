@@ -4,8 +4,8 @@ import com.myhome.domain.SecurityToken;
 import com.myhome.domain.User;
 
 /**
- * provides methods for sending various types of emails related to user account
- * management and security token confirmation.
+ * provides methods for sending emails related to user account management and security
+ * token confirmation.
  */
 public interface MailService {
 

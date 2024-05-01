@@ -25,11 +25,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a JUnit test class for testing the AuthenticationSDJpaService class. It verifies
- * the functionality of the class in various scenarios such as successful login, user
- * not found, and incorrect credentials. The test class uses mock objects to stub out
- * the dependencies of the class, including UserSDJpaService, AppJwtEncoderDecoder,
- * and PasswordEncoder.
+ * is a unit test for the AuthenticationSDJpaService class, which handles user
+ * authentication tasks using JPA and Spring Security. The test class provides various
+ * test methods to verify the functionality of the AuthenticationSDJpaService class,
+ * including testing the login process, handling of invalid credentials, and generating
+ * of AppJwt tokens with expiration times based on the current date and user ID.
  */
 public class AuthenticationSDJpaServiceTest {
 
@@ -52,8 +52,9 @@ public class AuthenticationSDJpaServiceTest {
           passwordEncoder);
 
   /**
-   * verifies that a login request with a valid email and password can be successfully
-   * authenticated, resulting in an JWT token being generated and returned to the client.
+   * tests the login functionality of a system by providing a valid user request and
+   * password, and verifying that the resulting JWT token is correctly generated and
+   * matches the expected values.
    */
   @Test
   void loginSuccess() {
@@ -82,8 +83,8 @@ public class AuthenticationSDJpaServiceTest {
   }
 
   /**
-   * verifies that a `UserNotFoundException` is thrown when an email address not found
-   * in the database is provided for login authentication.
+   * tests whether an exception is thrown when a user with the provided email address
+   * is not found in the database.
    */
   @Test
   void loginUserNotFound() {
@@ -98,9 +99,8 @@ public class AuthenticationSDJpaServiceTest {
   }
 
   /**
-   * tests whether the login credentials provided by the user are valid or not. It does
-   * so by simulating the login process and verifying that the password does not match
-   * the encrypted password stored in the database.
+   * tests whether an invalid login attempt leads to a CredentialsIncorrectException
+   * being thrown by the `authenticationSDJpaService`.
    */
   @Test
   void loginCredentialsAreIncorrect() {
@@ -118,32 +118,32 @@ public class AuthenticationSDJpaServiceTest {
   }
 
   /**
-   * generates a default login request with an email address of `USER_EMAIL` and a
-   * password of `REQUEST_PASSWORD`.
+   * creates a new `LoginRequest` object with email address set to `USER_EMAIL` and
+   * password set to `REQUEST_PASSWORD`.
    * 
-   * @returns a new `LoginRequest` object containing email and password parameters.
+   * @returns a `LoginRequest` object containing email and password parameters.
    * 
-   * 	- `email`: This property is assigned with the value of `USER_EMAIL`, which
-   * represents the email address of the user.
-   * 	- `password`: This property is assigned with the value of `REQUEST_PASSWORD`,
-   * which represents the password for the user.
+   * 	- `email`: The email address of the user to be authenticated.
+   * 	- `password`: The password of the user to be authenticated.
    */
   private LoginRequest getDefaultLoginRequest() {
     return new LoginRequest().email(USER_EMAIL).password(REQUEST_PASSWORD);
   }
 
   /**
-   * constructs a default `UserDto` object with user-specific details and an empty set
-   * of community IDs.
+   * constructs a default `UserDto` object with user-specific values for `userId`,
+   * `name`, `email`, `encryptedPassword`, and `communityIds`.
    * 
-   * @returns a `UserDto` object with predefined values for `userId`, `name`, `email`,
-   * `encryptedPassword`, and `communityIds`.
+   * @returns a `UserDto` object with default values for various user properties.
    * 
    * 	- `userId`: The user ID of the default user DTO.
-   * 	- `name`: The name of the default user DTO.
-   * 	- `email`: The email address of the default user DTO.
-   * 	- `encryptedPassword`: The encrypted password of the default user DTO.
-   * 	- `communityIds`: A set of community IDs associated with the default user DTO.
+   * 	- `name`: The name of the default user.
+   * 	- `email`: The email address of the default user.
+   * 	- `encryptedPassword`: The encrypted password of the default user.
+   * 	- `communityIds`: A set of community IDs associated with the default user.
+   * 
+   * These properties are used to create a default user DTO that can be used in various
+   * scenarios, such as testing or mocking user authentication functionality.
    */
   private UserDto getDefaultUserDtoRequest() {
     return UserDto.builder()
@@ -156,25 +156,23 @@ public class AuthenticationSDJpaServiceTest {
   }
 
   /**
-   * generates an AppJwt token with a specified expiration time based on the current
-   * date and user ID.
+   * generates a JWT token with the user ID and expiration time calculated based on the
+   * `TOKEN_LIFETIME`.
    * 
-   * @param userDto user's details, including their ID, which are used to create a new
-   * JWT token with a specified expiration time.
+   * @param userDto user details, which are used to generate the JWT token's `userId`.
    * 
-   * 	- `userId`: The user ID of the token recipient, represented as a long value.
+   * 	- `userId`: The user ID of the token's intended recipient.
    * 	- `expirationTime`: A `LocalDateTime` object representing the expiration time of
-   * the token, calculated by adding the `TOKEN_LIFETIME` duration to the current date
-   * and time.
+   * the token in milliseconds since the Unix epoch (January 1, 1970, 00:00:00 UTC).
    * 
-   * @returns an AppJwt token with a generated expiration time based on the current
-   * date and time, along with the user ID and other relevant details.
+   * @returns a JWT token containing the user ID and an expiration time calculated based
+   * on the `TOKEN_LIFETIME`.
    * 
-   * 1/ `userId`: The user ID associated with the JWT token.
-   * 2/ `expiration`: The expiration time of the JWT token in LocalDateTime format,
-   * calculated by adding the `TOKEN_LIFETIME` to the current date and time.
-   * 3/ `build()`: This method is used to create a new instance of the `AppJwt` class
-   * with the provided properties.
+   * 	- The `AppJwt` object is constructed by calling the `builder()` method and
+   * specifying the user ID using the `userId` property, followed by the expiration
+   * time in milliseconds since the epoch using the `expiration` property.
+   * 	- The `AppJwt` object represents a JSON Web Token (JWT) that contains claims about
+   * the user, such as their ID, which are encoded and signed using a secret key.
    */
   private AppJwt getDefaultJwtToken(UserDto userDto) {
     final LocalDateTime expirationTime = LocalDateTime.now().plus(TOKEN_LIFETIME);

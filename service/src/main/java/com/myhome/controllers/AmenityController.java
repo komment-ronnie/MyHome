@@ -36,9 +36,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * provides functionality for retrieving and manipulating amenities in a system. It
- * exposes several endpoints for getting and updating amenities, as well as deleting
- * them when they are no longer needed.
+ * is responsible for handling RESTful API requests related to amenities in a community.
+ * It provides endpoints for creating, reading, updating, and deleting amenities. The
+ * controller uses the `amenitySDJpaService` class to interact with the database and
+ * returns response entities indicating whether the operations were successful or not.
  */
 @RestController
 @Slf4j
@@ -49,28 +50,25 @@ public class AmenityController implements AmenitiesApi {
   private final AmenityApiMapper amenityApiMapper;
 
   /**
-   * retrieves the details of an amenity with a given ID from the database using
-   * `amenitySDJpaService`, maps it to a response object using `amenityApiMapper`, and
-   * returns it as a `ResponseEntity` with a status code of `OK` or `NOT_FOUND` depending
-   * on the result.
+   * retrieves the details of an amenity based on its ID, maps the response to a
+   * `GetAmenityDetailsResponse` object using a mapper, and returns a `ResponseEntity`
+   * with a status code of `OK` or an alternative status code if the amenity is not found.
    * 
-   * @param amenityId identifier of the amenity for which details are requested.
+   * @param amenityId unique identifier of an amenity for which details are requested.
    * 
-   * @returns a `ResponseEntity` object containing the amenity details in JSON format.
+   * @returns an `ResponseEntity` object representing a successful response with the
+   * requested amenity details.
    * 
-   * 	- `ResponseEntity<GetAmenityDetailsResponse>`: This is a response entity that
-   * contains the amenity details in the form of `GetAmenityDetailsResponse`.
-   * 	- `GetAmenityDetailsResponse`: This class represents the response to the
-   * `getAmenityDetails` function, which contains the amenity details fetched from the
-   * database. It has several attributes, including `amenityId`, `name`, `description`,
-   * `icon`, and `latitude`.
-   * 	- `map(Function<T, U> mapper)`: This line uses the `map` method to apply a function
-   * to the output of the `getAmenityDetails` function. In this case, the function is
-   * `amenityApiMapper::amenityToAmenityDetailsResponse`, which maps the
-   * `GetAmenityDetailsResponse` object to a more accessible form.
-   * 	- `orElse(T alternative)`: This line provides an alternative output if the original
-   * output is not found. In this case, the alternative output is a `ResponseEntity`
-   * with a status code of `HttpStatus.NOT_FOUND`.
+   * 	- `ResponseEntity`: This is an instance of `ResponseEntity`, which represents a
+   * response to a RESTful API call. It contains the status code and body of the response.
+   * 	- `map`: This method is used to map the result of the `amenitySDJpaService.getAmenityDetails()`
+   * method to a `GetAmenityDetailsResponse` object using the
+   * `amenityApiMapper.amenityToAmenityDetailsResponse()` method.
+   * 	- `orElse`: This method is used to return an alternative response if the result
+   * of the `amenitySDJpaService.getAmenityDetails()` method is not found. The alternative
+   * response is represented by a `ResponseEntity` object with a status code of `HttpStatus.NOT_FOUND`.
+   * 	- `ok`: This method is used to indicate that the response is successful, which
+   * means that the API call was successful and the requested amenity details were returned.
    */
   @Override
   public ResponseEntity<GetAmenityDetailsResponse> getAmenityDetails(
@@ -82,26 +80,24 @@ public class AmenityController implements AmenitiesApi {
   }
 
   /**
-   * retrieves a list of amenities from the database using `amenitySDJpaService`, and
-   * maps them to `GetAmenityDetailsResponse` objects using `amenityApiMapper`. It then
-   * returns an `ResponseEntity` with the mapped response.
+   * receives a community ID and returns a set of amenities, which are then mapped to
+   * a set of `GetAmenityDetailsResponse`.
    * 
-   * @param communityId identifier of the community whose amenities are to be listed.
+   * @param communityId unique identifier for a community, which is used to filter the
+   * amenities returned in the response.
    * 
-   * @returns a set of `GetAmenityDetailsResponse` objects containing the details of
-   * the amenities for a specific community.
+   * @returns a set of `GetAmenityDetailsResponse` objects containing the list of
+   * amenities for a given community ID.
    * 
-   * 	- `ResponseEntity`: This is the outermost class that represents a response entity
-   * in RESTful APIs. It has an `ok` field that indicates whether the response is
-   * successful or not.
-   * 	- `Set<GetAmenityDetailsResponse>`: This is a set of `GetAmenityDetailsResponse`
-   * objects, which are the inner most class representing the amenities with their details.
-   * 	- `amenitySDJpaService`: This is an instance of a JPA service that provides methods
-   * for interacting with the database.
-   * 	- `communityId`: This is the parameter passed to the function, which represents
-   * the community ID.
-   * 	- `amenityApiMapper`: This is an instance of an API mapper class that maps the
-   * JPA entities to the response entity.
+   * 	- `ResponseEntity`: This is the type of the output parameter, which represents
+   * an entity with an OK status code and a set of amenity details as its body.
+   * 	- `Set<GetAmenityDetailsResponse>`: This is the set of amenity details that are
+   * returned in the body of the response entity. Each element in the set is an object
+   * representing a single amenity, containing its ID, name, description, and other attributes.
+   * 	- `amenitySDJpaService`: This is a Java interface used to retrieve the list of
+   * amenities from the database using JPA (Java Persistence API).
+   * 	- `amenityApiMapper`: This is a Java class used to map the list of amenities
+   * returned by the JPA service to a set of `GetAmenityDetailsResponse` objects.
    */
   @Override
   public ResponseEntity<Set<GetAmenityDetailsResponse>> listAllAmenities(
@@ -113,10 +109,11 @@ public class AmenityController implements AmenitiesApi {
   }
 
   /**
-   * adds amenities to a community through the creation of new amenities in the database
-   * and returns a response entity indicating whether the operation was successful.
+   * adds amenities to a community through JPA service, mapping the result to an
+   * `AddAmenityResponse` object and returning it as an `OK` response entity or a
+   * `NOT_FOUND` response entity if the community does not exist.
    * 
-   * @param communityId ID of the community to which the amenities will be added.
+   * @param communityId identifier of the community to which the amenities are being added.
    * 
    * @param request AddAmenityRequest object containing the amenities to be added to
    * the community, which is used by the `amenitySDJpaService` to create the new amenities
@@ -124,20 +121,24 @@ public class AmenityController implements AmenitiesApi {
    * 
    * 	- `communityId`: A string representing the ID of the community to which the
    * amenities will be added.
-   * 	- `requestBody`: The AddAmenityRequest object containing the amenities to be added
-   * to the community. It has attributes such as `amenities`, which is a list of Amenity
-   * objects, and `id`, which is an identifier for the request.
+   * 	- `request.getAmenities()`: An array of objects containing information about the
+   * amenities to be added. Each object in the array has properties such as `name`,
+   * `description`, and `type`.
    * 
-   * @returns an `AddAmenityResponse` object containing a list of created amenities.
+   * @returns a `ResponseEntity` object representing a successful addition of amenities
+   * to a community.
    * 
-   * 	- The `ResponseEntity<AddAmenityResponse>` object represents a successful response
-   * with an `AddAmenityResponse` object inside it.
-   * 	- The `AddAmenityResponse` object contains a list of `Amenity` objects representing
-   * the newly created amenities in the community.
-   * 	- The `map` method is used to transform the `ResponseEntity<AddAmenityResponse>`
-   * object into a `ResponseEntity` object with an `ok` status code.
-   * 	- The `orElse` method is used as a fallback to return a `ResponseEntity.notFound().build()`
-   * object if the original response cannot be converted to an `ok` status code.
+   * 	- `ResponseEntity<AddAmenityResponse>`: This is a class that represents an HTTP
+   * response entity with a status code and a body. In this case, the body is an instance
+   * of `AddAmenityResponse`.
+   * 	- `AddAmenityResponse`: This class represents the response to the API call,
+   * containing information about the added amenities. It has an `amenities` field,
+   * which is a list of `Amenity` objects representing the added amenities.
+   * 	- `ok`: This is a method that returns a response entity with a status code of 200
+   * (OK).
+   * 	- `notFound()`: This is a method that returns a response entity with a status
+   * code of 404 (Not Found), indicating that the community with the provided ID could
+   * not be found.
    */
   @Override
   public ResponseEntity<AddAmenityResponse> addAmenityToCommunity(
@@ -150,19 +151,18 @@ public class AmenityController implements AmenitiesApi {
   }
 
   /**
-   * deletes an amenity based on its ID, returning a response entity indicating whether
-   * the operation was successful or not.
+   * deletes an amenity from the database based on its ID, returning a response entity
+   * with HTTP status code indicating the outcome of the operation.
    * 
-   * @param amenityId id of the amenity to be deleted.
+   * @param amenityId ID of the amenity to be deleted.
    * 
-   * @returns a HTTP status code of `NO_CONTENT` or `NOT_FOUND`, indicating whether the
-   * amenity was successfully deleted or not.
+   * @returns a `ResponseEntity` object with a status code indicating whether the amenity
+   * was successfully deleted or not.
    * 
-   * 	- `isAmenityDeleted`: A boolean value indicating whether the amenity was successfully
-   * deleted or not.
-   * 	- `HttpStatus`: The HTTP status code of the response entity, which is either
-   * `NO_CONTENT` or `NOT_FOUND`, depending on whether the amenity was found and deleted
-   * successfully or not.
+   * 	- `HttpStatus.NO_CONTENT`: This status code indicates that the amenity was
+   * successfully deleted and no content was returned.
+   * 	- `HttpStatus.NOT_FOUND`: This status code indicates that the amenity could not
+   * be found or was not present in the database, which means it was not deleted.
    */
   @Override
   public ResponseEntity deleteAmenity(@PathVariable String amenityId) {
@@ -175,32 +175,28 @@ public class AmenityController implements AmenitiesApi {
   }
 
   /**
-   * updates an amenity's information in the database based on a request body containing
-   * the updated amenity details, and returns a response indicating whether the update
-   * was successful or not.
+   * updates an amenity using the provided request body and returns a response entity
+   * with a status code indicating whether the update was successful or not.
    * 
-   * @param amenityId unique identifier of the amenity being updated.
+   * @param amenityId ID of the amenity being updated.
    * 
-   * @param request `UpdateAmenityRequest` object that contains the details of the
-   * amenity to be updated.
+   * @param request UpdateAmenityRequest object that contains the details of the amenity
+   * to be updated.
    * 
    * 	- `@Valid`: Indicates that the input request body must be valid according to the
-   * schema defined in the `@VALID` annotation.
-   * 	- `@RequestBody`: Marks the `request` parameter as a serialized JSON object in
-   * the request body.
-   * 	- `UpdateAmenityRequest`: Represents the request body schema for updating an
-   * amenity, containing fields such as `amenityId`, `name`, `description`, and `location`.
+   * schema provided in the `@Validation` annotation.
+   * 	- `@RequestBody`: Marks the input request body as a mandatory parameter.
+   * 	- `UpdateAmenityRequest`: The class that defines the structure of the input request
+   * body, including its properties and attributes.
    * 
-   * @returns a `ResponseEntity` object with a status code of either `NO_CONTENT` or
-   * `NOT_FOUND`, depending on whether the amenity was updated successfully.
+   * @returns a `ResponseEntity` with a status code of `NO_CONTENT` or `NOT_FOUND`,
+   * depending on whether the update was successful.
    * 
-   * 	- `HttpStatus`: This is an instance of the `HttpStatus` class, which represents
-   * the HTTP status code returned by the function. In this case, it can be either
-   * `NO_CONTENT` or `NOT_FOUND`.
-   * 	- `ResponseEntity`: This is an instance of the `ResponseEntity` class, which
-   * represents a response entity that contains the HTTP status code and other information
-   * about the response. The `status()` method returns the `HttpStatus` object representing
-   * the status code.
+   * 	- `isUpdated`: A boolean value indicating whether the amenity was successfully
+   * updated or not. If `true`, the method executed successfully; otherwise, it did not.
+   * 	- `HttpStatus`: An instance of the `HttpStatus` class, representing the HTTP
+   * status code returned by the method. The status code is either `NO_CONTENT` (204)
+   * if the amenity was updated successfully or `NOT_FOUND` (404) otherwise.
    */
   @Override
   public ResponseEntity<Void> updateAmenity(@PathVariable String amenityId,
