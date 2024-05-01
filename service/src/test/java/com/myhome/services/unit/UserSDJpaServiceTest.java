@@ -41,11 +41,11 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * is an unit test for the User SDJpa Service, which handles user management tasks
- * such as creating, reading, updating and deleting users in a Java-based application.
- * The test class provides various methods to test different scenarios, including
- * testing whether the service can reset a password correctly, whether it can find a
- * user by email with tokens, and whether it can create a new security token.
+ * is a Java class that provides test cases for the UserSDJpaService class. It includes
+ * several methods for generating security tokens and verifying their validity, as
+ * well as methods for testing the expiration date and user association with the
+ * security token. The class also includes a method for getting an expired security
+ * token.
  */
 class UserSDJpaServiceTest {
 
@@ -73,7 +73,8 @@ class UserSDJpaServiceTest {
   private UserSDJpaService userService;
 
   /**
-   * initialization and Mockito Annotations integration for testing purposes
+   * initializes mock objects using MockitoAnnotations, making them available for use
+   * in test methods.
    */
   @BeforeEach
   void setUp() {
@@ -81,8 +82,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests create a new user using a provided DTO and returns the created user as a
-   * DTO, while also creating an email confirm token for the user.
+   * tests the create user service by providing a user dto request and verifying that
+   * the resulting user dto is created successfully with the correct ID, user ID, name,
+   * encrypted password, community IDs, and email confirm token.
    */
   @Test
   void createUserSuccess() {
@@ -127,8 +129,8 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that a user with the same email as the given request does not exist in
-   * the repository before creating a new user using the service.
+   * tests whether creating a user with an existing email returns `Optional.empty`. It
+   * sets up a user in the repository and verifies that the service call returns `Optional.empty`.
    */
   @Test
   void createUserEmailExists() {
@@ -149,8 +151,7 @@ class UserSDJpaServiceTest {
 
   /**
    * retrieves a user's details from the repository and mapper, creates a new user Dto
-   * with the same details, and asserts that the created Dto is identical to the original
-   * Dto.
+   * with the same details, and returns it.
    */
   @Test
   void getUserDetailsSuccess() {
@@ -175,8 +176,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the UserService by calling the getUserDetails method and verifying that the
-   * user details are retrieved successfully along with their community IDs.
+   * retrieves a user's details and community IDs from the repository, maps them to a
+   * UserDto object, and verifies that the resulting UserDto object matches the expected
+   * one and has the correct community IDs.
    */
   @Test
   void getUserDetailsSuccessWithCommunityIds() {
@@ -213,9 +215,8 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests whether user details are retrieved successfully when they do not exist in
-   * the database by calling the `userRepository.findByUserIdWithCommunities` method
-   * and verifying the result with the `assertFalse` method.
+   * tests whether user details are returned when none exist in the repository by
+   * invoking the `userService` and `userRepository`.
    */
   @Test
   void getUserDetailsNotFound() {
@@ -232,9 +233,8 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that an email address is confirmed for a user by checking if the user has
-   * been marked as email confirmed after using a security token to confirm their email
-   * address.
+   * confirms an email address for a user by checking if the email confirmation token
+   * is valid and updating the user's email confirmation status in the database.
    */
   @Test
   void confirmEmail() {
@@ -264,9 +264,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the user service's method for confirming an email address. It creates a
-   * security token with an invalid token and passes it to the service, which returns
-   * false when attempting to confirm the email.
+   * tests the user service's confirm email method by providing a wrong security token
+   * and verifying that the email is not confirmed and no interactions with the repository
+   * or mail services are made.
    */
   @Test
   void confirmEmailWrongToken() {
@@ -291,9 +291,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests whether an email confirmation token is correctly associated with a user's
-   * account by attempting to confirm it and verifying the result and interactions with
-   * other services.
+   * tests whether an email confirmation token is valid and whether the user's email
+   * is confirmed. It verifies the token's usage status and checks if the user's email
+   * is confirmed using the `userService`.
    */
   @Test
   void confirmEmailUsedToken() {
@@ -320,9 +320,10 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that an email is not confirmed for a given user ID by saving the user to
-   * the repository without a token, and verifying that the email is not marked as
-   * confirmed and no interactions with security token or mail services are made.
+   * verifies that an email is not confirmed for a given user without a token. It asserts
+   * that the email is not confirmed and checks that no interactions with the
+   * `userRepository` or `securityTokenService` were made, and also checks that no
+   * interactions with the `mailService` were made.
    */
   @Test
   void confirmEmailNoToken() {
@@ -343,10 +344,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that an email is already confirmed for a user by checking if the email
-   * confirmation token matches a known token and if the user's email status is set to
-   * confirmed. If both conditions are true, the function returns false indicating that
-   * the email is already confirmed.
+   * tests whether an email is already confirmed for a user by attempting to confirm
+   * it again with a security token and verifying that the email is not marked as
+   * confirmed after the attempt.
    */
   @Test
   void confirmEmailAlreadyConfirmed() {
@@ -372,10 +372,10 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the user service's ability to find a user by their email address. Given a
-   * default user DTO, it calls the repository and mapper methods to retrieve the
-   * corresponding user object and user DTO, asserts that both are present and equal,
-   * and verifies the call to the repository method.
+   * tests the user service's ability to find a user by their email address. It sets
+   * up a mock repository and mapper to return a user object and its corresponding DTO,
+   * and then calls the service to retrieve the user as a DTO and verifies that it is
+   * present and equal to the expected values.
    */
   @Test
   void findUserByEmailSuccess() {
@@ -400,8 +400,8 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that a user can be retrieved by email and that their community IDs are
-   * correctly populated in the resulting UserDto.
+   * verifies that a user with the given email can be found in the repository, and their
+   * community IDs can be retrieved from the mapper and returned as part of the UserDto.
    */
   @Test
   void findUserByEmailSuccessWithCommunityIds() {
@@ -437,8 +437,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that a user is not found in the repository when the email address is
-   * invalid or does not exist in the database.
+   * tests whether a user is found by email through the `userService`. It uses a given
+   * stub to return `null` from the `userRepository` and then checks if an `Optional`
+   * of `UserDto` is present using the `userService`.
    */
   @Test
   void findUserByEmailNotFound() {
@@ -455,9 +456,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * requests a password reset for a user by creating a password reset token and sending
-   * an email with a recover code to the user's registered email address. It also updates
-   * the user's security token and saves the user in the database.
+   * performs the following actions: creates a password reset token for a user, sends
+   * an email with a password recover code to the user's registered email address, and
+   * saves the user's security token in the database.
    */
   @Test
   void requestResetPassword() {
@@ -486,8 +487,10 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * verifies that a password reset request is not triggered when the user does not
-   * exist in the database.
+   * tests whether a user can request a password reset when they do not exist in the
+   * database. It verifies that the token created by the securityTokenService is different
+   * from the one returned, and that the user is not saved in the database after the
+   * reset request is made.
    */
   @Test
   void requestResetPasswordUserNotExists() {
@@ -514,9 +517,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * resets a user's password by generating a new security token, encrypting the user's
-   * password, sending a password change notification to the user, and updating the
-   * user's encrypted password in the database.
+   * allows users to reset their password by providing a new password, which is then
+   * encoded and saved in the user's profile. The function also sends an email confirmation
+   * to the user's registered email address.
    */
   @Test
   void resetPassword() {
@@ -550,8 +553,10 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests whether the user password is reset correctly when the user does not exist
-   * in the database.
+   * tests whether user's password can be reset when the user does not exist in the
+   * database. It does so by creating a fictitious security token and using it to reset
+   * the password, then verifying that the password has been changed and the original
+   * one is no longer present.
    */
   @Test
   void resetPasswordUserNotExists() {
@@ -578,10 +583,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the password reset feature for an expired security token. It given a valid
-   * email, retrieves the user's tokens, and resets the password without updating the
-   * encryption or token status. The function verifies the expected behavior of the
-   * service and repositories involved.
+   * tests the reset password functionality when the token is expired. It verifies that
+   * the password is not changed, the encrypted password does not match the new password,
+   * and the security token is not marked as used after successful reset.
    */
   @Test
   void resetPasswordTokenExpired() {
@@ -608,10 +612,8 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the user service's ability to reset a password for an email address that
-   * does not have a token associated with it. It verifies that the encryption of the
-   * new password is different from the original password and that all dependencies are
-   * properly interacted with.
+   * tests whether the `userService.resetPassword()` method resets the password of a
+   * user when the token does not exist in the database.
    */
   @Test
   void resetPasswordTokenNotExists() {
@@ -634,9 +636,9 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * tests the user service's `resetPassword` method by providing a security token that
-   * does not match the one stored in the user's tokens, and verifying that the password
-   * is not reset and the correct security token is generated.
+   * tests the reset password functionality when the token sent to the user via email
+   * does not match the expected value. It verifies that the password is not changed,
+   * and the correct security token is generated and stored with the user's account.
    */
   @Test
   void resetPasswordTokenNotMatches() {
@@ -665,19 +667,18 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * builds a default user DTO with prepopulated values for USER_ID, USERNAME, USER_EMAIL,
-   * and USER_PASSWORD, and an empty set of community IDs.
+   * builds a default `UserDto` instance with predefined values for `userId`, `name`,
+   * `email`, `encryptedPassword`, and `communityIds`.
    * 
-   * @returns a `UserDto` object with pre-populated values for `userId`, `name`, `email`,
-   * `encryptedPassword`, and `communityIds`.
+   * @returns a `UserDto` object with default values for user ID, name, email, password,
+   * and community IDs.
    * 
-   * 	- `userId`: An integer value representing the user's ID.
-   * 	- `name`: A string value representing the user's name.
-   * 	- `email`: A string value representing the user's email address.
-   * 	- `encryptedPassword`: A string value representing the encrypted password for the
-   * user.
-   * 	- `communityIds`: A set of integers representing the communities to which the
-   * user belongs.
+   * 	- `userId`: An integer value representing the user ID.
+   * 	- `name`: A string value representing the user name.
+   * 	- `email`: A string value representing the user email.
+   * 	- `encryptedPassword`: A string value representing the encrypted password.
+   * 	- `communityIds`: A set of integers representing the community IDs associated
+   * with the user.
    */
   private UserDto getDefaultUserDtoRequest() {
     return UserDto.builder()
@@ -690,31 +691,29 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * creates a new `User` object from a `UserDto` request, setting name, user ID, email,
-   * and password fields, and initializing encryption and roles sets to empty lists.
+   * creates a new `User` object from a `UserDto` request, setting properties such as
+   * name, ID, email, and password encryption. It also initializes additional properties
+   * like empty set collections.
    * 
-   * @param request UserDto object containing the necessary data to create a new `User`
-   * instance.
+   * @param request UserDto object that contains the user's information to be converted
+   * into a `User` object.
    * 
-   * 	- `request.getName()`: String containing the user's name
-   * 	- `request.getUserId()`: Integer representing the user's ID
-   * 	- `request.getEmail()`: String containing the user's email address
-   * 	- `request.getEncryptedPassword()`: String containing the encrypted password
-   * 	- `request.getHashSet<>()`: Collection of hash sets, each containing a single
-   * value and a boolean indicating whether the value is present in the set
-   * 	- `request.getHashSet<>()`: Collection of hash sets, each containing a single
-   * value and a boolean indicating whether the value is present in the set
+   * 	- `name`: A string representing the user's name.
+   * 	- `userId`: An integer value representing the user's ID.
+   * 	- `email`: A string representing the user's email address.
+   * 	- `encryptedPassword`: A boolean value indicating whether the password is encrypted.
+   * 	- `hashSet`: A set of strings containing the user's groups.
+   * 	- `otherHashSet`: A set of strings containing the user's other attributes.
    * 
-   * @returns a `User` object with name, ID, email, and other attributes filled in based
-   * on the input `UserDto` request.
+   * @returns a `User` object with name, ID, email, and encrypted password.
    * 
-   * 	- `name`: The user's name as passed in the `request`.
-   * 	- `userId`: The user ID as passed in the `request`.
-   * 	- `email`: The user's email address as passed in the `request`.
-   * 	- `isAdmin`: A boolean indicating whether the user is an administrator or not.
-   * 	- `encryptedPassword`: The encrypted password of the user, as passed in the `request`.
+   * 	- `name`: The user's name as provided in the `request`.
+   * 	- `userId`: The unique identifier of the user as provided in the `request`.
+   * 	- `email`: The user's email address as provided in the `request`.
+   * 	- `isLoggedIn`: A boolean indicating whether the user is logged in or not.
+   * 	- `encryptedPassword`: The encrypted password of the user as provided in the `request`.
    * 	- `groups`: An empty set, indicating that the user has no groups assigned.
-   * 	- `roles`: An empty set, indicating that the user has no roles assigned.
+   * 	- `permissions`: An empty set, indicating that the user has no permissions assigned.
    */
   private User getUserFromDto(UserDto request) {
     return new User(
@@ -729,42 +728,39 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * retrieves a user's security token based on the specified `tokenType`. It streams
-   * through the user's tokens, filters by token type, and returns the first matching
-   * token or `null` if no match is found.
+   * retrieves a security token associated with a user based on its type, filtering and
+   * finding the matching token from a stream of user tokens.
    * 
-   * @param user user for whom the security token is being retrieved, and it is used
-   * to filter the stream of user tokens based on the `tokenType` parameter.
+   * @param user user for whom the security token is being retrieved.
    * 
-   * 	- `user`: The input parameter representing a User object containing information
-   * about a user.
-   * 	- `tokenType`: A SecurityTokenType enumeration value specifying the type of
-   * security token to retrieve.
+   * 	- `user`: A `User` object containing information about the user for whom the
+   * security token is being retrieved.
+   * 	- `tokenType`: An enumeration representing the type of security token required,
+   * such as `SecurityTokenType.BEARER`.
    * 
-   * @param tokenType type of security token being searched for, and is used to filter
-   * the stream of user tokens to return only those that match the specified type.
+   * @param tokenType type of security token being retrieved, which is used to filter
+   * the user's tokens in the stream and return the matching token.
    * 
-   * 	- `User`: The user whose security token is being retrieved.
-   * 	- `SecurityTokenType`: The type of security token sought.
-   * 	- `getUserTokens()`: A method that returns a stream of all security tokens
-   * associated with the specified user.
-   * 	- `stream()`: Operator for converting the user token collection to a stream.
-   * 	- `filter()`: Operator for filtering out tokens that do not meet the specified
-   * type requirement.
-   * 	- `findFirst()`: Method that finds and returns the first token in the filtered
-   * stream that matches the required type, or returns `null` if no such token is found.
+   * 	- `UserTokens`: This is an instance of `Stream` that contains all the security
+   * tokens associated with the given user.
+   * 	- `filter()`: This method filters out any token that does not have the same type
+   * as the input `tokenType`.
+   * 	- `findFirst()`: This method returns the first token in the filtered stream that
+   * matches the input `tokenType`, or `null` if no such token exists.
+   * 	- `orElse()`: If no matching token is found, this method returns an optional value
+   * of type `SecurityToken`.
    * 
    * @returns a `SecurityToken` object representing the user's security token of the
    * specified type.
    * 
-   * 	- `user`: The user object that is passed as a parameter to the function.
-   * 	- `tokenType`: The type of security token that is being searched for in the user's
-   * tokens stream.
-   * 	- `userTokens`: A stream of security tokens associated with the user.
-   * 	- `findFirst()`: Returns the first token from the `userTokens` stream that matches
-   * the `tokenType`, or `null` if no such token exists.
-   * 	- `orElse()`: Provides an alternative value to return if the `findFirst()` method
-   * returns `null`.
+   * 	- The output is a `SecurityToken` object representing a security token associated
+   * with the given `User`.
+   * 	- The `SecurityToken` object has a `User` field containing the `User` object
+   * associated with the token.
+   * 	- The `SecurityToken` object has a `TokenType` field indicating the type of token
+   * (either `USER_TOKEN` or `APPLICATION_TOKEN`).
+   * 	- If multiple security tokens are found for the given `User`, only the first token
+   * is returned in the output.
    */
   private SecurityToken getUserSecurityToken(User user, SecurityTokenType tokenType) {
     return user.getUserTokens()
@@ -775,16 +771,16 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * retrieves a default user from a request and returns it as an instance of `User`.
+   * retrieves a default user from a request parameter and returns the user object.
    * 
-   * @returns a `User` object retrieved from a DTO request.
+   * @returns a `User` object populated from the data contained in the `getDefaultUserDtoRequest`.
    * 
-   * 	- The function returns an object of type `User`.
-   * 	- The object contains information about a default user, such as their name and
-   * email address.
-   * 	- The `getUserFromDto` method is called to generate the user object from a request
-   * DTO (Data Transfer Object).
-   * 	- The request DTO includes the necessary data to create a new user account.
+   * 	- The function returns a `User` object.
+   * 	- The user is retrieved from the `getUserFromDto` function, which takes a
+   * `getDefaultUserDtoRequest` as its input.
+   * 	- The `getDefaultUserDtoRequest` is not explicitly defined in the provided code
+   * snippet, but it likely contains the necessary parameters to retrieve a default
+   * user from the system's database or data storage.
    */
   private User getDefaultUser() {
     return getUserFromDto(getDefaultUserDtoRequest());
@@ -792,19 +788,18 @@ class UserSDJpaServiceTest {
 
   /**
    * creates a new `ForgotPasswordRequest` object with email, new password, and token
-   * for password reset process.
+   * parameters set to specific values.
    * 
-   * @returns a `ForgotPasswordRequest` object containing the user's email, new password,
-   * and password reset token.
+   * @returns a `ForgotPasswordRequest` object containing email, new password, and token
+   * for password reset.
    * 
-   * 	- `request`: This is the ForgotPasswordRequest object that contains the email
-   * address of the user to whom the password reset link will be sent, along with two
-   * other attributes - `NEW_USER_PASSWORD` and `PASSWORD_RESET_TOKEN`.
-   * 	- `USER_EMAIL`: This is the email address of the user for whom the password reset
-   * link will be generated.
-   * 	- `NEW_USER_PASSWORD`: This is the new password that will be set for the user.
-   * 	- `PASSWORD_RESET_TOKEN`: This is a token that is used to verify that the request
-   * is legitimate and has not been tampered with.
+   * 	- `request`: A new `ForgotPasswordRequest` object is created and returned, which
+   * contains the email address of the user, a new password, and a token for password
+   * reset.
+   * 	- `USER_EMAIL`: The email address of the user who wants to reset their password.
+   * 	- `NEW_USER_PASSWORD`: The new password that the user wants to set.
+   * 	- `PASSWORD_RESET_TOKEN`: A unique token generated by the system for password
+   * reset purpose only.
    */
   private ForgotPasswordRequest getForgotPasswordRequest() {
     ForgotPasswordRequest request = new ForgotPasswordRequest();
@@ -815,20 +810,19 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * generates a test security token with a password reset token and a lifespan of
-   * TOKEN_LIFETIME days less than the current date, indicating that the token is about
-   * to expire.
+   * generates a security token with an expiration date in the future, based on a
+   * predefined lifetime and current date.
    * 
-   * @returns a SecurityToken object representing an expired token with a random password
-   * reset token and expiration date.
+   * @returns a SecurityToken object representing an expired token with a reset date
+   * and token lifetime.
    * 
-   * 	- `SecurityTokenType`: The type of token returned is `RESET`.
-   * 	- `PASSWORD_RESET_TOKEN`: The token is a password reset token.
-   * 	- `LocalDate.now()`: The token's issuance date is the current date.
-   * 	- `LocalDate.now().minusDays(TOKEN_LIFETIME.toDays())`: The token's expiration
-   * date is the current date minus the specified lifetime in days (TOKEN_LIFETIME).
-   * 	- `false`: The token is not valid (i.e., has expired).
-   * 	- `null`: The token's user ID is null.
+   * 	- The type of security token is `RESET`.
+   * 	- The password reset token is included in the token as `PASSWORD_RESET_TOKEN`.
+   * 	- The creation date of the token is represented by the current date.
+   * 	- The lifetime of the token, measured in days, is calculated by subtracting the
+   * `TOKEN_LIFETIME` from the current date.
+   * 	- The token is marked as invalid (i.e., `false`) for any further use.
+   * 	- The token has no owner or user associated with it.
    */
   private SecurityToken getExpiredTestToken() {
     return new SecurityToken(SecurityTokenType.RESET, PASSWORD_RESET_TOKEN, LocalDate.now(),
@@ -836,47 +830,47 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * creates a new security token with the specified type, token, and lifetime, and
-   * sets the expiration date to `now` plus the specified number of days. It also sets
-   * the token as false for the user.
+   * generates a security token with specified type, token, lifetime, and user. The
+   * generated token has an expiration date that is `plusDays` later than the current
+   * date and is marked as invalid.
    * 
-   * @param tokenType type of security token being generated, which determines its
-   * properties and behavior.
+   * @param tokenType type of security token being generated, which determines the
+   * format and content of the token.
    * 
-   * 	- `tokenType`: Represents the type of security token, which can be one of the
-   * following values: `Active`, `Expired`, or `Invalid`.
-   * 	- `lifetime`: Represents the duration for which the security token is valid,
-   * measured in days.
+   * 	- `tokenType`: The type of security token, which can be one of `USER_TOKEN`,
+   * `SYSTEM_TOKEN`, or `APP_TOKEN`.
+   * 	- `lifetime`: The duration for which the security token is valid, represented as
+   * a `Duration` object.
+   * 
+   * @param lifetime duration of the security token's validity.
+   * 
+   * 	- `toDays()` is a method that converts the `Duration` object to days.
+   * 	- `LocalDate.now()` returns the current date and time in the format of a LocalDate
+   * object.
+   * 	- `expireDate` is set to the current date plus the specified number of days,
+   * calculated using the `plusDays()` method.
+   * 
+   * @param token 128-bit security token value to be generated for the specified token
+   * type and lifetime.
+   * 
+   * @param user user for whom the security token is being generated.
+   * 
+   * 	- `user`: A `User` object with various attributes, including `id`, `email`, `name`,
+   * and `role`.
+   * 
+   * @returns a newly created security token instance with the specified type, token,
+   * and expiration date.
+   * 
+   * 	- `tokenType`: The type of security token being generated, which is represented
+   * by an enumeration value.
    * 	- `token`: A unique identifier for the security token.
-   * 	- `user`: The user associated with the security token.
+   * 	- `expireDate`: The date and time after which the security token will expire,
+   * calculated as the current date plus a specified number of days.
+   * 	- `user`: The user for whom the security token is being generated.
    * 
-   * @param lifetime duration for which the security token is valid, and it is used to
-   * calculate the expiration date of the token.
-   * 
-   * 	- `toDays()`: This method returns the number of days represented by the `Duration`
-   * object passed as an argument.
-   * 	- `LocalDate.now()` and `LocalDate.now().plusDays()`: These methods represent the
-   * current date and time, and the date and time plus a specified number of days, respectively.
-   * 
-   * @param token 16-digit security token number to be generated by the `getSecurityToken()`
-   * method.
-   * 
-   * @param user user who is associated with the security token being generated.
-   * 
-   * 	- `user`: This represents an instance of the `User` class, which likely has
-   * attributes such as `username`, `password`, and `role`.
-   * 
-   * @returns a new security token instance with the specified type, token, and expiration
-   * date.
-   * 
-   * 	- The `tokenType` parameter specifies the type of security token being generated,
-   * which is represented by an enumeration value.
-   * 	- The `token` parameter contains a unique identifier for the security token.
-   * 	- The `expireDate` parameter represents the date and time after which the security
-   * token will expire, calculated by adding the `lifetime` parameter to the current
-   * date and time in days.
-   * 	- The `user` parameter represents the user for whom the security token is being
-   * generated.
+   * The return type of the function is a `SecurityToken` object, which represents a
+   * security token with various attributes, including its type, token, issuance date,
+   * expiration date, and user.
    */
   private SecurityToken getSecurityToken(SecurityTokenType tokenType, Duration lifetime,
       String token, User user) {
@@ -885,40 +879,39 @@ class UserSDJpaServiceTest {
   }
 
   /**
-   * creates a new security token with the specified type and token, sets an expiration
-   * date one day from now, and sets the token as not revocable.
+   * creates a new security token with the specified type and token, set to expire one
+   * day after the current date, and sets the token as false for the user.
    * 
    * @param tokenType type of security token being generated, which determines the
    * format and content of the token.
    * 
+   * 	- `LocalDate.now()` returns the current date and time in the format `YYYY-MM-DDTHH:mm:ssZ`.
+   * 	- `Duration.ofDays(1).toDays()` returns the number of days between the current
+   * date and midnight at the beginning of the day, which is 0 for the current day.
+   * 	- `expireDate` represents the date and time after which the token becomes invalid,
+   * calculated by adding a fixed number of days to the current date and time.
+   * 
+   * @param token 10-digit alphanumeric token provided by the client for authentication
+   * purposes.
+   * 
+   * @param user user associated with the security token being generated.
+   * 
    * 	- `LocalDate.now()` represents the current date and time.
-   * 	- `Duration.ofDays(1).toDays()` calculates a duration of 1 day in days.
-   * 	- `expireDate` is set to the current date plus 1 day, indicating that the token
-   * will expire within a day.
-   * 	- `false` represents that the token is not revoked or invalidated.
+   * 	- `Duration.ofDays(1).toDays()` calculates a duration of 1 day in days, which is
+   * added to the current date and time to set the expiration date of the security token.
    * 
-   * @param token 16-digit security token number for the user.
+   * @returns a new security token instance with specified token type, token, and
+   * expiration date.
    * 
-   * @param user user who is requesting the security token.
-   * 
-   * 	- `LocalDate.now()` returns the current date and time.
-   * 	- `Duration.ofDays(1).toDays()` calculates a duration of 1 day in days.
-   * 	- `expireDate` represents the expiration date of the security token, which is set
-   * to the current date plus 1 day.
-   * 	- `false` indicates that the security token is not revoked.
-   * 	- `user` is a `User` object containing various attributes related to the user,
-   * such as their username, email address, and any other relevant information.
-   * 
-   * @returns a newly generated security token instance with the specified type and
-   * token value.
-   * 
-   * 	- The `SecurityToken` object represents a security token with the specified type
-   * (`tokenType`) and token value (`token`).
-   * 	- The `LocalDate` fields represent the date and time of the token's activation
-   * and expiration, respectively, with an additional day added to the expiration date.
-   * 	- The `false` value for the `isActive` field indicates that the token is not
-   * currently active.
-   * 	- The `User` field represents the user for whom the token was generated.
+   * 	- `SecurityTokenType`: This represents the type of security token being generated,
+   * which is specified in the `tokenType` parameter passed to the function.
+   * 	- `token`: This is the unique identifier assigned to the security token.
+   * 	- `expireDate`: This represents the date and time after which the security token
+   * will expire, calculated by adding a specified number of days to the current date
+   * using the `PlusDays` method of the `Duration` class.
+   * 	- `false`: This indicates whether the security token is valid or not, with `true`
+   * indicating validity and `false` indicating invalidity.
+   * 	- `user`: This represents the user for whom the security token is being generated.
    */
   private SecurityToken getSecurityToken(SecurityTokenType tokenType, String token, User user) {
     LocalDate expireDate = LocalDate.now().plusDays(Duration.ofDays(1).toDays());

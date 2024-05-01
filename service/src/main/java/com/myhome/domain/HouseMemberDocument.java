@@ -25,15 +25,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * is a Java entity class with two fields: documentFilename and documentContent, which
- * are persisted to the database using JPA.
+ * represents an entity in a database with two fields: documentFilename and
+ * documentContent, both stored as Large Object Binary (Lob) in byte array format for
+ * storing binary data.
  * Fields:
- * 	- documentFilename (String): in the HouseMemberDocument class represents a unique
- * name for a file containing document content, which is stored as a binary large
- * object (Lob) in the byte array format.
- * 	- documentContent (byte[]): in the HouseMemberDocument class represents binary
- * data of unknown type and size, stored as a Lob (Large Object Binary) in the byte
- * array format.
+ * 	- documentFilename (String): represents a unique name for a file containing
+ * document content in the HouseMemberDocument class.
+ * 	- documentContent (byte[]): is an array of bytes with unknown length and type,
+ * stored as a Large Object Binary (Lob) in the byte array format.
  */
 @Entity
 @AllArgsConstructor

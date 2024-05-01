@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * represents a data structure for storing JWT token and user ID for authentication
- * purposes.
+ * purposes with private fields for jwtToken and userId.
  * Fields:
  * 	- jwtToken (String): in the AuthenticationData class represents a unique identifier
- * for a user's authentication credentials.
+ * for a user's JWT token.
  * 	- userId (String): in the AuthenticationData class represents a unique identifier
- * for a user.
+ * for a user's authentication credentials.
  */
 @Getter
 @RequiredArgsConstructor

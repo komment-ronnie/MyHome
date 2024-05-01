@@ -40,16 +40,16 @@ import lombok.With;
  * represents a valid user in the service with various associations to other entities,
  * including users, houses, and amenities.
  * Fields:
- * 	- admins (Set<User>): is a set of user objects related to the community through
- * their association with the community as admins, as defined in the Java code provided.
+ * 	- admins (Set<User>): represents a set of user objects related to the community
+ * through their association with the community as admins.
  * 	- houses (Set<CommunityHouse>): in the Community class represents a set of House
  * objects related to the community through their association with the community as
- * houses.
+ * houses, as defined in the Java code provided.
  * 	- name (String): in the Community entity represents a unique identifier for a
  * community within a specific district.
- * 	- communityId (String): represents a unique identifier for a specific community
- * within the application's domain.
- * 	- district (String): in the Community entity represents a geographical area where
+ * 	- communityId (String): in the Community class represents a unique identifier for
+ * a specific community within the application's domain.
+ * 	- district (String): in the Community class represents a geographical area where
  * the community is located.
  * 	- amenities (Set<Amenity>): in the Community class represents a set of Amenity
  * objects related to the community through the mappedBy attribute in the OneToMany

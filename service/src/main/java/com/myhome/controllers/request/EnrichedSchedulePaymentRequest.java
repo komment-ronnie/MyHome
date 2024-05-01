@@ -31,9 +31,8 @@ import lombok.NoArgsConstructor;
  * IDs to get the data to enrich this request
  */
 /**
- * extends the SchedulePaymentRequest and provides additional fields to enrich the
- * request with details relating to an admin and a house member for successful mapping
- * to user and house member fields in payment.
+ * extends SchedulePaymentRequest with additional fields for admin and house member
+ * details to facilitate successful mapping to user and house member fields in payment.
  * Fields:
  * 	- adminEntityId (Long): represents an identifier for an administrative entity
  * associated with the payment request.
@@ -43,16 +42,16 @@ import lombok.NoArgsConstructor;
  * entity in the system.
  * 	- adminEncryptedPassword (String): represents an encrypted password for an
  * administrative user associated with the payment request.
- * 	- adminCommunityIds (Set<String>): represents an unordered set of strings that
- * identify communities to which the admin and house member belong.
- * 	- memberEntityId (Long): represents an identifier for a member entity associated
- * with the payment request.
+ * 	- adminCommunityIds (Set<String>): represents a set of strings identifying
+ * communities to which an administrative user associated with the payment request belongs.
+ * 	- memberEntityId (Long): in the EnrichedSchedulePaymentRequest class represents
+ * an identifier for a member entity associated with the payment request.
  * 	- houseMemberDocumentName (String): represents the name of a document used to
  * identify the member in the house.
- * 	- houseMemberName (String): in the EnrichedSchedulePaymentRequest class represents
- * the name of the member of a house to whom the payment request relates.
- * 	- houseMemberHouseID (String): in the EnrichedSchedulePaymentRequest class
- * represents a unique identifier of the member's house within the system.
+ * 	- houseMemberName (String): represents the name of a member of a house associated
+ * with the payment request.
+ * 	- houseMemberHouseID (String): represents a unique identifier of the member's
+ * house within the system.
  */
 @NoArgsConstructor
 @AllArgsConstructor

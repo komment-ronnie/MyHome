@@ -37,16 +37,16 @@ import lombok.With;
  * represents a house within a community and contains relationships with HouseMembers
  * and Amenities.
  * Fields:
- * 	- community (Community): in the CommunityHouse class represents an association
- * between a CommunityHouse entity and a single Community instance.
+ * 	- community (Community): represents an association between a CommunityHouse entity
+ * and a single Community instance.
  * 	- name (String): in the CommunityHouse class represents a unique identifier for
  * a specific community house within a community.
- * 	- houseId (String): represents a unique identifier for each CommunityHouse instance
- * in the system.
- * 	- houseMembers (Set<HouseMember>): in the CommunityHouse class represents a set
- * of objects that are related to a particular community house through a many-to-one
- * relationship with the HouseMember entity.
- * 	- amenities (Set<Amenity>): in the CommunityHouse class contains a set of Amenity
+ * 	- houseId (String): in the CommunityHouse class represents a unique identifier
+ * for each CommunityHouse instance in the system.
+ * 	- houseMembers (Set<HouseMember>): in the CommunityHouse class contains a set of
+ * objects related to a particular community house through a many-to-one relationship
+ * with the HouseMember entity.
+ * 	- amenities (Set<Amenity>): in the CommunityHouse class represents a set of Amenity
  * objects related to the house.
  */
 @Entity

@@ -48,13 +48,13 @@ import java.util.Set;
  * 	- userId (String): represents a unique identifier for each user in the system.
  * 	- email (String): in the User class represents an identifier for a user's email
  * address within the service.
- * 	- emailConfirmed (boolean): indicates whether an email address associated with
- * the user has been confirmed through a verification process.
- * 	- encryptedPassword (String): represents an encrypted password for the user's
- * account in the system.
- * 	- communities (Set<Community>): represents a set of Community objects associated
- * with each user in the system.
- * 	- userTokens (Set<SecurityToken>): is a set of SecurityToken objects associated
+ * 	- emailConfirmed (boolean): represents a boolean value indicating whether the
+ * user's email address has been confirmed through a verification process.
+ * 	- encryptedPassword (String): in the User class represents an encrypted password
+ * for the user's account in the system.
+ * 	- communities (Set<Community>): is a set of Community objects associated with
+ * each User entity in the system.
+ * 	- userTokens (Set<SecurityToken>): stores a set of SecurityToken objects associated
  * with each User entity through the tokenOwner attribute.
  */
 @AllArgsConstructor

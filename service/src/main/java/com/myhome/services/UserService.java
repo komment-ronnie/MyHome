@@ -29,8 +29,7 @@ import org.springframework.data.domain.Pageable;
  */
 /**
  * provides methods for creating users, resending email confirmations, listing all
- * users, and resetting passwords, as well as retrieving user details and confirming
- * email addresses.
+ * users, resetting passwords, and confirming email addresses.
  */
 public interface UserService {
   Optional<UserDto> createUser(UserDto request);

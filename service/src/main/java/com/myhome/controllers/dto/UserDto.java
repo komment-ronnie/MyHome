@@ -26,18 +26,17 @@ import lombok.Setter;
  * user ID, name, email, password, community IDs, and an email confirmed status.
  * Fields:
  * 	- id (Long): represents a unique identifier for a user in the system.
- * 	- userId (String): in the UserDto class represents a unique identifier for a user
- * within the system.
+ * 	- userId (String): represents a unique identifier for a user within the system.
  * 	- name (String): in the UserDto class represents a string value containing the
  * user's name.
  * 	- email (String): in the UserDto class represents a string value containing the
  * user's email address.
  * 	- password (String): in the UserDto class stores a string value representing a
  * user's password.
- * 	- encryptedPassword (String): in the UserDto class stores an encrypted version
+ * 	- encryptedPassword (String): in the UserDto class contains an encrypted version
  * of the user's password.
- * 	- communityIds (Set<String>): in the UserDto class represents a set of strings
- * indicating the user's membership in various communities.
+ * 	- communityIds (Set<String>): represents a set of strings indicating the user's
+ * membership in various communities within the system.
  * 	- emailConfirmed (boolean): in the UserDto class indicates whether a user's email
  * address has been confirmed through a verification process.
  */

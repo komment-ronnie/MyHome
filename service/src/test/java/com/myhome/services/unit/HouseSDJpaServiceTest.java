@@ -48,11 +48,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
- * tests various scenarios related to managing members in a community house using
- * JPA. The tests cover adding new members, updating existing members, removing
- * members, and verifying the correctness of the data after each operation. Additionally,
- * the test class also verifies that no member is deleted when the member does not
- * exist in the house's membership list.
+ * is a JPA test class that tests various scenarios related to managing members in a
+ * community house using Spring Data JPA. The test class verifies the functionality
+ * of the service by calling its methods and verifying the resulting state of the
+ * database, including the membership status of members and the presence of members
+ * in the community house's membership list. The test class also tests edge cases
+ * such as deleting a member from a non-existent house or a member who is not present
+ * in the house's membership list.
  */
 class HouseSDJpaServiceTest {
 
@@ -71,8 +73,8 @@ class HouseSDJpaServiceTest {
   private HouseSDJpaService houseSDJpaService;
 
   /**
-   * initializes Mockito annotations for the current test instance, enabling the use
-   * of mock objects in subsequent tests.
+   * initializes Mockito annotations for testing purposes, enabling the use of mock
+   * objects and stub methods during the test process.
    */
   @BeforeEach
   void setUp() {
@@ -80,8 +82,8 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * retrieves a set of community houses from a database using JPA and compares it with
-   * the expected result, asserting they are equal.
+   * verifies that the `houseSDJpaService` listAllHouses method returns the same set
+   * of houses as the `communityHouseRepository` findAll method.
    */
   @Test
   void listAllHousesDefault() {
@@ -100,8 +102,8 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * retrieves a list of community houses from the database using a custom page request
-   * and compares it to the expected result, verifying that the two are equal.
+   * lists all houses from a database using a page request and compares the result with
+   * the expected houses in the database, verifying the repository call.
    */
   @Test
   void listAllHousesCustomPageable() {
@@ -125,8 +127,9 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * adds a set of HouseMembers to a CommunityHouse, saving them to the database and
-   * updating the CommunityHouse's list of members.
+   * adds a set of `HouseMember` objects to a `CommunityHouse` object, verifying that
+   * the correct number of members are added and updating the `CommunityHouse` object's
+   * member list.
    */
   @Test
   void addHouseMembers() {
@@ -152,10 +155,7 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * tests the scenario where a house does not exist in the repository, and yet, the
-   * `addHouseMembers` method is called on it. The function verifies that the resulting
-   * members set is empty and that the `findByHouseIdWithHouseMembers` method is called
-   * once with an empty house ID.
+   * adds a set of house members to a house that does not exist in the database.
    */
   @Test
   void addHouseMembersHouseNotExists() {
@@ -176,9 +176,8 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * deletes a member from a community house by updating the member's community house
-   * reference and saving both the member and the community house in the database, while
-   * also verifying the membership status of the member and the community house.
+   * deletes a member from a community house, updating the house's members list and
+   * saving the changes to the database.
    */
   @Test
   void deleteMemberFromHouse() {
@@ -208,7 +207,7 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * tests whether a member can be deleted from a house that does not exist.
+   * verifies that a member cannot be deleted from a house that does not exist.
    */
   @Test
   void deleteMemberFromHouseNotExists() {
@@ -227,10 +226,8 @@ class HouseSDJpaServiceTest {
   }
 
   /**
-   * tests whether a member can be deleted from a house when they are not present in
-   * the house's membership list. It does this by attempting to delete a member and
-   * verifying that it fails, then verifying that the house's members list is unchanged
-   * after the deletion attempt.
+   * tests the delete member from house method when the member to be deleted is not
+   * present in the community house.
    */
   @Test
   void deleteMemberFromHouseMemberNotPresent() {

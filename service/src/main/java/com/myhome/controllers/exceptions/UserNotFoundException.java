@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * extends AuthenticationException and adds additional logging information when a
- * user cannot be found using their email address.
+ * user cannot be found using their email address through the log.info method.
  */
 @Slf4j
 public class UserNotFoundException extends AuthenticationException {

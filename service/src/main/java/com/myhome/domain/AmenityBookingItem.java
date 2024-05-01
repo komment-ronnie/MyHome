@@ -25,10 +25,10 @@ import javax.persistence.*;
  * represents a booking item for an amenity in a database, including the amenity ID,
  * booking start and end dates, and the user who made the booking.
  * Fields:
- * 	- amenityBookingItemId (String): in the AmenityBookingItem entity represents a
- * unique identifier for each booking item in the database.
- * 	- amenity (Amenity): represents an amenity that has been booked for a specific
- * period of time by a particular user.
+ * 	- amenityBookingItemId (String): represents a unique identifier for each booking
+ * item in the database.
+ * 	- amenity (Amenity): in the AmenityBookingItem entity represents an amenity that
+ * has been booked for a specific period of time by a particular user.
  * 	- bookingStartDate (LocalDateTime): represents the date and time at which a booking
  * for an amenity starts.
  * 	- bookingEndDate (LocalDateTime): represents the end time of a booking for an amenity.

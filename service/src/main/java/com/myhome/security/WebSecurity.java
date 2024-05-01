@@ -34,15 +34,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.servlet.Filter;
 
 /**
- * is used to configure security settings for an Spring Boot application. It allows
- * you to enable CORS functionality, disable CSRF protection, and configure session
- * management policies. Additionally, it sets up authorization rules for various HTTP
- * methods and URL paths using the `authorizeRequests` method. The `getCommunityFilter`
- * method creates a filter that combines the `AuthenticationManager` and `CommunityService`
- * objects to enable community-related authentication and authorization functionality.
- * Finally, the `configure` method configures the `AuthenticationManagerBuilder`
- * instance by specifying the user details service and password encoder used for
- * customizing authentication logic.
+ * is configured to enable CORS, disable CSFR and frames, and add a filter to authorize
+ * requests based on the user's role. The configure method takes an HttpSecurity
+ * object as input and configures various settings related to authentication management,
+ * including disabling CSRF and frames, and adding a filter after the community filter
+ * and before the end of the configuration chain.
  */
 @Configuration
 @EnableWebSecurity
@@ -55,24 +51,32 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   private final AppJwtEncoderDecoder appJwtEncoderDecoder;
 
   /**
-   * sets up security configurations for an API. It disables CSRF and frames, allows
-   * anonymous access to certain endpoints, and adds a filter to authorize requests
-   * based on the user's role.
+   * configures the HTTP security for a Spring Boot application, disabling CSRF and
+   * frame options, and setting session management to STATELESS. It also authorizes
+   * requests based on various URL patterns, permitting all access to specific endpoints.
+   * Additionally, it adds a filter to handle JWT encoder/decoder tasks.
    * 
    * @param http HTTP security configuration object, which is used to configure various
-   * settings for securing the application's endpoints.
+   * security features such as CORS, session management, and authorization rules for
+   * different URL patterns.
    * 
-   * 	- `cors()`: Enables Cross-Origin Resource Sharing (CORS) functionality.
-   * 	- `csrf()`.disable(): Disables Cross-Site Request Forgery (CSRF) protection.
-   * 	- `headers().frameOptions()`.disable(): Disables the ability to use frame options
-   * in HTTP requests.
+   * 	- `cors()`: enables Cross-Origin Resource Sharing (CORS) functionality.
+   * 	- `csrf()`. disable(): disables Cross-Site Request Forgery (CSRF) protection.
+   * 	- `headers().frameOptions()`. disable(): disables the ability to set frame options
+   * for responses.
    * 	- `sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)`:
-   * Configures session creation policy to be stateless.
-   * 	- `addFilterAfter(getCommunityFilter(), MyHomeAuthorizationFilter.class)`: Adds
+   * sets the session creation policy to STATELESS, which means that sessions will not
+   * be created automatically.
+   * 	- `addFilterAfter(getCommunityFilter(), MyHomeAuthorizationFilter.class)`: adds
    * a filter after the community filter and before the end of the configuration chain.
+   * 	- `authorizeRequests()`: defines a set of ant matchers that specify which requests
+   * are allowed or denied based on various conditions.
    * 
-   * The `http` object is deserialized from the input, and its properties are explained
-   * above.
+   * In summary, these properties/attributes configure CORS functionality, disable CSRF
+   * protection, disables the ability to set frame options for responses, sets session
+   * creation policy to STATELESS, adds a filter after the community filter and before
+   * the end of the configuration chain, and defines a set of ant matchers that specify
+   * which requests are allowed or denied based on various conditions.
    */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -109,42 +113,35 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * creates a `CommunityAuthorizationFilter` instance by combining the `AuthenticationManager`
-   * and `CommunityService`. This filter is used to authorize community-related operations
-   * based on user authentication.
+   * creates a `CommunityAuthorizationFilter` instance, which combines authentication
+   * and community service functionality to filter community content access.
    * 
-   * @returns an instance of the `CommunityAuthorizationFilter` class, which filters
-   * community-related endpoints based on user roles and permissions.
+   * @returns an instance of `CommunityAuthorizationFilter`.
    * 
-   * The `CommunityAuthorizationFilter` object is created through a combination of two
-   * parameters: `authenticationManager()` and `communityService`. The `authenticationManager()`
-   * parameter represents an instance of the `AuthenticationManager` interface, which
-   * is responsible for managing user authentication in the system. The `communityService`
-   * parameter represents an instance of the `CommunityService` interface, which is
-   * responsible for handling community-related operations.
-   * 
-   * The `CommunityAuthorizationFilter` object itself is a subclass of the `AbstractFilter`
-   * class, which provides a generic filter implementation that can be used to perform
-   * various types of filtering tasks. In this case, the `getCommunityFilter` function
-   * returns an instance of the `CommunityAuthorizationFilter` class, which is capable
-   * of filtering community-related operations based on user authentication and authorization.
+   * 1/ The input parameters used in the function creation include an instance of
+   * `AuthenticationManager` and an instance of `CommunityService`. These parameters
+   * represent the authentication manager and community service, respectively.
+   * 2/ The return value is a `Filter`, which is an interface that defines the functionality
+   * for filtering requests and responses based on criteria specified by the developer.
+   * 3/ The `Filter` object returned by the function is an instance of
+   * `CommunityAuthorizationFilter`. This class implements the `Filter` interface and
+   * provides functionality for authorizing requests based on community-specific rules.
    */
   private Filter getCommunityFilter() throws Exception {
     return new CommunityAuthorizationFilter(authenticationManager(), communityService);
   }
 
   /**
-   * configures authentication-related settings by passing user details service and
-   * password encoder instances to the builder.
+   * sets up authentication manager builder's user details service and password encoder.
    * 
-   * @param auth AuthenticationManagerBuilder, which is used to configure various aspects
-   * of authentication management, including the userDetailsService and passwordEncoder.
+   * @param auth Authentication Manager Builder, which is used to configure various
+   * aspects of the authentication system, including the user details service and
+   * password encoder.
    * 
-   * 	- `userDetailsService`: A reference to an implementation of `UserDetailsService`,
-   * which is responsible for retrieving user details from the database or other data
-   * source.
-   * 	- `passwordEncoder`: A reference to an implementation of `PasswordEncoder`, which
-   * is used to encrypt passwords for the user accounts.
+   * 	- `userDetailsService`: It is an instance of `UserDetailsService`, which is used
+   * to retrieve user details for authentication purposes.
+   * 	- `passwordEncoder`: It is an instance of `PasswordEncoder`, responsible for
+   * encrypting passwords securely.
    */
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {

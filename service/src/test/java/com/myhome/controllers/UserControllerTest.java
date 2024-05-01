@@ -53,11 +53,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
- * is a test class for the UserController class, which handles user-related endpoints
- * in a RESTful API. The test class tests various scenarios related to listing all
- * house members for a given user ID, including when there are no results, and when
- * there are results. The tests verify that the correct HTTP status code and response
- * data are returned in each scenario.
+ * tests various endpoints related to users, including forgotten password functionality
+ * and resetting passwords. The test suite includes tests for successful requests as
+ * well as failed requests, with verifications of the appropriate server responses
+ * and method calls on the `UserService`.
  */
 class UserControllerTest {
 
@@ -85,8 +84,7 @@ class UserControllerTest {
   private UserController userController;
 
   /**
-   * initializes mock objects using the `MockitoAnnotations.initMocks()` method, ensuring
-   * that mock implementations are used for dependencies during testing.
+   * initializes mocking configurations for the current test class using MockitoAnnotations.
    */
   @BeforeEach
   private void init() {
@@ -94,9 +92,9 @@ class UserControllerTest {
   }
 
   /**
-   * tests the sign-up functionality of the `UserController`. It provides a test data
-   * and verifies that the response is a `CreateUserResponse` with the expected user
-   * details and status code.
+   * tests the `signUp` method of the `UserController` class by providing a valid user
+   * creation request and verifying that the expected response is returned with the
+   * correct data.
    */
   @Test
   void shouldSignUpSuccessful() {
@@ -134,9 +132,9 @@ class UserControllerTest {
   }
 
   /**
-   * tests the `listAllUsers` method of the `UserController` class by providing a page
-   * request with limit and start parameters, and verifying that the expected response
-   * is returned with the correct users list.
+   * tests the listAllUsers method of a UserController class. It provides a set of users
+   * and their corresponding REST API response, which are then compared to the actual
+   * response returned by the controller.
    */
   @Test
   void shouldListUsersSuccess() {
@@ -176,9 +174,9 @@ class UserControllerTest {
   }
 
   /**
-   * tests the `getUserDetails` method of the `UserController` class. It verifies that
-   * when no user details are found for a given `userId`, the method returns a
-   * `ResponseEntity` with a `StatusCode` of `NOT_FOUND` and an empty `Body`.
+   * tests the `getUserDetails` method of a controller, given an empty user ID, and
+   * verifies the response status code, body, and interactions with service and mapper
+   * methods.
    */
   @Test
   void shouldGetUserDetailsSuccessWithNoResults() {
@@ -199,7 +197,7 @@ class UserControllerTest {
 
   /**
    * verifies that the `getUserDetails` endpoint returns a successful response with the
-   * correct user details when given a valid user ID.
+   * user's details when the userId is provided and exists in the database.
    */
   @Test
   void shouldGetUserDetailsSuccessWithResults() {
@@ -230,9 +228,8 @@ class UserControllerTest {
   }
 
   /**
-   * verifies that a successful request to reset a password results in an HTTP status
-   * code of `OK` and two method calls to `userService`: one to `requestResetPassword()`
-   * and another to `resetPassword()`.
+   * verifies that a successful request to reset a password is made through the
+   * `usersPasswordPost` method of the `UserController`.
    */
   @Test
   void userForgotPasswordRequestResetSuccess() {
@@ -249,8 +246,8 @@ class UserControllerTest {
   }
 
   /**
-   * verifies that a request to reset a password fails with a HTTP status code of `OK`
-   * and also verifies that the `requestResetPassword` method is called on the `userService`.
+   * tests whether the user controller's `usersPasswordPost` method fails to request a
+   * password reset for the given user when the forgot password request is invalid.
    */
   @Test
   void userForgotPasswordRequestResetFailure() {
@@ -267,9 +264,9 @@ class UserControllerTest {
   }
 
   /**
-   * tests the reset password functionality by simulating a user requesting to reset
-   * their password and verifying that the server responds with an OK status code and
-   * resets the password successfully without triggering any additional requests for reset.
+   * tests the success of resetting a user's password through the `usersPasswordPost`
+   * endpoint. It verifies that the response status code is `HttpStatus.OK` and that
+   * the `resetPassword` method of the `userService` is called once with the correct parameters.
    */
   @Test
   void userForgotPasswordResetSuccess() {
@@ -287,8 +284,9 @@ class UserControllerTest {
   }
 
   /**
-   * verifies that attempting to reset a password fails with a BAD_REQUEST status code
-   * when the user service returns false for the request to reset the password.
+   * tests the scenario where the user password reset fails due to an internal error,
+   * and verifies that the response status code is 400 Bad Request and that the
+   * `resetPassword()` method of the `UserService` is never called.
    */
   @Test
   void userForgotPasswordResetFailure() {
@@ -306,17 +304,17 @@ class UserControllerTest {
   }
 
   /**
-   * creates a new `ForgotPasswordRequest` object with pre-populated email, new password,
-   * and token values for testing purposes.
+   * creates a new instance of `ForgotPasswordRequest`, setting the email, new password,
+   * and token fields to respective test values.
    * 
    * @returns a `ForgotPasswordRequest` object containing email, new password, and token
-   * for forgotten password recovery.
+   * details.
    * 
-   * 	- The `ForgotPasswordRequest` object is created with predefined values for `email`,
-   * `newPassword`, and `token`.
-   * 	- `email` is set to a test email address (`TEST_EMAIL`).
-   * 	- `newPassword` is set to a random password generation (`TEST_NEW_PASSWORD`).
-   * 	- `token` is set to a unique token generation (`TEST_TOKEN`).
+   * 	- `ForgotPasswordRequest`: This is the class that represents the request for
+   * forgotten password.
+   * 	- `setEmail()`: The email address of the user who wants to reset their password.
+   * 	- `setNewPassword()`: The new password that the user wants to set.
+   * 	- `setToken()`: A unique token generated by the system for the request.
    */
   private ForgotPasswordRequest getForgotPasswordRequest() {
     ForgotPasswordRequest request = new ForgotPasswordRequest();
@@ -327,9 +325,8 @@ class UserControllerTest {
   }
 
   /**
-   * tests the `listAllHousemates` endpoint of a user controller by providing a valid
-   * user ID and page request parameters, and verifying that the endpoint returns a
-   * `HttpStatus.NOT_FOUND` status code and an empty list of house members.
+   * verifies that the `listAllHousemates` endpoint returns a `HttpStatus.NOT_FOUND`
+   * when no house members are found for the given user ID and page request parameters.
    */
   void shouldListAllHousematesSuccessWithNoResults() {
     // given
@@ -355,9 +352,9 @@ class UserControllerTest {
   }
 
   /**
-   * tests the `listAllHousemates` method of the `UserController` class by providing a
-   * list of house members and verifying that the response is correct and contains the
-   * expected information.
+   * tests the `listAllHousemates` method of the `UserController`. It verifies that the
+   * method returns a list of `HouseMember` objects in the expected format and with the
+   * correct status code.
    */
   @Test
   void shouldListAllHousematesSuccessWithResults() {

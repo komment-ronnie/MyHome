@@ -24,8 +24,7 @@ import lombok.NoArgsConstructor;
  * represents a data transfer object for a community house with an ID and name attributes.
  * Fields:
  * 	- houseId (String): represents an identifier for a specific community house.
- * 	- name (String): in the CommunityHouseDto class represents a string value
- * representing the name of a house.
+ * 	- name (String): represents a string value representing the name of a house.
  */
 @Data
 @AllArgsConstructor

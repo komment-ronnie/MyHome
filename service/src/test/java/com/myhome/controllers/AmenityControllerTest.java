@@ -44,10 +44,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * tests various endpoints related to amenities in a community. The tests cover adding
- * an amenity, getting an amenity detail, deleting an amenity, updating an amenity,
- * and not updating an amenity if it does not exist. The test cases use mocking and
- * stubbing to verify the functionality of the controllers and the database.
+ * is a unit test class for the AmenityController class. It provides tests for updating
+ * an amenity in the community, checking whether the update is successful and the
+ * amenity exists before update, and verifying the calls to the amenity API mapper
+ * and amenity SDJpaService.
  */
 class AmenityControllerTest {
 
@@ -66,8 +66,8 @@ class AmenityControllerTest {
   private AmenityController amenityController;
 
   /**
-   * tests whether adding an amenity to a community through the `addAmenityToCommunity`
-   * endpoint returns a successful response with a 200 status code.
+   * tests the `addAmenityToCommunity` endpoint by providing an amenity to be added to
+   * a community and verifying that the response status code is OK.
    */
   @Test
   void shouldAddAmenityToCommunity() {
@@ -94,8 +94,8 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests whether an amenity is added to a community when the community does not exist.
-   * It asserts that the response status code is `HttpStatus.NOT_FOUND`.
+   * verifies that an attempt to add an amenity to a community that does not exist
+   * returns a `HttpStatus.NOT_FOUND`.
    */
   @Test
   void shouldNotAddAmenityWhenCommunityNotExists() {
@@ -124,10 +124,8 @@ class AmenityControllerTest {
   }
 
   /**
-   * retrieves an amenity's details by its ID, given to it as a parameter. It uses JPA
-   * and API mapper to retrieve the amenity data from the database and map it to the
-   * expected response body. The function then returns the response entity with the
-   * retrieved amenity details and HTTP status code OK.
+   * retrieves an amenity's details by its ID, returns the response body in the form
+   * of `GetAmenityDetailsResponse`, and verifies that the status code is `HttpStatus.OK`.
    */
   @Test
   void getAmenityDetails() {
@@ -154,9 +152,9 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests the response of the `getAmenityDetails` method when the amenity with the
-   * given ID does not exist in the database. It verifies that the method returns a
-   * `ResponseEntity` with a `Body` of `null` and a `StatusCode` of `HttpStatus.NOT_FOUND`.
+   * verifies that when an amenity with the given ID does not exist, it returns a
+   * `HttpStatus.NOT_FOUND` response and calls `amenitySDJpaService.getAmenityDetails(TEST_AMENITY_ID)`
+   * to verify its execution.
    */
   @Test
   void getAmenityDetailsNotExists() {
@@ -176,9 +174,9 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests the deleteAmenity method of the amenityController class by providing a
-   * TEST_AMENITY_ID and verifying that the amenity is deleted from the database and
-   * the response entity is null.
+   * tests the delete amenity method of the amenity controller by providing a mocked
+   * response from the amenity SDJpaService, verifying the response of the method and
+   * asserting that the body of the response is null and the status code is HttpStatus.NO_CONTENT.
    */
   @Test
   void deleteAmenity() {
@@ -196,8 +194,9 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests whether deleting an amenity that does not exist returns a `HttpStatus.NOT_FOUND`
-   * response and verifies that the amenity is not deleted from the database.
+   * tests the scenario where the amenity to be deleted does not exist in the database,
+   * and verifies the response of the controller, the status code, and the call to the
+   * service method.
    */
   @Test
   void deleteAmenityNotExists() {
@@ -215,9 +214,10 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests the update amenity endpoint by providing a valid request to update an amenity
-   * and verifying that the response status code is `HttpStatus.NO_CONTENT` and the
-   * amenity is updated in the database.
+   * tests the updateAmenity method of the AmenityController by providing a test amenity
+   * dto, creating a request object, and then verifying that the method returns a
+   * response entity with a NO_CONTENT status code and updates the amenity in the
+   * database using the amenityApiMapper and amenitySDJpaService.
    */
   @Test
   void shouldUpdateAmenitySuccessfully() {
@@ -241,9 +241,7 @@ class AmenityControllerTest {
   }
 
   /**
-   * tests whether an attempt to update an amenity that does not exist will result in
-   * a `HttpStatus.NOT_FOUND` response. It uses mocking to verify the calls to
-   * `amenityApiMapper` and `amenitySDJpaService`.
+   * tests whether an amenity is updated successfully when it does not exist in the database.
    */
   @Test
   void shouldNotUpdateCommunityAmenityIfAmenityNotExists() {
@@ -267,13 +265,12 @@ class AmenityControllerTest {
   }
 
   /**
-   * creates a new instance of the `Amenity` class with predefined ID and description
-   * for testing purposes.
+   * creates a new `Amenity` object with a predefined ID and description for testing purposes.
    * 
-   * @returns a new `Amenity` object with a predefined ID and description.
+   * @returns a new `Amenity` object with predefined ID and description.
    * 
-   * 	- `amenityId`: A unique identifier for the amenity, set to `TEST_AMENITY_ID`.
-   * 	- `description`: A brief description of the amenity, set to `TEST_AMENITY_DESCRIPTION`.
+   * 	- `amenityId`: An integer value representing the unique identification of the amenity.
+   * 	- `description`: A string value providing a brief description of the amenity.
    */
   private Amenity getTestAmenity() {
     return new Amenity()
@@ -283,17 +280,17 @@ class AmenityControllerTest {
 
   /**
    * creates a new instance of the `AmenityDto` class with predefined values for an
-   * amenity's ID, name, description, price, and community ID for testing purposes.
+   * amenity, including ID, amenity ID, name, description, price, and community ID.
    * 
-   * @returns a `AmenityDto` object containing mock data for testing purposes.
+   * @returns an instance of `AmenityDto` with predefined values.
    * 
-   * 	- `id`: A long value representing the unique identifier for the amenity.
-   * 	- `amenityId`: An integer value representing the amenity ID.
-   * 	- `name`: A string value representing the name of the amenity.
-   * 	- `description`: A string value representing the description of the amenity.
-   * 	- `price`: A double value representing the price of the amenity.
-   * 	- `communityId`: A long value representing the community ID associated with the
-   * amenity.
+   * 1/ `id`: A long value representing the unique identifier for the amenity.
+   * 2/ `amenityId`: An integer value representing the amenity ID.
+   * 3/ `name`: A string value representing the name of the amenity.
+   * 4/ `description`: A string value representing the description of the amenity.
+   * 5/ `price`: A double value representing the price of the amenity.
+   * 6/ `communityId`: An integer value representing the community ID associated with
+   * the amenity.
    */
   private AmenityDto getTestAmenityDto() {
     return new AmenityDto()
@@ -306,22 +303,17 @@ class AmenityControllerTest {
   }
 
   /**
-   * creates a new `UpdateAmenityRequest` object with predefined values for name,
-   * description, price, and community ID.
+   * creates a new instance of `UpdateAmenityRequest`, setting the name, description,
+   * price, and community ID to predefined values.
    * 
-   * @returns an instance of the `UpdateAmenityRequest` class with set fields for name,
-   * description, price, and community ID.
+   * @returns an `UpdateAmenityRequest` object containing the specified name, description,
+   * price, and community ID.
    * 
-   * 	- The function returns an `UpdateAmenityRequest` object, which represents a request
-   * to update an amenity in the community.
-   * 	- The `name` property is set to a specific value, `TEST_AMENITY_NAME`, indicating
-   * the name of the amenity to be updated.
-   * 	- The `description` property is set to another specific value, `TEST_AMENITY_DESCRIPTION`,
-   * representing the description of the amenity.
-   * 	- The `price` property is set to a long value, `1L`, indicating the price of the
-   * amenity.
-   * 	- The `communityId` property is set to a specific value, `TEST_COMMUNITY_ID`,
-   * identifying the community in which the amenity is located.
+   * 	- `name`: A string variable representing the name of the amenity.
+   * 	- `description`: A string variable representing the description of the amenity.
+   * 	- `price`: An long integer variable representing the price of the amenity.
+   * 	- `communityId`: An integer variable representing the ID of the community to which
+   * the amenity belongs.
    */
   private UpdateAmenityRequest getUpdateAmenityRequest() {
     return new UpdateAmenityRequest()

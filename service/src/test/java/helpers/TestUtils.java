@@ -31,30 +31,29 @@ import static helpers.TestUtils.General.generateUniqueId;
 import static helpers.TestUtils.UserHelpers.getTestUsers;
 
 /**
- * provides utility methods for working with payments in an application, including
- * creating test payment data and handling null fields. The PaymentHelpers class
- * includes methods for creating a test payment Dto object with various parameters
- * such as charge amount, payment type, description, recurring status, due date, and
- * user and member information. Additionally, the class provides a method for creating
- * a payment instance with default values.
+ * in the provided codebase provides various methods for creating and manipulating
+ * `Payment` objects. These methods include building a `PaymentDto` object with charge
+ * amount, payment type, description, recurring status, due date, admin, and member
+ * information, as well as generating a payment object with all fields null except
+ * for the 'recurring' field which is false. Additionally, there is a method to create
+ * a mock payment object with all fields null or false, except for the 'recurring' field.
  */
 public class TestUtils {
 
   /**
-   * appears to provide utility methods for handling image and identifier generation
-   * tasks. The getImageAsByteArray method converts a BufferedImage object into a byte
-   * array in JPEG format, while the generateUniqueId method generates a unique identifier
-   * based on a randomly generated UUID string and returns it as a String.
+   * appears to contain various methods for generating images and unique identifiers.
+   * The getImageAsByteArray() method converts an image into a byte array in JPEG format,
+   * while the generateUniqueId() method generates a unique identifier as a string using
+   * the UUID.randomUUID() method.
    */
   public static class General {
 
     /**
-     * generates an image as a byte array by converting it to a JPEG file and then saving
-     * it as a binary stream.
+     * converts an image represented by a `BufferedImage` object into a byte array.
      * 
-     * @param height vertical dimension of the image to be converted into a byte array.
+     * @param height height of the image to be converted into a byte array.
      * 
-     * @param width width of the image that is being converted to a byte array.
+     * @param width width of the resulting image.
      * 
      * @returns a byte array containing the image data in JPEG format.
      */
@@ -67,10 +66,10 @@ public class TestUtils {
     }
 
     /**
-     * generates a unique identifier using the `UUID.randomUUID()` method and returns it
-     * as a string.
+     * generates a unique identifier based on a randomly generated UUID string, returning
+     * it as a string.
      * 
-     * @returns a unique string of 36 characters, consisting of letters and numbers.
+     * @returns a unique, randomly generated string of characters.
      */
     public static String generateUniqueId() {
       return UUID.randomUUID().toString();
@@ -78,30 +77,30 @@ public class TestUtils {
   }
 
   /**
-   * generates randomized `CommunityHouse` instances with unique IDs and default names
-   * using a Stream API. The `getTestHouses` method limits the number of generated
-   * objects to the input count, while the `getTestCommunityHouse` and `getTestCommunityHouse`
-   * methods create new instances with specified `houseId` and default `name`, respectively.
+   * is a utility class that provides various methods for generating and manipulating
+   * `CommunityHouse` objects. These methods include generating a set of `CommunityHouse`
+   * objects with unique IDs and default names, creating a new `CommunityHouse` instance
+   * with a unique ID and a default community name, and creating a new instance of
+   * `CommunityHouse` with an specified ID and sets the name to "default-community-name".
    */
   public static class CommunityHouseHelpers {
 
     /**
-     * generates a set of `CommunityHouse` objects with unique IDs and default names,
-     * limited to a specified count using `Stream` and `collect`.
+     * generates `count` instances of `CommunityHouse`, each with a unique ID and default
+     * name, and returns them as a set.
      * 
-     * @param count number of CommunityHouse objects to be generated and returned by the
-     * `getTestHouses()` method.
+     * @param count maximum number of CommunityHouse objects to be generated and returned
+     * by the function.
      * 
      * @returns a set of `CommunityHouse` objects generated randomly with unique IDs and
      * default names.
      * 
-     * 	- The output is a set of `CommunityHouse` objects, generated using a stream of
-     * anonymous inner classes and collected using `Collectors.toSet()`.
-     * 	- Each `CommunityHouse` object in the set has a unique `houseId` attribute and a
-     * default name attribute.
-     * 	- The number of `CommunityHouse` objects in the set is limited to the specified
-     * `count` parameter.
-     * 	- The output set does not contain any duplicates.
+     * 	- The output is a `Set` data structure containing `CommunityHouse` objects.
+     * 	- Each `CommunityHouse` object has a unique `houseId` attribute generated using
+     * the `generateUniqueId()` method.
+     * 	- Each `CommunityHouse` object has a default name attribute set to "default-house-name".
+     * 	- The total number of elements in the `Set` is determined by the `count` parameter
+     * passed to the function.
      */
     public static Set<CommunityHouse> getTestHouses(int count) {
       return Stream
@@ -114,15 +113,16 @@ public class TestUtils {
     }
 
     /**
-     * creates a new `CommunityHouse` instance with a unique ID and a default community
+     * creates a new `CommunityHouse` instance with a unique identifier and a default name.
+     * 
+     * @returns a new instance of `CommunityHouse` with a unique identifier and a default
      * name.
      * 
-     * @returns a new `CommunityHouse` object with a unique house ID and a default community
-     * name.
-     * 
-     * 	- The CommunityHouse object is created with a unique house ID generated by the
-     * `generateUniqueId()` method.
-     * 	- The name of the community is set to "default-community-name".
+     * 	- The CommunityHouse object is generated using a constructor and passed back as
+     * the result.
+     * 	- The HouseId property of the CommunityHouse object is set to a unique identifier
+     * generated by the `generateUniqueId()` method.
+     * 	- The Name property of the CommunityHouse object is set to a default value of "default-community-name".
      */
     public static CommunityHouse getTestCommunityHouse() {
       return new CommunityHouse()
@@ -131,17 +131,18 @@ public class TestUtils {
     }
 
     /**
-     * creates a new instance of `CommunityHouse` with an specified `houseId` and sets
-     * the name to "default-community-name".
+     * creates a new `CommunityHouse` object with an assigned house ID and default community
+     * name.
      * 
-     * @param houseId ID of the community house to be created and is used to set the
-     * `HouseId` property of the resulting `CommunityHouse` object.
+     * @param houseId unique identifier of a community house.
      * 
-     * @returns a new `CommunityHouse` object with an ID and default name.
+     * @returns a new `CommunityHouse` instance with the specified house ID and default
+     * community name.
      * 
-     * 	- The function returns an instance of the `CommunityHouse` class.
-     * 	- The instance is created with a `houseId` property set to the input parameter `houseId`.
-     * 	- The `name` property of the instance is set to a default value of `"default-community-name"`.
+     * The function returns a new instance of `CommunityHouse`, which has two primary
+     * attributes - `houseId` and `name`. The `houseId` is a string that represents the
+     * unique identifier of the community house, while the `name` is a default value
+     * assigned to all community houses.
      */
     public static CommunityHouse getTestCommunityHouse(String houseId) {
       return new CommunityHouse()
@@ -151,32 +152,31 @@ public class TestUtils {
   }
 
   /**
-   * generates instances of a custom `HouseMember` class with unique IDs and default
-   * names. The `getTestHouseMembers()` method returns a set of generated `HouseMember`
-   * objects, while the `getTestHouseMember()` method creates a new instance of `HouseMember`.
+   * is a utility class that provides various methods for working with house members
+   * in a fictional household. The class generates sets of random house members, creates
+   * new instances of house member objects, and returns the generated set or individual
+   * object.
    */
   public static class HouseMemberHelpers {
 
     /**
-     * generates a set of `HouseMember` objects using a stream of anonymous instances,
-     * limits the number of elements to the input `count`, and returns the set.
+     * generates a set of `HouseMember` objects using a Stream API, limiting the number
+     * of generated elements to the input `count`.
      * 
-     * @param count maximum number of `HouseMember` instances to be generated and returned
-     * by the function.
+     * @param count maximum number of HouseMembers to generate and return in the set.
      * 
-     * @returns a set of `HouseMember` objects generated using a stream and collected
-     * into a set.
+     * @returns a set of `HouseMember` objects generated randomly with unique IDs and
+     * default names.
      * 
-     * 	- The output is a set of `HouseMember` objects, generated using a stream-based
-     * approach that creates new house members with unique IDs and default names.
-     * 	- The `Stream` generates `HouseMember` objects using a factory method that takes
-     * no arguments.
-     * 	- The `limit` method is used to restrict the number of elements in the stream to
-     * the specified `count`.
-     * 	- The `collect` method is used to aggregate the elements in the stream into a set.
+     * 	- The output is a `Set` of `HouseMember` objects, indicating that each house
+     * member is unique and distinct within the set.
+     * 	- The `Stream` generated using the `generate()` method creates an infinite number
+     * of house members, which are then collected into a set using the `collect()` method.
+     * 	- The `limit()` method is used to restrict the number of house members returned
+     * in the set, which can be any positive integer value.
      * 
-     * Overall, the function returns a set of randomly generated house members with unique
-     * IDs and default names.
+     * Overall, the output of the `getTestHouseMembers` function is a collection of a
+     * fixed number of randomly generated house members.
      */
     public static Set<HouseMember> getTestHouseMembers(int count) {
       return Stream
@@ -188,14 +188,13 @@ public class TestUtils {
           .collect(Collectors.toSet());
     }
     /**
-     * creates a new instance of `HouseMember` with a unique identifier and a predefined
-     * name.
+     * creates a new instance of `HouseMember`, generating a unique identifier and setting
+     * the name to a default value.
      * 
-     * @returns a new instance of the `HouseMember` class with a generated unique ID and
-     * a default name.
+     * @returns a new `HouseMember` instance with a generated unique ID and a default name.
      * 
-     * 	- `memberId`: A unique identifier generated by the function for each member.
-     * 	- `name`: A default name assigned to the member.
+     * 	- `memberId`: A unique identifier generated by the function for the house member.
+     * 	- `name`: The default name assigned to the house member.
      */
     public static HouseMember getTestHouseMember() {
       return new HouseMember()
@@ -205,37 +204,40 @@ public class TestUtils {
   }
 
   /**
-   * is an utility class that provides various methods for creating and manipulating
-   * communities in a fictional community management system. The class offers functionality
-   * for generating unique community IDs, retrieving test communities, adding test
-   * communities to administrators' managed communities lists, getting test communities,
-   * and more.
+   * provides several methods for creating and manipulating communities in an application.
+   * These methods include:
+   * 
+   * 	- `getTestCommunity`: Generates a new community with default details and returns
+   * it fully populated with houses and admins retrieved from external sources.
+   * 	- `getTestHouses`: Retrieves a set of houses to generate for the test community,
+   * which are then added to the `communityHouses` set returned by the method.
+   * 	- `getTestUsers`: Retrieves a set of users to assign as admins for the newly
+   * created community, and sets them as admins of the community.
    */
   public static class CommunityHelpers {
 
     /**
-     * generates a set of `Community` objects using a stream of numbers, each representing
-     * a unique community. The communities are created with default names and districts,
-     * and the number of communities is limited to the specified count.
+     * iterates over a range of numbers and returns a set of `Community` objects, each
+     * with a unique ID, name, district, and population of 0.
      * 
-     * @param count number of community objects to be generated and returned by the
-     * `getTestCommunities` method.
+     * @param count maximum number of community objects to be generated and returned by
+     * the `getTestCommunities()` method.
      * 
      * @returns a set of `Community` objects, each with a unique ID and name, generated
-     * within a specified limit.
+     * using a stream of indices from 0 to the specified `count`.
      * 
-     * 	- The Set<Community> object contains multiple Community objects, each representing
-     * a potential community for testing purposes.
-     * 	- Each Community object has four attributes: id (a unique identifier), name,
-     * district, and population.
-     * 	- The id attribute is an integer that represents the unique identity of each
-     * Community object.
-     * 	- The name attribute is a string that provides a human-readable name for each
-     * Community object.
-     * 	- The district attribute is a string that identifies the geographical area or
-     * district where each Community object is located.
-     * 	- The population attribute is an integer that represents the estimated population
-     * size of each Community object.
+     * 	- The output is a `Set` of `Community` objects.
+     * 	- Each element in the set represents a unique community generated through the
+     * Stream.iterate method.
+     * 	- The `Community` objects have three attributes: `id`, `name`, and `district`.
+     * 	- The `id` attribute is a unique integer value for each community.
+     * 	- The `name` attribute is a string value that is generated using the `generateUniqueId()`
+     * method and appended with an index value (e.g., "default-community-name0").
+     * 	- The `district` attribute is also a string value that is generated using the
+     * `generateUniqueId()` method and appended with an index value (e.g., "default-community-district0").
+     * 
+     * The purpose of this function is to generate a set of communities with unique IDs,
+     * names, and districts, based on a specified count.
      */
     public static Set<Community> getTestCommunities(int count) {
       return Stream.iterate(0, n -> n + 1)
@@ -250,18 +252,17 @@ public class TestUtils {
     }
 
     /**
-     * generates a new community with a unique ID and specified name, district, and
-     * location (0,0).
+     * generates a new community instance with a unique ID and predefined name, district,
+     * and population size.
      * 
-     * @returns a `Community` object containing default community details.
+     * @returns a `Community` object representing a fictional community with a unique ID,
+     * name, and district.
      * 
-     * 	- The Community object is generated using the `generateUniqueId()` method, which
-     * generates a unique identifier for the community.
-     * 	- The name of the community is specified in the second argument, which is a string
-     * called "default-community-name".
-     * 	- The district of the community is specified in the third argument, which is an
-     * integer called "default-community-district".
-     * 	- The `getTestCommunity` function returns a Community object with these properties.
+     * 	- The `generateUniqueId()` method is used to generate a unique identifier for the
+     * community.
+     * 	- The `default-community-name`, `default-community-district`, and `0`, `0`
+     * parameters are used to set default values for the community name, district, and
+     * location coordinates, respectively.
      */
     public static Community getTestCommunity() {
       return getTestCommunity(
@@ -272,22 +273,21 @@ public class TestUtils {
     }
 
     /**
-     * retrieves a pre-defined community object, adds it to an administrator's list of
-     * communities, and sets the administrator as the only admin for the community.
+     * retrieves a pre-defined community object, adds it to the user's communities list,
+     * and sets the user as the only admin for the community.
      * 
-     * @param admin user who will have access to the `testCommunity`.
+     * @param admin user who is being added as an administrator to the `testCommunity`.
      * 
-     * 	- `User admin`: This is an instance of the `User` class, representing a user in
-     * the community. It has various attributes such as `id`, `username`, `password`, and
-     * `role`.
+     * 	- `User admin`: This object represents a user with unknown properties, as it is
+     * not specified in the code snippet provided. However, based on its name, it may
+     * contain attributes such as username, password, email, and other personal information.
      * 
-     * @returns a Community object representing a test community with the specified admin
-     * user as an administrator.
+     * @returns a `Community` object representing a mock community for testing purposes.
      * 
-     * The Community object, `testCommunity`, has several attributes, including `setAdmins()`
-     * method, which sets the admin of the community to a single user, `admin`. Additionally,
-     * the community's membership is modified by adding it to the calling user's communities
-     * list.
+     * 	- The Community object `testCommunity` contains information about a fictional community.
+     * 	- The `admin` parameter passed to the function is added as an administrator of
+     * the community.
+     * 	- The community's admin list includes only the `admin` instance.
      */
     public static Community getTestCommunity(User admin) {
       Community testCommunity = getTestCommunity();
@@ -298,38 +298,42 @@ public class TestUtils {
 
     /**
      * creates a new community object and populates it with houses and admins retrieved
-     * from external sources. It returns the fully populated community object.
+     * from calls to other functions. It returns the constructed community object.
      * 
-     * @param communityId unique identifier of the community being created, which is used
-     * to assign the community its own set of houses and admins.
+     * @param communityId identifier of the community to be created or retrieved, which
+     * is used to identify the community in the database.
      * 
-     * @param communityName name of the community being created or retrieved.
+     * @param communityName name of the community being created or retrieved, which is
+     * used to set the name of the new Community object.
      * 
-     * @param communityDistrict district of the community being created, and is used to
-     * create a unique identifier for the community within that district.
+     * @param communityDistrict district of the community being created, which is used
+     * to set the appropriate name for the community.
      * 
-     * @param adminsCount number of users who will be assigned as community administrators
-     * for the newly created community.
+     * @param adminsCount number of users who will be assigned as administrators for the
+     * generated community, and it is used to create a set of users with the appropriate
+     * size.
      * 
-     * @param housesCount number of houses to generate for the test community, which are
-     * then added to the `communityHouses` set returned by the `getTestHouses()` method.
+     * @param housesCount number of houses to be generated and added to the community.
      * 
-     * @returns a new `Community` object with houses and admins set.
+     * @returns a new `Community` object representing a fictional community with houses
+     * and admins.
      * 
-     * 	- `Community testCommunity`: This is an instance of the `Community` class, which
-     * represents a community in the application.
-     * 	- `HashSet<>`: These are two sets that contain objects of the `CommunityHouse`
-     * and `User` classes, respectively. The `CommunityHouse` set contains houses associated
-     * with the community, while the `User` set contains admins of the community.
-     * 	- `communityName`: This is the name of the community being returned.
-     * 	- `communityId`: This is the ID of the community being returned.
-     * 	- `communityDistrict`: This is the district of the community being returned.
-     * 	- `adminsCount`: This is the number of admins associated with the community.
-     * 	- `housesCount`: This is the number of houses associated with the community.
+     * 	- `testCommunity`: A new instance of the `Community` class, created with an empty
+     * set of houses and admins.
+     * 	- `housesCount`: The number of houses to be added to the community, which is
+     * obtained from the function parameter.
+     * 	- `house`: An instance of the `CommunityHouse` class, created with an empty set
+     * of neighbors. Each house is added to the community's set of houses.
+     * 	- `adminsCount`: The number of admins to be added to the community, which is
+     * obtained from the function parameter.
+     * 	- `user`: An instance of the `User` class, created with an empty set of communities.
+     * Each admin is added to the community's set of admins.
+     * 	- `CommunityHouse` and `User`: These classes represent houses and users in the
+     * community, respectively. They have various attributes and methods that describe
+     * their properties and behaviors.
      * 
-     * In summary, the `getTestCommunity` function returns an instance of the `Community`
-     * class along with two sets of objects that represent houses and admins associated
-     * with the community.
+     * These are the essential properties and attributes of the output returned by the
+     * `getTestCommunity` function.
      */
     public static Community getTestCommunity(String communityId, String communityName, String communityDistrict, int adminsCount, int housesCount) {
       Community testCommunity = new Community(
@@ -352,29 +356,33 @@ public class TestUtils {
   }
 
   /**
-   * provides utility functions for working with amenities, including generating new
-   * amenities and retrieving existing ones based on their unique IDs. The class offers
-   * methods for creating new amenities with random IDs, names, and descriptions, as
-   * well as retrieving a set of amenities based on a specified count.
+   * provides methods for creating and manipulating amenities within a test environment.
+   * These methods include generating new amenities with unique IDs, names, and
+   * descriptions, as well as linking them to a test community. Additionally, the class
+   * provides a method for retrieving a set of generated amenities with a limited number.
+   * Overall, the class is used for testing purposes and helps in creating and manipulating
+   * amenity data within a controlled environment.
    */
   public static class AmenityHelpers {
 
     /**
-     * creates a new `Amenity` object with specified ID and description, and links it to
-     * a test community.
+     * creates a new `Amenity` object with the given `amenityId` and `amenityDescription`,
+     * and sets its `community` to a test `Community` object using `CommunityHelpers.getTestCommunity()`.
      * 
-     * @param amenityId identifier of the amenity being created.
+     * @param amenityId unique identifier of the amenity being created, which is used to
+     * establish its identity within the system.
      * 
-     * @param amenityDescription description of the amenity being created, which is used
-     * to set the `withDescription()` method of the returned `Amenity` object.
+     * @param amenityDescription description of an amenity.
      * 
      * @returns a new `Amenity` object with specified `amenityId`, `amenityDescription`,
      * and `community`.
      * 
-     * 	- `withAmenityId`: A String representing the amenity ID.
-     * 	- `withDescription`: A String representing the amenity description.
-     * 	- `withCommunity`: A reference to a Community object, which is obtained through
-     * the `getTestCommunity()` method.
+     * 	- `withAmenityId`: This attribute is set to a string representing the amenity ID.
+     * 	- `withDescription`: This attribute is set to a string representing the amenity
+     * description.
+     * 	- `withCommunity`: This attribute is set to a `Community` object, which represents
+     * the community where the amenity belongs. This is retrieved using the `getTestCommunity()`
+     * function.
      */
     public static Amenity getTestAmenity(String amenityId, String amenityDescription) {
       return new Amenity()
@@ -384,28 +392,27 @@ public class TestUtils {
     }
 
     /**
-     * generates a set of `Amenity` objects with unique IDs and predetermined names and
-     * descriptions, limiting the number of generated amenities based on the input count.
+     * generates a set of `Amenity` objects with unique IDs, names, and descriptions using
+     * a stream of anonymous objects generated by a lambda expression. The number of
+     * generated amenities is limited to the input `count`.
      * 
-     * @param count number of amenities to be generated and returned by the `getTestAmenities()`
-     * method.
+     * @param count maximum number of amenities to be generated and returned by the
+     * `getTestAmenities()` method.
      * 
-     * @returns a set of `Amenity` objects generated randomly with unique IDs, names, and
-     * descriptions.
+     * @returns a set of `Amenity` objects generated randomly with unique identifiers,
+     * names, and descriptions within a specified count limit.
      * 
      * 	- The output is a `Set` of `Amenity` objects.
-     * 	- Each `Amenity` object has an `amenityId`, which is generated uniquely for each
-     * amenity.
-     * 	- Each `Amenity` object has a `name` and a `description`.
-     * 	- The `name` is set to "default-amenity-name" for each amenity, while the
-     * `description` is set to "default-amenity-description".
-     * 	- The output is generated using a `Stream` of `Amenity` objects, with a total
-     * count of `count`.
-     * 	- The `Stream` is created by calling `generate()` on an empty `Supplier` of
-     * `Amenity` objects.
-     * 	- The `Limit` function is used to limit the number of generated amenities to `count`.
-     * 	- The `Collectors.toSet()` method is used to collect the generated amenities into
-     * a `Set`.
+     * 	- Each `Amenity` object has an `amenityId`, which is generated uniquely by the
+     * `generateUniqueId()` method.
+     * 	- Each `Amenity` object has a `name` and a `description`, which are hardcoded
+     * with default values.
+     * 	- The output is generated using a `Stream` of `Amenity` objects, which are created
+     * and added to the stream using the `generate()` method.
+     * 	- The `limit()` method is used to limit the number of `Amenity` objects in the
+     * stream to the specified `count`.
+     * 	- The `collect()` method is used to collect the stream of `Amenity` objects into
+     * a `Set`, which is returned as the output.
      */
     public static Set<Amenity> getTestAmenities(int count) {
       return Stream
@@ -421,34 +428,34 @@ public class TestUtils {
   }
 
   /**
-   * generates a set of user objects with unique properties using a recursive approach.
-   * The output is a Set of User objects, each representing an individual test user
-   * with various attributes such as name, email address, password, and a set of other
-   * users they belong to. The function returns at most a specified number of User objects.
+   * generates random user objects with unique names and emails, using a simple function
+   * to concatenate a default name and email address with an index-based identifier.
+   * The method takes the maximum number of users to generate as input and returns a
+   * set of these objects with a unique identifier for each one.
    */
   public static class UserHelpers {
 
     /**
-     * iterates over a sequence of numbers, creates new `User` objects, and returns a set
-     * of these objects after limiting the number to `count`.
+     * iteratively generates `count` user objects with unique IDs, emails, and passwords,
+     * and collects them into a set.
      * 
-     * @param count number of user objects to be generated and returned by the `getTestUsers()`
-     * method.
+     * @param count number of users to be generated and returned by the `getTestUsers()`
+     * function.
      * 
-     * @returns a set of `User` objects, each with a unique name and email address,
-     * generated using a random ID and password.
+     * @returns a set of `User` objects, each with unique identifying information and no
+     * overlap with any other user.
      * 
-     * 	- The output is a `Set` of `User` objects, indicating that each user in the set
-     * has a unique identifier.
-     * 	- Each `User` object contains several attributes, including a name, an email
-     * address, a password, and two `HashSet`s representing the user's friends and followers.
-     * 	- The `Stream` used to generate the output iterates over a range of values (0 to
-     * `count`), where `count` is the maximum number of users to be generated.
-     * 	- The `map` method transforms each iteration value into a new `User` object, using
-     * a simple function that concatenates a default name and email address with an
-     * index-based identifier.
-     * 	- The `limit` method is used to cap the number of `User` objects returned in the
-     * set, ensuring that only `count` elements are included.
+     * 	- The Set of User objects contains `count` number of elements, each representing
+     * a test user.
+     * 	- Each User object is created with a unique name, generated using the
+     * `generateUniqueId()` method.
+     * 	- The email address for each User object is also unique and consists of a prefix
+     * followed by an incrementing index.
+     * 	- The password for each User object is also unique and consists of a random string
+     * of characters.
+     * 	- The User objects have no roles assigned to them, represented by an empty HashSet.
+     * 	- The User objects have no permissions granted to them, represented by an empty
+     * HashSet.
      */
     public static Set<User> getTestUsers(int count) {
       return Stream.iterate(0, n -> n + 1)
@@ -467,30 +474,34 @@ public class TestUtils {
   }
 
   /**
-   * provides various methods for creating and customizing `MailProperties` and
-   * `EmailTemplateProperties` objects for testing purposes. These methods allow for
-   * setting predefined properties or creating customized instances with custom values
-   * for various attributes such as host, username, password, port, protocol, debug,
-   * and dev mode. Additionally, a method is provided to create an instance of
-   * `EmailTemplateLocalizationProperties` with customized properties for testing
-   * purposes, including a path, encoding, and cache seconds.
+   * appears to provide various ways to create customized email properties for testing
+   * purposes, including creating new instances of `MailProperties`, `EmailTemplateProperties`,
+   * and `EmailTemplateLocalizationProperties`. These properties can be customized with
+   * specific values for host, username, password, port, protocol, debug, devMode, path,
+   * encoding, mode, and cache seconds.
    */
   public static class MailPropertiesHelper {
 
     /**
-     * creates a new `MailProperties` object with specific properties set to simulate
-     * various mail configurations for testing purposes.
+     * creates a new instance of `MailProperties` with customized properties for testing
+     * purposes.
      * 
-     * @returns a `MailProperties` object with customized settings for testing purposes.
+     * @returns a `MailProperties` object with customized properties for testing purposes.
      * 
-     * 	- Host: The hostname where the email server is located.
-     * 	- Username: The username to use when connecting to the email server.
-     * 	- Password: The password to use when connecting to the email server.
-     * 	- Port: The port number used for the email communication.
-     * 	- Protocol: The protocol used for the email communication, which can be either
-     * "smtp" or "imap".
-     * 	- Debug: A boolean value indicating whether debugging mode is enabled.
-     * 	- DevMode: A boolean value indicating whether development mode is enabled.
+     * 	- `host`: The value of this property is "test host". This specifies the hostname
+     * or IP address of the mail server to connect to.
+     * 	- `username`: The value of this property is "test username". This specifies the
+     * login username for the mail server.
+     * 	- `password`: The value of this property is "test password". This specifies the
+     * password for the login credentials.
+     * 	- `port`: The value of this property is 0. This specifies the port number to use
+     * when connecting to the mail server.
+     * 	- `protocol`: The value of this property is "test protocol". This specifies the
+     * mail transfer protocol (MTP) to use when sending emails.
+     * 	- `debug`: The value of this property is false. This specifies whether or not to
+     * enable debug mode for the mail client.
+     * 	- `devMode`: The value of this property is false. This specifies whether or not
+     * to enable developer mode for the mail client.
      */
     public static MailProperties getTestMailProperties() {
       MailProperties testMailProperties = new MailProperties();
@@ -505,11 +516,10 @@ public class TestUtils {
     }
 
     /**
-     * creates a new `EmailTemplateProperties` object with customized properties, including
-     * a path, encoding, mode, and cache status, and returns it.
+     * creates a new `EmailTemplateProperties` instance with customized properties,
+     * including path, encoding, mode, and cache status.
      * 
-     * @returns an instance of `EmailTemplateProperties` with customized properties for
-     * testing purposes.
+     * @returns an instance of `EmailTemplateProperties` with custom properties set.
      * 
      * 	- The `path` attribute is set to "test path".
      * 	- The `encoding` attribute is set to "test encoding".
@@ -526,15 +536,16 @@ public class TestUtils {
     }
 
     /**
-     * creates a new `EmailTemplateLocalizationProperties` object with customizable
-     * properties for testing purposes, including path, encoding, and cache seconds.
+     * creates a new instance of `EmailTemplateLocalizationProperties` and sets the path,
+     * encoding, and cache seconds to specified values.
      * 
-     * @returns an instance of `EmailTemplateLocalizationProperties` with customized
-     * properties for testing purposes.
+     * @returns an instance of `EmailTemplateLocalizationProperties` with customized path,
+     * encoding, and cache seconds settings.
      * 
-     * 	- The `path` attribute is set to "test path".
-     * 	- The `encoding` attribute is set to "test encoding".
-     * 	- The `cacheSeconds` attribute is set to 0.
+     * 	- The `setPath()` method sets the path to the test localization files.
+     * 	- The `setEncoding()` method sets the encoding of the test localization files.
+     * 	- The `setCacheSeconds()` method sets the cache time for the test localization
+     * files in seconds.
      */
     public static EmailTemplateLocalizationProperties getTestLocalizationMailProperties() {
       EmailTemplateLocalizationProperties testTemplatesLocalization = new EmailTemplateLocalizationProperties();
@@ -546,67 +557,57 @@ public class TestUtils {
   }
 
   /**
-   * is a utility class that provides methods for creating and manipulating `Payment`
-   * objects. The class offers various methods to build a `PaymentDto` object with
-   * fields such as charge amount, payment type, description, recurring status, due
-   * date, and user/member information. Additionally, the class provides a method to
-   * generate a payment object with all fields null except for the 'recurring' field
-   * which is false.
+   * is used to build a `PaymentDto` object with various attributes, including charge
+   * amount, payment type, description, recurring status, due date, admin, and member
+   * information. The class provides methods for creating a mock payment object with
+   * all fields except 'recurring' set to null, and 'recurring' set to false.
    */
   public static class PaymentHelpers {
 
     /**
-     * builds a `PaymentDto` object with various attributes, including charge amount,
-     * payment type, description, recurring status, due date, admin, and member information.
+     * builds a `PaymentDto` object with various parameters such as charge amount, payment
+     * type, description, recurring status, due date, and admin and member information.
      * 
      * @param charge amount to be charged for the payment.
      * 
-     * 	- `BigDecimal charge`: This represents the monetary value of the payment being
-     * processed. It is deserialized from the incoming JSON payload.
+     * The `BigDecimal` charge represents an amount of money.
      * 
-     * @param type type of payment, which determines the specific fields and values
-     * included in the generated `PaymentDto`.
+     * @param type payment type, which determines how the payment will be processed and
+     * recorded in the system.
      * 
-     * @param description description of the payment being made, which is included in the
-     * resulting `PaymentDto`.
+     * @param description a brief description of the payment, which is added to the
+     * `PaymentDto` object as a string field.
      * 
-     * @param recurring boolean value whether the payment is recurring or not.
+     * @param recurring whether the payment is recurring or not.
      * 
-     * @param dueDate LocalDate when the payment is due, which is used to build the `PaymentDto`.
+     * @param dueDate date when the payment is due, which is converted to a string and
+     * included in the `PaymentDto` object.
      * 
-     * The `LocalDate` object `dueDate` represents the date on which the payment is due.
-     * Its toString() method returns a string representation of the date in the format "YYYY-MM-DD".
+     * 	- `toString()` is called to convert the `LocalDate` object into a string
+     * representation in the format "YYYY-MM-DD" or "YYYY-MM-DD HH:MM:SS", depending on
+     * the context.
      * 
-     * @param admin user who made the payment, and its value is passed to the
-     * `PaymentDto.builder()` method as part of the construction process.
+     * @param admin UserDto object containing information about the administrator who
+     * made the payment.
      * 
-     * 	- `admin`: A `UserDto` object containing details about the administrator who made
-     * the payment. Its attributes include `id`, `username`, `email`, and `role`.
+     * 	- `admin`: A `UserDto` object representing an administrator who made the payment.
+     * 	+ Properties: `username`, `fullName`, `email`, `phoneNumber`, `role` (e.g., "Admin").
      * 
-     * @param member HouseMemberDto object containing information about the member who
-     * is responsible for the payment.
+     * @param member HouseMemberDto object containing information about the member whose
+     * payment is being processed.
      * 
-     * 	- `admin`: This is an instance of `UserDto`, representing the user who made the
+     * 	- `admin`: The `UserDto` object representing the admin user associated with the
      * payment.
-     * 	- `member`: This is an instance of `HouseMemberDto`, representing the member for
-     * whom the payment was made. The `member` object contains several properties, including:
-     * 	+ `id`: A unique identifier for the member.
-     * 	+ `name`: The member's name.
-     * 	+ `email`: The member's email address.
-     * 	+ `phone`: The member's phone number.
      * 
-     * @returns a `PaymentDto` object built with charge, type, description, recurring,
-     * due date, admin, and member parameters.
+     * @returns a `PaymentDto` object with pre-populated fields.
      * 
-     * 	- `charge`: The BigDecimal value representing the amount to be charged.
-     * 	- `type`: The string indicating the type of payment (e.g., "invoice", "credit_note").
-     * 	- `description`: The string describing the payment (e.g., a brief description of
-     * the transaction).
-     * 	- `recurring`: A boolean value indicating whether the payment is recurring.
-     * 	- `dueDate`: The LocalDate representing the date the payment is due.
-     * 	- `admin`: The UserDto object representing the administrator responsible for the
-     * payment.
-     * 	- `member`: The HouseMemberDto object representing the member associated with the
+     * 	- charge: The BigDecimal value representing the amount to be charged.
+     * 	- type: The string value indicating the payment type (e.g., "invoice", "credit_card").
+     * 	- description: The string value providing a brief description of the payment.
+     * 	- recurring: A boolean value indicating whether the payment is recurring.
+     * 	- dueDate: A LocalDate object representing the date when the payment is due.
+     * 	- admin: The UserDto object representing the administrator associated with the payment.
+     * 	- member: The HouseMemberDto object representing the member associated with the
      * payment.
      */
     public static PaymentDto getTestPaymentDto(BigDecimal charge, String type, String description, boolean recurring, LocalDate dueDate, UserDto admin, HouseMemberDto member) {
@@ -622,20 +623,23 @@ public class TestUtils {
           .build();
     }
     /**
-     * creates a mock payment object with all fields except `recurring` set to null, and
-     * `recurring` set to false.
+     * creates a `Payment` instance with all fields nullable except for the recurring
+     * field, which is false.
      * 
-     * @returns a `Payment` object with all fields null or false, except for the `recurring`
-     * field.
+     * @returns a `Payment` object with all fields null except for the `recurring` field,
+     * which is set to false.
      * 
-     * 	- The `payment` field is null.
-     * 	- The `id` field is null.
-     * 	- The `amount` field is null.
-     * 	- The `currency` field is null.
-     * 	- The `due_date` field is null.
-     * 	- The `recurring` field is false.
-     * 	- The `status` field is null.
-     * 	- The `created_at` field is null.
+     * 	- `payment`: The Payment object itself, which is empty and has no fields set.
+     * 	- `recurring`: A boolean field indicating whether the payment is recurring or
+     * not. In this case, it is false.
+     * 	- `amount`: The amount of the payment, which is null.
+     * 	- `currency`: The currency of the payment, which is also null.
+     * 	- `description`: A string field providing a brief description of the payment,
+     * which is null.
+     * 	- `due_date`: The date the payment is due, which is null.
+     * 	- `paid`: A boolean field indicating whether the payment has been made, which is
+     * also null.
+     * 	- `status`: The status of the payment, which is null.
      */
     public static Payment getTestPaymentNullFields() {
       //Only 'recurring' field will be not null, but false
