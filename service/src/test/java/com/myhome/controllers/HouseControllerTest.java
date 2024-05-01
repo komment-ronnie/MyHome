@@ -49,6 +49,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+/**
+ * is a test class for the HouseController class, which handles various house-related
+ * operations such as listing all members of a house, adding new members, and deleting
+ * existing members. The test class verifies the functionality of these operations
+ * through various tests, including unit tests and integration tests.
+ */
 class HouseControllerTest {
 
   private final String TEST_HOUSE_ID = "test-house-id";
@@ -67,11 +73,19 @@ class HouseControllerTest {
   @InjectMocks
   private HouseController houseController;
 
+  /**
+   * initializes mocking annotations for the current class using the `MockitoAnnotations.initMocks()`
+   * method.
+   */
   @BeforeEach
   private void init() {
     MockitoAnnotations.initMocks(this);
   }
 
+  /**
+   * tests the listAllHouses method of the HouseController class by providing a set of
+   * test houses and verifying that the expected response is returned.
+   */
   @Test
   void listAllHouses() {
     // given
@@ -95,6 +109,10 @@ class HouseControllerTest {
     assertEquals(expectedResponseBody, response.getBody());
   }
 
+  /**
+   * retrieves the details of a specific house given its ID and maps it to a rest API
+   * response.
+   */
   @Test
   void getHouseDetails() {
     // given
@@ -123,6 +141,11 @@ class HouseControllerTest {
     verify(houseApiMapper).communityHouseToRestApiResponseCommunityHouse(testCommunityHouse);
   }
 
+  /**
+   * tests the scenario where the house with the given ID does not exist in the database,
+   * returning a `HttpStatus.NOT_FOUND` response and null body. It also verifies the
+   * calls to the `houseService` and `houseApiMapper`.
+   */
   @Test
   void getHouseDetailsNotExists() {
     // given
@@ -143,6 +166,10 @@ class HouseControllerTest {
         testCommunityHouse);
   }
 
+  /**
+   * queries the house members for a given house ID and returns them as a list of REST
+   * API response objects.
+   */
   @Test
   void listAllMembersOfHouse() {
     // given
@@ -174,6 +201,10 @@ class HouseControllerTest {
         new HashSet<>(testHouseMembers));
   }
 
+  /**
+   * tests whether a non-existent house returns a `HttpStatus.NOT_FOUND` response and
+   * an empty list of members when called on the HouseController.
+   */
   @Test
   void listAllMembersOfHouseNotExists() {
     // given
@@ -191,6 +222,11 @@ class HouseControllerTest {
     verify(houseMemberMapper, never()).houseMemberSetToRestApiResponseHouseMemberSet(anySet());
   }
 
+  /**
+   * takes a request with members to be added to a house, maps the members to the House
+   * Member model, adds them to the house using the service, and returns the updated
+   * house members in a REST API response.
+   */
   @Test
   void addHouseMembers() {
     // given
@@ -231,6 +267,10 @@ class HouseControllerTest {
     verify(houseMemberMapper).houseMemberSetToRestApiResponseAddHouseMemberSet(testMembers);
   }
 
+  /**
+   * tests the AddHouseMembers API endpoint by adding a set of HouseMembers to an
+   * existing house and verifying that none are added.
+   */
   @Test
   void addHouseMembersNoMembersAdded() {
     // given
@@ -271,6 +311,11 @@ class HouseControllerTest {
         testMembers);
   }
 
+  /**
+   * tests the deletion of a member from a house through the `houseController`. It
+   * verifies that the response status code is `HttpStatus.NO_CONTENT` and the response
+   * body is `null`.
+   */
   @Test
   void deleteHouseMemberSuccess() {
     // given
@@ -285,6 +330,11 @@ class HouseControllerTest {
     assertNull(response.getBody());
   }
 
+  /**
+   * tests the delete member from house method by providing a false return value from
+   * the given mock service, and then verifies the expected HTTP status code and response
+   * body using assertion.
+   */
   @Test
   void deleteHouseMemberFailure() {
     // given

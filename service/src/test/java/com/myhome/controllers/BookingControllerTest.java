@@ -34,7 +34,7 @@ public class BookingControllerTest {
 
   /**
    * initializes mock objects using MockitoAnnotations, enabling the use of mocking
-   * frameworks for test purposes.
+   * functionalities throughout the test class.
    */
   @BeforeEach
   private void init() {
@@ -42,10 +42,10 @@ public class BookingControllerTest {
   }
 
   /**
-   * tests the deletion of a booking by passing the ammenity ID and the booking ID to
-   * the `bookingController`. It then verifies that the response is null, the status
-   * code is NO_CONTENT, and that the `bookingSDJpaService` method was called with the
-   * correct parameters.
+   * tests the deletion of a booking by providing the ammenity ID and the booking ID
+   * to the `bookingController`, which then calls the `bookingSDJpaService` to delete
+   * the booking. The test verifies that the booking is deleted successfully and returns
+   * a `ResponseEntity` with no body and a status code of `HttpStatus.NO_CONTENT`.
    */
   @Test
   void deleteBooking() {
@@ -64,9 +64,9 @@ public class BookingControllerTest {
   }
 
   /**
-   * verifies that a booking with the given ID does not exist in the database and throws
-   * a `HttpStatus.NOT_FOUND` response when tried to delete it through the controller
-   * method.
+   * tests whether deleting a non-existent booking returns a `HttpStatus.NOT_FOUND`
+   * response and verifies that the method call to `bookingSDJpaService.deleteBooking()`
+   * was made.
    */
   @Test
   void deleteBookingNotExists() {

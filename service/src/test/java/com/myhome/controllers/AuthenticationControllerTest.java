@@ -17,10 +17,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a unit test for the AuthenticationController class, which is responsible for
- * handling login requests. The test class sets up mock dependencies and verifies
- * that the authentication controller returns the correct response when given a valid
- * login request.
+ * is a unit test for the AuthenticationController class, which handles login requests.
+ * The test class sets up mock dependencies and verifies that the authentication
+ * controller returns the correct response when given a valid login request.
  */
 public class AuthenticationControllerTest {
 
@@ -35,8 +34,7 @@ public class AuthenticationControllerTest {
   private AuthenticationController authenticationController;
 
   /**
-   * initializes Mockito mocking for the current class, enabling mocking of dependencies
-   * and behaviors.
+   * is used to initialize mock objects using MockitoAnnotations.
    */
   @BeforeEach
   private void init() {
@@ -44,9 +42,9 @@ public class AuthenticationControllerTest {
   }
 
   /**
-   * tests the authentication controller's `login` method by providing a valid login
-   * request and verifying the response status code, headers, and the call to the
-   * authentication service's `login` method.
+   * tests the login functionality of the authentication controller by providing a valid
+   * login request and verifying the response status code, headers, and the execution
+   * of the `login` method of the authentication service.
    */
   @Test
   void loginSuccess() {
@@ -70,26 +68,29 @@ public class AuthenticationControllerTest {
   }
 
   /**
-   * creates a new `LoginRequest` instance with email `TEST_EMAIL` and password `TEST_PASSWORD`.
+   * creates a new `LoginRequest` instance with predefined email and password for testing
+   * purposes.
    * 
    * @returns a `LoginRequest` object with predefined email and password values.
    * 
-   * 	- The function returns a new `LoginRequest` object.
-   * 	- The `email` property of the returned object is set to `TEST_EMAIL`.
-   * 	- The `password` property of the returned object is set to `TEST_PASSWORD`.
+   * 	- The function returns a new instance of the `LoginRequest` class.
+   * 	- The `email` field is set to `TEST_EMAIL`, which represents an email address for
+   * the login request.
+   * 	- The `password` field is set to `TEST_PASSWORD`, which represents the password
+   * for the login request.
    */
   private LoginRequest getDefaultLoginRequest() {
     return new LoginRequest().email(TEST_EMAIL).password(TEST_PASSWORD);
   }
 
   /**
-   * returns an instance of `AuthenticationData` with predefined values for `TOKEN` and
-   * `TEST_ID`.
+   * creates a default instance of the `AuthenticationData` class with a token and test
+   * ID.
    * 
-   * @returns an instance of `AuthenticationData` with `TOKEN` and `TEST_ID` properties.
+   * @returns an instance of `AuthenticationData` containing the token and test ID.
    * 
-   * 	- `TOKEN`: A string representing the authentication token.
-   * 	- `TEST_ID`: An integer identifier for testing purposes.
+   * 	- `TOKEN`: This is a string value representing an authentication token.
+   * 	- `TEST_ID`: This is an integer value used to identify a specific test.
    */
   private AuthenticationData getDefaultAuthenticationData() {
     return new AuthenticationData(TOKEN, TEST_ID);

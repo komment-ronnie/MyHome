@@ -24,10 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * is a unit test class for testing the SecretJwtEncoderDecoder class. The tests cover
- * various scenarios such as successful jwt encoding and decoding, invalid secret
- * key, expired jwt, and others. The tests verify the functionality of the
- * SecretJwtEncoderDecoder class and ensure it works correctly in different situations.
+ * tests various scenarios involving the encoding and decoding of JSON Web Tokens
+ * (JWTs) using a secret key. The test cases include successful encoding and decoding
+ * with valid secret keys, as well as errors due to invalid secret keys or expired JWTs.
  */
 class SecretJwtEncoderDecoderTest {
   private static final String TEST_USER_ID = "test-user-id";
@@ -59,8 +58,8 @@ class SecretJwtEncoderDecoderTest {
   }
 
   /**
-   * tests whether an exception is thrown when a secret key is invalid during JWT
-   * encoding using the `SecretJwtEncoderDecoder`.
+   * tests whether a `WeakKeyException` is thrown when an invalid secret key is used
+   * to encode an JWT claim.
    */
   @Test
   void jwtEncodeFailWithException() {
@@ -74,9 +73,8 @@ class SecretJwtEncoderDecoderTest {
   }
 
   /**
-   * tests the decode functionality of the `SecretJwtEncoderDecoder`. It provides an
-   * encoded JWT, decodes it successfully with the valid secret key, and verifies that
-   * the resulting `AppJwt` object has the expected user ID and expiration time.
+   * tests the decoding of a JWT token using the `SecretJwtEncoderDecoder`. It verifies
+   * that the decoded token has the expected user ID, expiration time, and is not null.
    */
   @Test
   void jwtDecodeSuccess() {
@@ -96,7 +94,7 @@ class SecretJwtEncoderDecoderTest {
   }
 
   /**
-   * tests whether an exception is thrown when decoding an expired JWT using the `SecretJwtEncoderDecoder`.
+   * tests whether an exception is thrown when decoding an expired JWT using a `SecretJwtEncoderDecoder`.
    */
   @Test
   void jwtDecodeFailWithExpiredJwt() {

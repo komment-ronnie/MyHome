@@ -39,24 +39,23 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
 /**
- * provides a set of mappings between different entities and DTOs used in a payment
- * API, including mapping between Payment, User, HouseMember, and Community entities
- * to corresponding DTOs, as well as providing additional methods for enriching the
- * schedule payment request with user and house member details.
+ * provides a set of methods for transforming and enriching Schedule Payment Requests,
+ * as well as retrieving Administrator details based on an enriched schedule payment
+ * request.
  */
 @Mapper
 public interface SchedulePaymentApiMapper {
 
   /**
-   * converts a `String` representing an administrator ID into a `UserDto` object
-   * containing the ID and other relevant information.
+   * converts a given admin ID into a `UserDto` object representing an administrator
+   * with the same ID.
    * 
-   * @param adminId user ID of an admin to be converted into a `UserDto` object.
+   * @param adminId user ID of an administrator for which an `AdminDto` object is to
+   * be constructed.
    * 
-   * @returns a `UserDto` object representing the admin with the specified `adminId`.
+   * @returns a `UserDto` object with the specified `adminId`.
    * 
-   * 1/ `userId`: A string representing the user ID of the admin.
-   * 2/ `build()`: Creates a new instance of `UserDto` with the specified `userId`.
+   * 	- `userId`: A String that represents the admin ID used to build the `UserDto`.
    */
   @Named("adminIdToAdmin")
   static UserDto adminIdToAdminDto(String adminId) {
@@ -66,19 +65,16 @@ public interface SchedulePaymentApiMapper {
   }
 
   /**
-   * converts a `memberId` string into a `HouseMemberDto` object, which contains the
-   * original member ID as its sole property.
+   * converts a given member ID string into a corresponding `HouseMemberDto` object,
+   * with the member ID field already populated.
    * 
-   * @param memberId 12-digit unique identifier of a member in the House, which is used
-   * to retrieve the corresponding member details in the `HouseMemberDto` object created
-   * by the function.
+   * @param memberId ID of a member to be converted into a `HouseMemberDto` object.
    * 
-   * @returns a `HouseMemberDto` object containing the input `memberId`.
+   * @returns a `HouseMemberDto` object containing the `memberId`.
    * 
-   * 	- `memberId`: This is a String attribute that represents the member ID passed as
-   * an input to the function.
-   * 	- Other attributes not mentioned in the function signature or documentation are
-   * not included in the output.
+   * 	- `memberId`: This is a String attribute that contains the member ID passed in
+   * as input.
+   * 	- No other attributes or properties have been defined for this object.
    */
   @Named("memberIdToMember")
   static HouseMemberDto memberIdToMemberDto(String memberId) {
@@ -87,14 +83,14 @@ public interface SchedulePaymentApiMapper {
   }
 
   /**
-   * maps a `UserDto` object to its corresponding `userId`.
+   * transforms a `UserDto` object into a string representing the user ID.
    * 
-   * @param userDto User object that contains information about an administrator, and
-   * it is used to extract the user's ID from the object.
+   * @param userDto user object containing information about the user for which the
+   * `adminToAdminId` function is being called.
    * 
-   * 	- `getUserId()` returns the user ID of the admin.
+   * 	- `getUserId()`: returns the user ID of the `UserDto`.
    * 
-   * @returns a `String` representing the user ID of the admin.
+   * @returns a string representing the user ID of the admin.
    */
   @Named("adminToAdminId")
   static String adminToAdminId(UserDto userDto) {
@@ -102,15 +98,14 @@ public interface SchedulePaymentApiMapper {
   }
 
   /**
-   * converts a `HouseMemberDto` object into its corresponding member ID.
+   * returns the `MemberId` field from the `HouseMemberDto` object passed as an argument.
    * 
-   * @param houseMemberDto House Member object containing information about a member
-   * of a household, which is used to retrieve the member's ID in the `memberToMemberId`
-   * function.
+   * @param houseMemberDto House Member object that contains the member ID to be converted
+   * into a string.
    * 
-   * 	- `getMemberId()`: Returns the `MemberId` field of `houseMemberDto`.
+   * 	- `getMemberId()`: Returns the member ID of the House Member object.
    * 
-   * @returns a string representing the member ID of the input `HouseMemberDto` object.
+   * @returns a string representing the ` MemberId` of the input `HouseMemberDto`.
    */
   @Named("memberToMemberId")
   static String memberToMemberId(HouseMemberDto houseMemberDto) {
@@ -127,34 +122,34 @@ public interface SchedulePaymentApiMapper {
       EnrichedSchedulePaymentRequest enrichedSchedulePaymentRequest);
 
   /**
-   * maps the user details from the enriched schedule payment request to the admin and
-   * member fields of the PaymentDto object using the `@MappingTarget` annotation.
+   * maps the user fields of a payment request to their administrative and house member
+   * counterparts using MapStruct and Lombok's `@Builder` annotation.
    * 
-   * @param paymentDto PaymentDto object, which is being modified to include user details
-   * from the enriched schedule payment request.
+   * @param paymentDto PaymentDto object to be modified with user details.
    * 
-   * 	- `PaymentDto.PaymentDtoBuilder`: This is an instance of a class annotated with
-   * `@Builder`, which provides a way to construct instances of the `PaymentDto` class.
-   * 	- `EnrichedSchedulePaymentRequest`: This is the input parameter to the function,
-   * which contains the user details of the payment request.
-   * 	- `getEnrichedRequestMember()` and `getEnrichedRequestAdmin()`: These are methods
-   * that extract the member and admin details from the input `EnrichedSchedulePaymentRequest`
-   * object, respectively.
+   * 	- `paymentDto`: The PaymentDto class is annotated with `@MappingTarget`, indicating
+   * that it is the target of a mapping operation.
+   * 	- `PaymentDtoBuilder`: The `PaymentDtoBuilder` instance is passed as an argument
+   * to the `setUserFields` function, which suggests that this class is used for building
+   * instances of the `PaymentDto` class.
+   * 	- `enrichedSchedulePaymentRequest`: This parameter represents the enriched schedule
+   * payment request, which contains additional information beyond what is provided in
+   * the original payment request.
+   * 	- `getEnrichedRequestMember()` and `getEnrichedRequestAdmin()`: These methods are
+   * used to extract specific fields or attributes from the enriched schedule payment
+   * request, specifically the member and admin details.
    * 
-   * Therefore, the `setUserFields` function takes a `PaymentDto.PaymentDtoBuilder`
-   * instance and an `EnrichedSchedulePaymentRequest` object as inputs, and updates the
-   * `member` and `admin` properties of the deserialized `paymentDto` instance using
-   * the extracted member and admin details.
+   * @param enrichedSchedulePaymentRequest enriched payment request with additional
+   * user details, which are then mapped to administrative and member fields in the
+   * resulting `PaymentDto`.
    * 
-   * @param enrichedSchedulePaymentRequest payment request with user details enriched
-   * for further processing and mapping, providing the necessary data for the
-   * `setUserFields()` method to operate effectively.
+   * 	- `getEnrichedRequestMember`: This method extracts the member details from the
+   * enriched payment request.
+   * 	- `getEnrichedRequestAdmin`: This method extracts the admin details from the
+   * enriched payment request.
    * 
-   * 	- `PaymentDto.PaymentDtoBuilder`: This is an instance of a builder class for the
-   * `PaymentDto` type, which is annotated with `@Builder`. The builder is required to
-   * pass in the instance of the class when using the `AfterMapping` method.
-   * 	- `EnrichedSchedulePaymentRequest`: This is the deserialized input object containing
-   * information about a payment request, including member and admin details.
+   * The `paymentDto` object is updated with the member and admin details using the
+   * `member()` and `admin()` methods, respectively.
    */
   @AfterMapping
   default void setUserFields(@MappingTarget PaymentDto.PaymentDtoBuilder paymentDto, EnrichedSchedulePaymentRequest enrichedSchedulePaymentRequest) {
@@ -183,82 +178,74 @@ public interface SchedulePaymentApiMapper {
   SchedulePaymentResponse paymentToSchedulePaymentResponse(PaymentDto payment);
 
   /**
-   * takes a `SchedulePaymentRequest` object and enhances it with additional information
-   * from the user and community, such as the admin's name, email, encrypted password,
-   * and community IDs, as well as the member's ID and house document filename.
+   * enriches a `SchedulePaymentRequest` object by adding additional information such
+   * as community IDs, admin and member details, and house membership documents.
    * 
-   * @param request SchedulePaymentRequest object that contains information about the
-   * payment request to be enriched, including its type, description, recurrence status,
-   * charge amount, due date, and administrator and member details.
+   * @param request Schedule Payment Request to be enriched, providing its type,
+   * description, recurring status, charge amount, due date, and other relevant details.
    * 
-   * 	- `getType()`: The type of schedule payment request (e.g., "Monthly")
-   * 	- `getDescription()`: A brief description of the payment request
-   * 	- `isRecurring()`: Whether the payment request is recurring or not
-   * 	- `getCharge()`: The charge amount for the payment request
-   * 	- `getDueDate()`: The due date of the payment request
-   * 	- `getAdminId()`: The ID of the admin who created the payment request
-   * 	- `admin.getId()`: The ID of the admin who is associated with the payment request
-   * 	- `admin.getName()`: The name of the admin who is associated with the payment request
-   * 	- `admin.getEmail()`: The email address of the admin who is associated with the
-   * payment request
-   * 	- `admin.getEncryptedPassword()`: The encrypted password of the admin who is
-   * associated with the payment request
-   * 	- `communityIds`: A set of community IDs that the payment request is related to
-   * 	- `member.getMemberId()`: The ID of the member who made the payment request
-   * 	- `member.getId()`: The ID of the member who made the payment request
-   * 	- `member.getHouseMemberDocument() != null ? member.getHouseMemberDocument().getDocumentFilename()
-   * : ""`: The filename of the House Member document associated with the member (if
-   * it exists)
-   * 	- `member.getName()`: The name of the member who made the payment request
-   * 	- `member.getCommunityHouse() != null ? member.getCommunityHouse().getHouseId()
-   * : """`: The ID of the community house associated with the member (if it exists)
+   * 	- `type`: The type of schedule payment request (e.g., "one-time" or "recurring").
+   * 	- `description`: A brief description of the payment request.
+   * 	- `isRecurring`: Indicates whether the payment request is recurring.
+   * 	- `charge`: The amount of the payment request.
+   * 	- `dueDate`: The due date of the payment request.
+   * 	- `adminId`: The ID of the admin who created or modified the payment request.
+   * 	- `adminName`: The name of the admin who created or modified the payment request.
+   * 	- `adminEmail`: The email address of the admin who created or modified the payment
+   * request.
+   * 	- `encryptedPassword`: The encrypted password of the admin who created or modified
+   * the payment request (only included if the admin has an encrypted password).
+   * 	- `communityIds`: A set of community IDs associated with the payment request.
+   * 	- `memberId`: The ID of the member for whom the payment request is being made.
+   * 	- `memberName`: The name of the member for whom the payment request is being made.
+   * 	- `memberCommunityHouseId`: The ID of the community house associated with the
+   * member (only included if the member has a community house).
    * 
-   * @param admin User object containing information about the admin user who made the
-   * request, and provides the admin's ID, name, email, encrypted password, and communities.
+   * @param admin user who is authorizing the payment request, providing their ID, name,
+   * email, and encrypted password to enrich the request.
    * 
-   * 	- `getCommunities()`: Returns a stream of `Community` objects representing the
-   * communities that the admin is a member of.
-   * 	- `map()`: Maps each `Community` object to its community ID using the `map()` method.
-   * 	- `collect()`: Collects the mapped community IDs into a set using the `collect()`
-   * method.
-   * 	- `getAdminId()`: Returns the admin's ID.
-   * 	- `getId()`: Returns the admin's ID.
-   * 	- `getName()`: Returns the admin's name.
-   * 	- `getEmail()`: Returns the admin's email address.
-   * 	- `getEncryptedPassword()`: Returns the admin's encrypted password.
-   * 	- `communityIds`: Returns a set of community IDs associated with the admin.
+   * 	- `getCommunities()` returns a stream of community IDs associated with the admin.
+   * 	- `map()` transforms the stream into a set of community IDs.
+   * 	- `getAdminId()` and `getId()` return the ID of the admin.
+   * 	- `getName()` and `getEmail()` return the name and email address of the admin, respectively.
+   * 	- `getEncryptedPassword()` returns the encrypted password of the admin.
+   * 	- `communityIds` is a set of community IDs associated with the admin.
+   * 	- `getHouseMemberDocument()` returns a document filename associated with the member.
+   * 	- `getName()`, `getId()`, and `getCommunityHouse()` return information about the
+   * member.
    * 
    * @param member HouseMember object that provides additional information about the
-   * member for whom the payment request is being enriched, including their community
-   * ID and document filename.
+   * payment request, including the member's ID, name, community house ID, and document
+   * filename.
    * 
-   * 	- `member.getMemberId()` - The unique identifier for the member in the system.
-   * 	- `member.getId()` - The ID of the member in the database.
-   * 	- `member.getHouseMemberDocument()` - If not null, it contains information about
-   * the member's house membership, including the document filename.
-   * 	- `member.getName()` - The member's name.
-   * 	- `member.getCommunityHouse()` - If not null, it references the community house
-   * associated with the member.
+   * 	- `member.getMemberId()` - The member's ID.
+   * 	- `member.getHouseMemberDocument() != null ? member.getHouseMemberDocument().getDocumentFilename()
+   * : ""` - The filename of the member's House Member document, or an empty string if
+   * none is present.
    * 
-   * @returns an enriched `SchedulePaymentRequest` object with additional fields.
+   * @returns an enriched `SchedulePaymentRequest` object containing additional community
+   * and member information.
    * 
-   * 1/ `type`: The type of payment request, which could be "one-time" or "recurring".
-   * 2/ `description`: A brief description of the payment request.
-   * 3/ `isRecurring`: Indicates whether the payment request is recurring or not.
-   * 4/ `charge`: The amount to be charged for the payment request.
-   * 5/ `dueDate`: The date by which the payment must be made.
-   * 6/ `adminId`: The ID of the admin who created the payment request.
-   * 7/ `adminName`: The name of the admin who created the payment request.
-   * 8/ `adminEmail`: The email address of the admin who created the payment request.
-   * 9/ `encryptedPassword`: The encrypted password of the admin who created the payment
+   * 	- `type`: The type of schedule payment request, which could be either "one-time"
+   * or "recurring".
+   * 	- `description`: A brief description of the schedule payment request.
+   * 	- `isRecurring`: A boolean indicating whether the schedule payment request is
+   * recurring or not.
+   * 	- `charge`: The charge amount for the schedule payment request.
+   * 	- `dueDate`: The due date of the schedule payment request.
+   * 	- `adminId`: The ID of the admin who created the schedule payment request.
+   * 	- `adminName`: The name of the admin who created the schedule payment request.
+   * 	- `adminEmail`: The email address of the admin who created the schedule payment
    * request.
-   * 10/ `communityIds`: A set of community IDs associated with the payment request.
-   * 11/ `memberId`: The ID of the member to whom the payment request is addressed.
-   * 12/ `houseMemberDocumentFilename`: The filename of the House Member document, if
-   * available.
-   * 13/ `memberName`: The name of the member to whom the payment request is addressed.
-   * 14/ `communityHouseId`: The ID of the community house associated with the member
-   * to whom the payment request is addressed.
+   * 	- `encryptedPassword`: The encrypted password of the admin who created the schedule
+   * payment request.
+   * 	- `communityIds`: A set of community IDs associated with the schedule payment request.
+   * 	- `memberId`: The ID of the member whose schedule payment request is being enriched.
+   * 	- `houseMemberDocumentFilename`: The filename of the House Member document
+   * associated with the member, or an empty string if no document exists.
+   * 	- `memberName`: The name of the member whose schedule payment request is being enriched.
+   * 	- `communityHouseId`: The ID of the community house associated with the member,
+   * or an empty string if no community house exists.
    */
   default EnrichedSchedulePaymentRequest enrichSchedulePaymentRequest(
       SchedulePaymentRequest request, User admin, HouseMember member) {
@@ -286,34 +273,29 @@ public interface SchedulePaymentApiMapper {
   }
 
   /**
-   * builds a `UserDto` object representing an administrator for a payment request,
-   * using the provided `EnrichedSchedulePaymentRequest` object as input.
+   * creates a `UserDto` object representing an admin associated with a schedule payment
+   * request, using the provided `EnrichedSchedulePaymentRequest`.
    * 
    * @param enrichedSchedulePaymentRequest administrative user for whom the request is
    * being enriched, providing their user ID, entity ID, name, email, and encrypted password.
    * 
-   * 	- `adminId`: The ID of the administrator associated with the schedule payment request.
-   * 	- `adminEntityId`: The entity ID of the administrator associated with the schedule
+   * 	- `adminId`: The ID of the admin user associated with the schedule payment request.
+   * 	- `adminEntityId`: The entity ID of the admin user associated with the schedule
    * payment request.
-   * 	- `adminName`: The name of the administrator associated with the schedule payment
-   * request.
-   * 	- `adminEmail`: The email address of the administrator associated with the schedule
+   * 	- `adminName`: The name of the admin user associated with the schedule payment request.
+   * 	- `adminEmail`: The email address of the admin user associated with the schedule
    * payment request.
-   * 	- `adminEncryptedPassword`: An encrypted password for the administrator associated
+   * 	- `adminEncryptedPassword`: The encrypted password of the admin user associated
    * with the schedule payment request.
    * 
-   * @returns a `UserDto` object containing the administrator's details.
+   * @returns a `UserDto` object with enriched administrative details.
    * 
-   * 	- `userId`: The ID of the administrator associated with the enriched schedule
-   * payment request.
-   * 	- `id`: The entity ID of the administrator associated with the enriched schedule
-   * payment request.
-   * 	- `name`: The name of the administrator associated with the enriched schedule
-   * payment request.
-   * 	- `email`: The email address of the administrator associated with the enriched
-   * schedule payment request.
-   * 	- `encryptedPassword`: The encrypted password of the administrator associated
-   * with the enriched schedule payment request.
+   * 	- `userId`: The ID of the admin user associated with the enriched schedule payment
+   * request.
+   * 	- `id`: The entity ID of the admin in the system.
+   * 	- `name`: The name of the admin user.
+   * 	- `email`: The email address of the admin user.
+   * 	- `encryptedPassword`: The encrypted password of the admin user.
    */
   default UserDto getEnrichedRequestAdmin(EnrichedSchedulePaymentRequest enrichedSchedulePaymentRequest) {
     return UserDto.builder()
@@ -327,26 +309,22 @@ public interface SchedulePaymentApiMapper {
 
   /**
    * transforms an `EnrichedSchedulePaymentRequest` object into a `HouseMemberDto`
-   * object, containing the member's ID, name, and entity ID.
+   * object, including member ID, name, and entity ID.
    * 
-   * @param enrichedSchedulePaymentRequest payment request with additional data, such
-   * as the member entity ID and name, which are used to create a new `HouseMemberDto`.
+   * @param enrichedSchedulePaymentRequest House Member entity details, which are used
+   * to populate the `HouseMemberDto` output object with the member's ID, name, and
+   * member ID.
    * 
-   * 	- `memberEntityId`: A unique identifier for the member associated with the schedule
-   * payment request.
-   * 	- `memberId`: The ID of the member associated with the schedule payment request.
-   * 	- `houseMemberName`: The name of the member associated with the schedule payment
-   * request.
+   * 	- `getMemberEntityId`: an integer representing the member entity ID.
+   * 	- `getMemberId`: a string representing the member ID.
+   * 	- `getHouseMemberName`: a string representing the house member name.
    * 
-   * @returns a `HouseMemberDto` object containing the member's ID, name, and member
-   * ID from the input `EnrichedSchedulePaymentRequest`.
+   * @returns a `HouseMemberDto` object containing the member's ID, name, and membership
+   * ID.
    * 
-   * 	- `id`: The ID of the member entity associated with the enriched schedule payment
-   * request.
-   * 	- `memberId`: The ID of the member associated with the enriched schedule payment
-   * request.
-   * 	- `name`: The name of the house member associated with the enriched schedule
-   * payment request.
+   * 	- `id`: A string representing the ID of the house member entity.
+   * 	- `memberId`: An integer representing the member ID of the house member.
+   * 	- `name`: A string representing the name of the house member.
    */
   default HouseMemberDto getEnrichedRequestMember(EnrichedSchedulePaymentRequest enrichedSchedulePaymentRequest) {
     return new HouseMemberDto()

@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * provides methods for interacting with CommunityHouse objects, including finding
- * individual CommunityHouses by houseId, and retrieving all CommunityHouses in a
+ * individual CommunityHouses by houseId and retrieving all CommunityHouses in a
  * community by communityId.
  */
 @Repository

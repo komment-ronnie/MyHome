@@ -31,11 +31,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
- * is an extension of BasicAuthenticationFilter that adds an additional layer of
- * security by requiring a valid JWT token for authentication. The filter decodes the
- * JWT token and checks if the user is authorized to access the requested resource.
- * If the token is invalid or missing, the filter denies access and passes the request
- * to the next filter in the chain.
+ * is a subclass of `FilterChain` that checks for an authorization token in the HTTP
+ * request's `Authorization` header and decodes it to create a `UsernamePasswordAuthenticationToken`.
+ * If the token is null or cannot be decoded, the filter returns a 401 Unauthorized
+ * response. Otherwise, it passes the request through the filter chain.
  */
 public class MyHomeAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -52,49 +51,54 @@ public class MyHomeAuthorizationFilter extends BasicAuthenticationFilter {
   }
 
   /**
-   * validates incoming HTTP requests by checking for an authorization token header and
-   * authenticating users using a stored authentication token. If the token is absent
-   * or does not match the expected prefix, the function passes the request to the next
-   * filter chain stage without further processing.
+   * authenticates requests based on a provided header name and prefix. If the header
+   * is not present or does not match the prefix, it passes the request to the next
+   * chain element. Otherwise, it sets an authentication token using the provided header
+   * value and passes the request to the next chain element.
    * 
-   * @param request HTTP request being processed by the filter.
+   * @param request HTTP request being filtered.
    * 
-   * 	- `authHeaderName`: The name of the HTTP header that contains the authentication
-   * token.
-   * 	- `authHeaderPrefix`: The prefix that is used to start the authentication token
-   * in the HTTP header.
-   * 	- `authHeader`: The value of the HTTP header containing the authentication token,
-   * or null if no such header is present.
-   * 	- `request`: The deserialized input object representing the incoming HTTP request.
+   * 	- `HttpServletRequest request`: This is an instance of the `HttpServletRequest`
+   * class, which contains information about the incoming HTTP request.
+   * 	- `authHeaderName`: A string property representing the name of the authentication
+   * header field in the HTTP request.
+   * 	- `authHeaderPrefix`: Another string property representing a prefix to be used
+   * when checking the authentication header field.
+   * 	- `authHeader`: The value of the authentication header field in the HTTP request,
+   * which is either null or starts with the prefix provided by the `authHeaderPrefix`
+   * property.
+   * 	- `getAuthentication()`: A method that returns an instance of the
+   * `UsernamePasswordAuthenticationToken` class, which contains information about the
+   * authenticated user.
+   * 	- `SecurityContextHolder.getContext().setAuthentication()`: This line sets the
+   * authentication token to be used in the current request by calling the `setAuthentication()`
+   * method of the `SecurityContextHolder`.
    * 
-   * @param response HttpServletResponse object that is used to write the filtered
-   * content to the client.
+   * @param response HttpServletResponse object that is the target of the filter's action.
    * 
-   * 	- `request`: The original HTTP request object that triggered the filter chain execution.
-   * 	- `chain`: The next filter in the chain to be executed if the authentication fails.
-   * 	- `authentication`: A `UsernamePasswordAuthenticationToken` instance obtained
-   * from the HTTP header or other means, representing the authenticated user. This is
-   * set in the `SecurityContextHolder` using the `setAuthentication()` method.
+   * 	- `HttpServletRequest request`: This is the original HTTP request object that
+   * triggered the filter chain execution.
+   * 	- `HttpServletResponse response`: This is the filtered HTTP response object, which
+   * may have been modified by the filter chain execution.
+   * 	- `FilterChain chain`: This is the chain of filters that are applied to the request
+   * before it reaches the servlet.
+   * 	- `IOException`: This is a subclass of runtime exception that indicates an I/O
+   * error occurred while processing the request or response.
+   * 	- `ServletException`: This is a subclass of runtime exception that indicates a
+   * problem occurred while processing the request or response.
    * 
-   * The `response` object has several properties and attributes, including:
+   * @param chain next filter in the filter chain that the current filter is processing,
+   * and it is used to pass the request and response objects to the subsequent filter
+   * for further processing.
    * 
-   * 	- `getWriter()`: Returns a writer for writing response content.
-   * 	- `getStatus()`: Returns the HTTP status code of the response.
-   * 	- `getHeaders()`: Returns an unmodifiable map of HTTP headers.
-   * 	- `getCharacterEncoding()`: Returns the character encoding of the response content.
-   * 	- `getContentLength()`: Returns the content length of the response in bytes.
-   * 
-   * @param chain FilterChain that needs to be executed after the authentication check
-   * is performed.
-   * 
-   * 	- `request`: A `HttpServletRequest` object representing the incoming HTTP request.
-   * 	- `response`: A `HttpServletResponse` object representing the outgoing HTTP response.
-   * 	- `FilterChain`: An instance of `FilterChain` that represents the chain of filters
-   * to be executed in sequence for this request.
-   * 	- `IOException`: Thrown if an I/O error occurs during processing, such as a
-   * connection reset or file not found.
-   * 	- `ServletException`: Thrown if a servlet-specific error occurs during processing,
-   * such as a malformed Servlet configuration file or an unknown Servlet API method.
+   * 	- `HttpServletRequest request`: The incoming HTTP request object.
+   * 	- `HttpServletResponse response`: The outgoing HTTP response object.
+   * 	- `FilterChain chain`: An instance of the `FilterChain` class, which represents
+   * the filter chain that this filter is a part of.
+   * 	- `IOException`: A subclass of the `Throwable` class that represents an input/output
+   * error.
+   * 	- `ServletException`: A subclass of the `Throwable` class that represents a
+   * servlet-specific error.
    */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -114,56 +118,37 @@ public class MyHomeAuthorizationFilter extends BasicAuthenticationFilter {
   }
 
   /**
-   * retrieves an authentication token from a HTTP request header and decodes it to
-   * create a `UsernamePasswordAuthenticationToken`. If the token is null, the function
-   * returns null.
+   * retrieves an authentication token from a request header, decodes it, and returns
+   * a `UsernamePasswordAuthenticationToken` instance representing the authenticated user.
    * 
-   * @param request HTTP request being processed and provides the `Authorization` header
-   * value that is used to retrieve the authentication token.
+   * @param request HTTP request that contains the authentication token in the header.
    * 
-   * 	- `getHeader`: This method returns the value of the specified HTTP header in the
-   * request.
-   * 	- `environment.getProperty`: This method retrieves a property from the environment
-   * variable.
-   * 	- `appJwtEncoderDecoder.decode`: This method decodes the JWT token contained in
-   * the `authHeader` and returns the user ID.
-   * 
-   * Therefore, the input `request` has the following properties:
-   * 
-   * 	- `authHeader`: A header containing the JWT token.
-   * 	- `environment.getProperty("authorization.token.header.name")`: The name of the
-   * HTTP header containing the JWT token.
-   * 	- `environment.getProperty("authorization.token.header.prefix")`: The prefix of
-   * the JWT token in the HTTP header.
-   * 	- `environment.getProperty("token.secret")`: The secret key used to decode the
-   * JWT token.
+   * 	- `request.getHeader()` retrieves the value of an HTTP header field from the
+   * incoming request. In this case, it retrieves the authorization token header field
+   * named `environment.getProperty("authorization.token.header.name")`.
+   * 	- `authHeader.replace()` replaces a prefix string with a new value in the
+   * authorization token header field. The prefix is specified by `environment.getProperty("authorization.token.header.prefix")`.
+   * 	- `appJwtEncoderDecoder.decode()` deserializes the authorization token into an
+   * instance of `AppJwt`. It takes the token string as input and a secret key specified
+   * by `environment.getProperty("token.secret")` to validate the token.
+   * 	- `jwt.getUserId()` retrieves the user ID associated with the decoded JWT token.
    * 
    * @returns a `UsernamePasswordAuthenticationToken` object representing a user
    * authenticated through an authorization token.
    * 
-   * 	- `getAuthentication(HttpServletRequest request)`: This is the method signature
-   * indicating that it takes an `HttpServletRequest` object as input and returns an
-   * `UsernamePasswordAuthenticationToken` object as output.
-   * 	- `String authHeader = request.getHeader(environment.getProperty("authorization.token.header.name"))`:
-   * This line retrieves the authentication token from the `Authorization` header of
-   * the HTTP request. The `environment.getProperty("authorization.token.header.name")`
-   * property provides the name of the header where the token is expected to be placed.
-   * 	- `if (authHeader == null) { return null; }`: This line checks if the authentication
-   * token is present in the `Authorization` header, and if it's null, the method returns
-   * a null value.
-   * 	- `String token = authHeader.replace(environment.getProperty("authorization.token.header.prefix"),
-   * "")`: This line replaces any prefix that may be present in the authentication token
-   * with an empty string using the `environment.getProperty("authorization.token.header.prefix")`
-   * property as a guide.
-   * 	- `AppJwt jwt = appJwtEncoderDecoder.decode(token, environment.getProperty("token.secret"))`:
-   * This line decodes the authentication token using the `appJwtEncoderDecoder` class
-   * and the `environment.getProperty("token.secret")` property as the secret key.
-   * 	- `if (jwt.getUserId() == null) { return null; }`: This line checks if the `userId`
-   * property of the decoded JWT is null, and if it is, the method returns a null value.
-   * 	- `return new UsernamePasswordAuthenticationToken(jwt.getUserId(), null,
-   * Collections.emptyList());`: This line creates a new `UsernamePasswordAuthenticationToken`
-   * object with the user ID obtained from the decoded JWT, an empty list of credentials,
-   * and a null authentication principal.
+   * 	- The `String` variable `authHeader` is extracted from the `HttpServletRequest`
+   * parameter `request`.
+   * 	- The `authHeader` value is then trimmed by removing the prefix specified in the
+   * `environment.getProperty("authorization.token.header.prefix")` property.
+   * 	- The resulting token is then decoded using the `appJwtEncoderDecoder.decode()`
+   * method and passed to the `environment.getProperty("token.secret")` property for decoding.
+   * 	- If the decoded token contains a user ID, a new `UsernamePasswordAuthenticationToken`
+   * object is created with the user ID as the username and an empty list of credentials.
+   * 
+   * In summary, the `getAuthentication` function extracts the authentication token
+   * from the HTTP request header, decodes it using the provided secret key, and returns
+   * a `UsernamePasswordAuthenticationToken` object if the decoded token contains a
+   * user ID.
    */
   private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
     String authHeader =

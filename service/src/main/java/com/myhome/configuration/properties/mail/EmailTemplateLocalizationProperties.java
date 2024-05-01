@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component;
  * represents a configuration class for email localization properties, including path,
  * encoding, and cache seconds.
  * Fields:
- * 	- path (String): in the EmailTemplateLocalizationProperties class represents a
- * string value specifying the location of an email template file.
+ * 	- path (String): represents a string value specifying the location of an email
+ * template file.
  * 	- encoding (String): in the EmailTemplateLocalizationProperties class represents
  * a string value specifying the character encoding used for email templates.
- * 	- cacheSeconds (int): in the EmailTemplateLocalizationProperties class represents
- * the number of seconds that an email template's location data is cached before it
- * is refreshed.
+ * 	- cacheSeconds (int): in EmailTemplateLocalizationProperties represents the number
+ * of seconds an email template's location data is cached before it is refreshed.
  */
 @Data
 @Component

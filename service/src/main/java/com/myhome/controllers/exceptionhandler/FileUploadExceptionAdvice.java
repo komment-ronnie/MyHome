@@ -25,34 +25,32 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
- * is a custom exception handler for handling exceptions related to file uploads in
- * a Spring Boot application. The class defines two exception handlers, one for
- * MaxUploadSizeExceededException and another for IOException, which are used to
- * handle different types of errors that can occur during file upload. When an exception
- * occurs, the handler returns a ResponseEntity with a custom message for the user.
+ * is a controller advice that handles exceptions related to file uploads, specifically
+ * the `MaxUploadSizeExceededException` and `IOException`. The class returns a response
+ * entity with an error message for the `MaxUploadSizeExceededException`, and a custom
+ * message for the `IOException`.
  */
 @ControllerAdvice
 public class FileUploadExceptionAdvice {
 
   /**
-   * handles the `MaxUploadSizeExceededException` by returning a response entity with
-   * an error message.
+   * processes a request that exceeds the maximum file size limit by returning a custom
+   * error response with a descriptive message.
    * 
-   * @param exc MaxUploadSizeExceededException thrown by the application.
+   * @param exc MaxUploadSizeExceededException object passed to the function.
    * 
-   * 	- `MaxUploadSizeExceededException`: This is the exception type that is being
-   * handled. It represents an error where the file size exceeds the allowed limit.
-   * 	- `HttpStatus.PAYLOAD_TOO_LARGE`: The HTTP status code returned in the response
-   * entity. It indicates that the file size exceeds the allowed limit.
+   * 	- `MaxUploadSizeExceededException`: This is the class that `exc` instance belongs
+   * to.
+   * 	- `HttpStatus`: The HTTP status code associated with the exception, which is `PAYLOAD_TOO_LARGE`.
+   * 	- `body`: A map containing a single key-value pair, where the key is "message"
+   * and the value is a string representing the error message for the user.
    * 
-   * @returns a `ResponseEntity` object with a status code of `PAYLOAD_TOO_LARGE` and
-   * a body containing a message indicating that the file size exceeds the limit.
+   * @returns a `ResponseEntity` with a status code of `PAYLOAD_TOO_LARGE` and a body
+   * containing a message indicating that the file size exceeds the limit.
    * 
-   * 	- The status code of the response entity is `HttpStatus.PAYLOAD_TOO_LARGE`,
-   * indicating that the file size exceeds the limit.
-   * 	- The body of the response entity contains a map with a single key-value pair,
-   * where the key is "message" and the value is a string containing the error message
-   * "File size exceeds limit!".
+   * 	- `HttpStatus`: The HTTP status code of the response entity, which is set to `PAYLOAD_TOO_LARGE`.
+   * 	- `body`: A map containing a single key-value pair, where the key is `"message"`
+   * and the value is a string containing the error message `"File size exceeds limit!"`.
    */
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public ResponseEntity handleMaxSizeException(MaxUploadSizeExceededException exc) {
@@ -62,25 +60,31 @@ public class FileUploadExceptionAdvice {
   }
 
   /**
-   * handles  an `IOException` exception by returning a response entity with a custom
-   * message.
+   * handles  an `IOException` exception by returning a response entity with a CONFLICT
+   * status code and a custom message in the body.
    * 
    * @param exc `MaxUploadSizeExceededException` exception that is being handled by the
    * `@ExceptionHandler` annotation.
    * 
-   * 	- `MaxUploadSizeExceededException`: This exception is an extension of the
-   * `IOException` class and indicates that the maximum upload size has been exceeded
-   * while saving a document.
+   * The `MaxUploadSizeExceededException` object provided to the function has several
+   * attributes, including:
    * 
-   * @returns a `ResponseEntity` with a status code of `CONFLICT` and a body containing
-   * a map with a single key-value pair, where the key is "message" and the value is
-   * "Something went wrong with document saving!".
+   * 	- `exc`: The original exception object that was caught and transformed into a
+   * response entity.
+   * 	- `HttpStatus`: The HTTP status code associated with the response entity. In this
+   * case, it is set to `CONFLICT`.
+   * 	- `body`: A map containing a single key-value pair: `message`, which holds the
+   * error message to be returned in the response body.
    * 
-   * 	- The status code of the response is `HttpStatus.CONFLICT`, indicating an error
-   * in document saving.
-   * 	- The body of the response contains a map with a single key-value pair, where the
-   * key is "message" and the value is a string containing the message "Something went
-   * wrong with document saving!".
+   * @returns a `ResponseEntity` object with a status code of `CONFLICT` and a body
+   * containing a map with a single key-value pair, where the key is "message" and the
+   * value is a custom message indicating that something went wrong with document saving.
+   * 
+   * 	- The HTTP status code in the response entity is `HttpStatus.CONFLICT`, indicating
+   * that an error occurred during document saving.
+   * 	- The body of the response entity contains a map with a single key-value pair,
+   * where the key is "message" and the value is a string containing the error message
+   * ("Something went wrong with document saving!").
    */
   @ExceptionHandler(IOException.class)
   public ResponseEntity handleIOException(MaxUploadSizeExceededException exc) {

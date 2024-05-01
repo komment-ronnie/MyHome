@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * is a Java class that provides booking-related services using Spring Data JPA. The
- * class has a single method, `deleteBooking`, which deletes a booking based on its
- * amenity ID and booking ID. The method uses the `Optional` class to check if a
- * booking exists for the given amenity ID, and then deletes it from the repository
+ * is a Java class that provides booking-related services using Spring Data JPA. It
+ * has a single method, `deleteBooking`, which deletes a booking from the repository
+ * based on its amenity ID and booking ID. The method uses Optional to check if a
+ * booking exists for the given amenity ID and then deletes it from the repository
  * if found.
  */
 @Service
@@ -22,28 +22,31 @@ public class BookingSDJpaService implements BookingService {
   private final AmenityBookingItemRepository bookingRepository;
 
   /**
-   * deletes a booking from the repository based on the amenity ID and the booking ID.
+   * deletes a booking item from the repository based on its amenity booking item ID,
+   * returning `true` if the amenity is found and deleted successfully, or `false` otherwise.
    * 
-   * @param amenityId ID of the amenity for which the booking is to be deleted, and it
-   * is used to filter the booking items in the repository to find the appropriate
-   * booking to delete.
+   * @param amenityId id of an amenity that is associated with the booking to be deleted.
    * 
-   * @param bookingId id of a booking that needs to be deleted.
+   * @param bookingId identifier of a booking item to be deleted, which is used to
+   * locate the corresponding booking item in the repository for deletion.
    * 
-   * @returns a boolean value indicating whether the booking item was successfully deleted.
+   * @returns a boolean value indicating whether the booking was successfully deleted.
    * 
-   * 	- `Optional<AmenityBookingItem>` represents an optional booking item that may be
-   * present or not in the repository.
-   * 	- `map()` method is used to transform the `Optional` into a boolean value by
-   * checking if the booking item has the specified amenity ID.
-   * 	- `getAmenityId()` method of the `AmenityBookingItem` returns the amenity ID of
+   * 	- The function returns a boolean value indicating whether the booking item was
+   * successfully deleted.
+   * 	- The function uses the `findByAmenityBookingItemId` method from the `bookingRepository`
+   * to locate the booking item with the specified `bookingId`. This method returns an
+   * `Optional` object containing the booking item if it exists, or an empty `Optional`
+   * if it does not.
+   * 	- The function maps the booking item to a boolean value using the `map` method.
+   * If the `amenityFound` variable is set to `true`, it means that the booking item
+   * corresponds to the specified `amenityId`. Otherwise, it means that the booking
+   * item does not correspond to the specified `amenityId`.
+   * 	- The function then calls the `delete` method on the `bookingRepository` to delete
    * the booking item.
-   * 	- `equals()` method of the `Amenity` class compares the amenity ID of the booking
-   * item with the given amenity ID.
-   * 	- `delete()` method of the `bookingRepository` deletes the booking item from the
-   * repository if the amenity ID matches.
-   * 	- The `orElse()` method returns a boolean value indicating whether the booking
-   * item was found and deleted successfully or not.
+   * 
+   * Overall, the `deleteBooking` function provides a convenient way to delete booking
+   * items based on their amenity and booking Id.
    */
   @Transactional
   @Override

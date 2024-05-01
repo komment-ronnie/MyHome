@@ -22,8 +22,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * in the Java file is an immutable response class representing a payment schedule
- * with various attributes, including payment ID, charge amount, and due date.
+ * represents an immutable response class for a payment schedule with various attributes
+ * including payment ID, charge amount, and due date.
  * Fields:
  * 	- paymentId (String): represents a unique identifier for a scheduled payment.
  * 	- charge (BigDecimal): represents a monetary value.
@@ -31,13 +31,13 @@ import lombok.NoArgsConstructor;
  * scheduled, such as "one-time" or "recurring".
  * 	- description (String): represents a brief textual explanation of the payment's
  * purpose or context.
- * 	- recurring (boolean): in the SchedulePaymentResponse class indicates whether the
+ * 	- recurring (boolean): in the SchedulePaymentResponse class indicates whether a
  * payment is recurring or not.
  * 	- dueDate (String): represents the date on which a payment is due.
  * 	- adminId (String): represents an identifier for the administrator who manages
  * the payment schedule.
- * 	- memberId (String): represents a unique identifier for a specific member within
- * the context of the SchedulePaymentResponse class.
+ * 	- memberId (String): in the SchedulePaymentResponse class represents a unique
+ * identifier for a specific member within the context of the class.
  */
 @AllArgsConstructor
 @NoArgsConstructor

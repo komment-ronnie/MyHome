@@ -28,14 +28,15 @@ import lombok.Setter;
  * @see CreateUserRequest
  */
 /**
- * is a data model representing the response to a create user request.
+ * represents a response model for creating a user, with three fields: userId, name,
+ * and email.
  * Fields:
  * 	- userId (String): represents an identifier for a user created in response to a
  * create user request.
- * 	- name (String): of the `CreateUserResponse` class represents a string value
+ * 	- name (String): in the CreateUserResponse class represents a string value
  * containing the user's name.
- * 	- email (String): from the CreateUserResponse class represents a string value
- * containing an email address.
+ * 	- email (String): represents an email address associated with the user created
+ * in response to the create user request.
  */
 @AllArgsConstructor
 @NoArgsConstructor

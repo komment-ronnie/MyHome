@@ -24,20 +24,23 @@ public class BookingController implements BookingsApi {
   private final BookingService bookingSDJpaService;
 
   /**
-   * deletes a booking based on its amenity ID and ID, returning a HTTP response code
+   * deletes a booking based on its amenity ID and ID, returning a HTTP status code
    * indicating whether the deletion was successful or not.
    * 
-   * @param amenityId identifier of an amenity for which a booking is to be deleted.
+   * @param amenityId ID of an amenity for which the booking is to be deleted.
    * 
-   * @param bookingId identifier of the booking to be deleted.
+   * @param bookingId ID of the booking to be deleted.
    * 
-   * @returns a `ResponseEntity` object with a status code of either `NO_CONTENT` or
-   * `NOT_FOUND`, depending on whether the booking was successfully deleted.
+   * @returns a response entity with a status code of either NO_CONTENT or NOT_FOUND,
+   * depending on whether the booking was successfully deleted.
    * 
-   * 	- `HttpStatus.NO_CONTENT`: This status code indicates that the booking was
-   * successfully deleted, and no content was returned in response.
-   * 	- `HttpStatus.NOT_FOUND`: This status code indicates that the booking could not
-   * be found, and therefore it was not deleted.
+   * 	- The `ResponseEntity` object is constructed with an HTTP status code of either
+   * `NO_CONTENT` or `NOT_FOUND`, depending on whether the booking was successfully
+   * deleted or not.
+   * 	- The `status()` method of the `ResponseEntity` object is used to set the HTTP
+   * status code.
+   * 	- The `build()` method of the `ResponseEntity` object is used to create a new
+   * instance of the response entity.
    */
   @Override
   public ResponseEntity<Void> deleteBooking(@PathVariable String amenityId,

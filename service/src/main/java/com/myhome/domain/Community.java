@@ -37,23 +37,23 @@ import lombok.With;
  * Entity identifying a valid user in the service.
  */
 /**
- * in Java represents a valid user in the service with various associations to other
- * entities, including users, houses, and amenities.
+ * represents a valid user in the service with various associations to other entities,
+ * including users, houses, and amenities.
  * Fields:
- * 	- admins (Set<User>): of the Community class represents a set of User objects
- * related to the community through their association with the community as admins.
- * 	- houses (Set<CommunityHouse>): in the Community class represents a set of houses
- * associated with the community, which can be accessed through the mappedBy attribute
- * "houses".
+ * 	- admins (Set<User>): is a set of user objects related to the community through
+ * their association with the community as admins, as defined in the Java code provided.
+ * 	- houses (Set<CommunityHouse>): in the Community class represents a set of House
+ * objects related to the community through their association with the community as
+ * houses.
  * 	- name (String): in the Community entity represents a unique identifier for a
  * community within a specific district.
- * 	- communityId (String): represents an identifier for a specific community within
- * the application's domain.
- * 	- district (String): is a string representing a geographical area where the
- * community is located.
- * 	- amenities (Set<Amenity>): contains a set of Amenity objects related to the
- * Community entity through the mappedBy attribute in the OneToMany annotation, with
- * orphanRemoval = true indicating that the Set is also used for removing orphans.
+ * 	- communityId (String): represents a unique identifier for a specific community
+ * within the application's domain.
+ * 	- district (String): in the Community entity represents a geographical area where
+ * the community is located.
+ * 	- amenities (Set<Amenity>): in the Community class represents a set of Amenity
+ * objects related to the community through the mappedBy attribute in the OneToMany
+ * annotation.
  */
 @AllArgsConstructor
 @NoArgsConstructor

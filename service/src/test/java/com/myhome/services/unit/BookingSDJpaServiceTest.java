@@ -20,11 +20,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a test class for the BookingSDJpaService class, which is responsible for managing
- * bookings in a database using JPA. The test class provides tests for various scenarios
- * related to deleting bookings, including when the booking exists, does not exist,
- * and has an amenity that does not exist. The tests verify the behavior of the
- * BookingSDJpaService class using mocks and assertions.
+ * is a test class that verifies the behavior of the BookingSDJpaService class, which
+ * is responsible for managing bookings in a repository. The test class uses mocking
+ * to verify the behavior of the class and its interactions with the repository. The
+ * tests cover various scenarios such as deleting a non-existent booking, deleting a
+ * booking that does not have an associated amenity, and deleting a booking that has
+ * an invalid amenity ID.
  */
 public class BookingSDJpaServiceTest {
 
@@ -40,7 +41,7 @@ public class BookingSDJpaServiceTest {
   private BookingSDJpaService bookingSDJpaService;
 
   /**
-   * initializes Mockito Annotations for the class, enabling mocking of dependencies.
+   * initializes mock objects using MockitoAnnotations.
    */
   @BeforeEach
   private void init() {
@@ -48,10 +49,9 @@ public class BookingSDJpaServiceTest {
   }
 
   /**
-   * tests the deletion of a booking item from the repository. It provides a test booking
-   * item, sets its amenity, and then calls the `deleteBooking` method to delete the
-   * booking item. The function verifies that the booking item was deleted by checking
-   * the repository and calling additional verify methods.
+   * deletes a booking item from the repository, given its amenity booking item ID and
+   * the booking ID. It verifies that the booking item is deleted and updates the
+   * repository with the changes.
    */
   @Test
   void deleteBookingItem() {
@@ -73,9 +73,7 @@ public class BookingSDJpaServiceTest {
   }
 
   /**
-   * verifies that a booking cannot be deleted if it does not exist in the repository.
-   * It does this by asserting that the delete operation fails and verifying that the
-   * find operation also fails.
+   * tests whether a booking can be deleted if it does not exist in the repository.
    */
   @Test
   void deleteBookingNotExists() {
@@ -93,9 +91,10 @@ public class BookingSDJpaServiceTest {
   }
 
   /**
-   * verifies that a booking cannot be deleted if the amenity associated with it does
-   * not exist. It uses mocking to verify the behavior of the `bookingSDJpaService` and
-   * the `bookingItemRepository`.
+   * tests whether a booking can be deleted when the amenity associated with it does
+   * not exist. It sets up a test booking item, saves it, and then tries to delete the
+   * booking using the amenity ID that does not exist. The function verifies that the
+   * booking is not deleted and the amenity ID is not updated.
    */
   @Test
   void deleteBookingAmenityNotExists() {
@@ -119,11 +118,10 @@ public class BookingSDJpaServiceTest {
   /**
    * creates a new instance of `AmenityBookingItem` with a predefined ID for testing purposes.
    * 
-   * @returns a new instance of the `AmenityBookingItem` class with a pre-defined ID.
+   * @returns a new instance of `AmenityBookingItem` with a pre-defined ID.
    * 
-   * 	- `AmenityBookingItemId`: This field represents a unique identifier for the booking
-   * item, which is set to `TEST_BOOKING_ID`.
-   * 	- No other attributes or properties are provided in the function's output.
+   * 	- `AmenityBookingItemId`: A unique identifier for the booking item, set to `TEST_BOOKING_ID`.
+   * 	- No other attributes or properties are defined in the provided code snippet.
    */
   private AmenityBookingItem getTestBookingItem() {
     return new AmenityBookingItem()

@@ -45,13 +45,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a test class for testing the HouseMemberDocumentService class. The test class
- * covers various scenarios such as updating an existing member document, creating a
- * new member document, and attempting to create a document for a member who does not
- * exist. The test class also verifies that the correct member document is updated
- * or created and that the member's document filename is changed accordingly.
- * Additionally, the test class tests whether the service throws any exceptions when
- * encountering too large files or members who do not exist.
+ * tests the behavior of the HouseMemberDocumentService class by providing various
+ * input parameters and verifying the resulting output. The test cases cover scenarios
+ * such as updating an existing member document, creating a new document for a
+ * non-existent member, and saving a document that is too large to be saved. The tests
+ * verify the correctness of the service's behavior and ensure that it preserves the
+ * original member document in case of failure.
  */
 public class HouseMemberDocumentServiceTest {
 
@@ -73,8 +72,8 @@ public class HouseMemberDocumentServiceTest {
   private HouseMemberDocumentSDJpaService houseMemberDocumentService;
 
   /**
-   * initializes fields for a House Member Document Service using MockitoAnnotations
-   * and ReflectionTestUtils.
+   * initializes the House Member Document Service by setting instance fields for
+   * compression border size, maximum file size, and compressed image quality.
    */
   @BeforeEach
   private void init() {
@@ -87,8 +86,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * tests the `findHouseMemberDocument` service by providing a valid member ID and
-   * verifying that the correct document is retrieved from the repository.
+   * tests the `houseMemberDocumentService.findHouseMemberDocument()` method by providing
+   * a valid `MEMBER_ID` and asserting that the resulting `Optional<HouseMemberDocument>`
+   * is present and contains the expected `MEMBER_DOCUMENT`.
    */
   @Test
   void findMemberDocumentSuccess() {
@@ -107,9 +107,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * verifies that a House Member Document is not present for a given member ID, by
-   * using the `houseMemberDocumentService` to retrieve the document and then asserting
-   * its absence with a null check.
+   * verifies that a House Member Document is not present for a given member ID by
+   * asserting its absence and invoking the `houseMemberRepository` to retrieve the
+   * member object.
    */
   @Test
   void findMemberDocumentNoDocumentPresent() {
@@ -127,8 +127,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * verifies that a House Member Document does not exist for a given member ID by
-   * calling the `houseMemberDocumentService` and checking if it is present in the `Optional`.
+   * tests whether a house member document does not exist for a given member ID. It
+   * uses mocking to verify that the repository was called with the correct member ID
+   * and returns an empty Optional.
    */
   @Test
   void findMemberDocumentMemberNotExists() {
@@ -145,9 +146,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * tests the deletion of a House Member document successfully. It given a test member
-   * object to delete, and then uses various JUnit methods to verify that the document
-   * is deleted correctly and the member object is updated.
+   * tests the deletion of a HouseMember document. It verifies that the document is
+   * deleted and that the member object's document field is set to null after the
+   * deletion is successful.
    */
   @Test
   void deleteMemberDocumentSuccess() {
@@ -166,8 +167,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * verifies that a document associated with a member is deleted when the member does
-   * not have any documents associated with it.
+   * tests whether deleting a member document that does not exist returns false and
+   * sets the member document to null, while also verifying the repository call and
+   * never saving the updated member object.
    */
   @Test
   void deleteMemberDocumentNoDocumentPresent() {
@@ -186,7 +188,8 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * deletes a house member document that does not exist.
+   * verifies that a house member document is not deleted if the member does not exist
+   * in the repository.
    */
   @Test
   void deleteMemberDocumentMemberNotExists() {
@@ -203,8 +206,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * updates a House Member Document for a given member ID, using an image file as input
-   * and returning the updated document and member details.
+   * updates a house member's document in the database. It takes a new document file
+   * as input, retrieves the member from the repository using the member ID, saves the
+   * updated document to the database, and returns the updated document.
    */
   @Test
   void updateHouseMemberDocumentSuccess() throws IOException {
@@ -232,9 +236,8 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * tests the update method of HouseMemberDocumentService by providing a non-existent
-   * member id and verifying the expected behavior of returning an empty Optional,
-   * calling the findBy MemberId method of HouseMemberRepository, and saving to database.
+   * updates a house member document with an image file for a member who does not exist
+   * in the repository.
    */
   @Test
   void updateHouseMemberDocumentMemberNotExists() throws IOException {
@@ -257,8 +260,8 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * updates a House Member Document if it is too large, retrieves the member document
-   * from the repository, and saves it with the updated document.
+   * updates an existing House Member Document with a too-large file, returns whether
+   * the update was successful, and verifies certain method calls were made.
    */
   @Test
   void updateHouseMemberDocumentTooLargeFile() throws IOException {
@@ -287,8 +290,8 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * tests the createHouseMemberDocument service by providing a new document file and
-   * member ID, saving the document to the repository, and verifying the result.
+   * creates a new House Member Document and saves it to the database while updating
+   * the member's document filename if necessary.
    */
   @Test
   void createHouseMemberDocumentSuccess() throws IOException {
@@ -317,8 +320,8 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * verifies the behavior of the `createHouseMemberDocument` service when a document
-   * for a member who does not exist is provided to it.
+   * tests the createHouseMemberDocument service by providing a file for a member who
+   * does not exist in the House Member repository.
    */
   @Test
   void createHouseMemberDocumentMemberNotExists() throws IOException {
@@ -340,9 +343,9 @@ public class HouseMemberDocumentServiceTest {
   }
 
   /**
-   * tests the creation of a House Member Document that is too large to be saved. It
-   * verifies that the method returns `Optional.empty()` when the document is too large
-   * and that the original member document is preserved.
+   * tests the create House Member Document service by providing a file that is too
+   * large to be saved, and verifying that it returns an empty Optional and the original
+   * document is not modified.
    */
   @Test
   void createHouseMemberDocumentTooLargeFile() throws IOException {

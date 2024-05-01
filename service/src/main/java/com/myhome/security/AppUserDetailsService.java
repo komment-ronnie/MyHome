@@ -31,11 +31,11 @@ import org.springframework.stereotype.Service;
  * Custom {@link UserDetailsService} catering to the need of service logic.
  */
 /**
- * is a custom implementation of Spring Security's UserDetailsService interface. It
- * retrieves user details from a repository and maps them to a UserDto object using
- * a mapper. The loadUserByUsername method loads a user by username and returns a
- * UserDetails object, while the getUserDetailsByUsername method returns a UserDto
- * object for the given username.
+ * is an implementation of the UserDetailsService interface, providing methods for
+ * loading and retrieving user details from a repository using a mapper. The class
+ * loads a user by their username and returns a `User` object with relevant details,
+ * and also provides a method to retrieve a user's details from the repository and
+ * map them to a `UserDto` object using a mapper.
  */
 @Service
 @RequiredArgsConstructor
@@ -44,21 +44,26 @@ public class AppUserDetailsService implements UserDetailsService {
   private final UserMapper userMapper;
 
   /**
-   * loads a user by their username and returns a `User` object with relevant details.
+   * loads a user by their username and returns a `UserDetails` object containing the
+   * user's email address, encrypted password, and other attributes such as role and privileges.
    * 
-   * @param username username for which the user details are being loaded.
+   * @param username username for which the user details are to be loaded.
    * 
-   * @returns a `UserDetails` object representing a user with various attributes and
-   * authentication capabilities.
+   * @returns a `UserDetails` object containing user information.
    * 
-   * 	- The first element is an instance of `com.myhome.domain.User`.
-   * 	- The `email` field of the user object is the username passed in the function.
-   * 	- The `encryptedPassword` field represents the encrypted password for the user.
-   * 	- The fifth element, `true`, indicates that the user is activated.
-   * 	- The sixth element, `true`, indicates that the user is confirmed.
-   * 	- The seventh element, `true`, indicates that the user is locked.
-   * 	- The eighth element, `Collections.emptyList()`, represents an empty list of roles
-   * associated with the user.
+   * 	- `email`: The email address of the user.
+   * 	- `encryptedPassword`: The encrypted password for the user.
+   * 	- `active`: A boolean indicating whether the user is active (true) or inactive (false).
+   * 	- `accountNonExpired`: A boolean indicating whether the user's account has not
+   * expired (true) or has expired (false).
+   * 	- `accountNonLocked`: A boolean indicating whether the user's account is unlocked
+   * (true) or locked (false).
+   * 	- `credentialsNonExpired`: A boolean indicating whether the user's credentials
+   * have not expired (true) or have expired (false).
+   * 	- `tokenNonExpired`: A boolean indicating whether the user's token has not expired
+   * (true) or has expired (false).
+   * 
+   * No summary is provided at the end of the explanation.
    */
   @Override public UserDetails loadUserByUsername(String username)
       throws UsernameNotFoundException {
@@ -78,20 +83,24 @@ public class AppUserDetailsService implements UserDetailsService {
   }
 
   /**
-   * retrieves a user's details from the repository and maps them to a `UserDto` object
-   * using a mapper.
+   * retrieves a `User` object from the repository based on the given username, maps
+   * it to a `UserDto`, and returns the resulting `UserDto`.
    * 
-   * @param username username for which the user details are to be retrieved.
+   * @param username email address of the user for which details are being retrieved.
    * 
-   * @returns a `UserDto` object containing the details of the user with the specified
-   * username.
+   * @returns a `UserDto` object representing the user with the specified username.
    * 
-   * 	- The function returns a `UserDto` object representing the user details.
-   * 	- The `user` variable is of type `com.myhome.domain.User`, which contains information
-   * about the user, such as their email and name.
-   * 	- The `userMapper` is responsible for mapping the `User` object to the `UserDto`
-   * object, which provides a more convenient and consumable representation of the user
-   * data.
+   * The function returns a `UserDto` object, which represents a user in a specific
+   * format suitable for further processing or display. The `UserDto` object contains
+   * information about the user, such as their email and name.
+   * 
+   * The function takes a `username` parameter, which is used to retrieve the corresponding
+   * user from the `userRepository`. If the user is not found, a `UsernameNotFoundException`
+   * is thrown.
+   * 
+   * The function calls the `userMapper` method to map the retrieved user object to the
+   * `UserDto` format. This mapping involves converting the original user data into a
+   * structured format that can be easily processed or displayed.
    */
   public UserDto getUserDetailsByUsername(String username) {
     com.myhome.domain.User user = userRepository.findByEmail(username);
