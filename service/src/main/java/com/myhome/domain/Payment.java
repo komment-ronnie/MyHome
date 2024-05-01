@@ -33,20 +33,21 @@ import lombok.NoArgsConstructor;
  * charge etc
  */
 /**
- * represents a payment made by a user to their housing provider for various expenses.
+ * represents a payment made by a user to their housing provider for various expenses,
+ * including the amount paid, category of payment, and due date.
  * Fields:
  * 	- paymentId (String): represents a unique identifier for each payment transaction
  * in the service.
- * 	- charge (BigDecimal): in the Payment entity represents an amount of money to be
- * paid by a user or member of a house.
- * 	- type (String): in the Payment entity represents a category of payment, such as
- * "electricity bill" or "house rent".
- * 	- description (String): in the Payment entity represents a brief narrative or
+ * 	- charge (BigDecimal): represents an amount of money to be paid by a user or
+ * member of a house.
+ * 	- type (String): represents the category of payment, such as "electricity bill"
+ * or "house rent".
+ * 	- description (String): in the Payment class represents a brief narrative or
  * summary of the payment's purpose or context.
  * 	- recurring (boolean): in the Payment entity indicates whether a payment is
  * recurring or not.
- * 	- dueDate (LocalDate): represents the date when the payment is expected to be made.
- * 	- admin (User): in the Payment class represents a user who manages or oversees
+ * 	- dueDate (LocalDate): represents the date when a payment is expected to be made.
+ * 	- admin (User): in the Payment entity represents a user who manages or oversees
  * payments made by the HouseMember associated with the payment.
  * 	- member (HouseMember): in the Payment class represents an association between a
  * payment and a member of a house.

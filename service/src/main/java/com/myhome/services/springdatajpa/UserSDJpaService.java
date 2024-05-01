@@ -41,10 +41,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * provides methods for managing user accounts in a Java-based application. It includes
- * functions to create new users, update existing users, validate user tokens, and
- * encrypt user passwords. Additionally, the class generates unique user IDs for new
- * users and sends confirmation emails to users upon account creation.
+ * is responsible for managing user-related operations in a Java-based application.
+ * It provides methods for creating and updating users, confirming their email
+ * addresses, encrypting their passwords, and generating unique IDs. The service uses
+ * JPA (Java Persistence API) to interact with the repository and save the updated
+ * user records.
  */
 @Service
 @Slf4j
@@ -58,47 +59,40 @@ public class UserSDJpaService implements UserService {
   private final MailService mailService;
 
   /**
-   * creates a new user in the application, generates a unique ID, encrypts the password,
-   * and sends an email confirmation token to the user's registered email address. It
-   * returns an optional `UserDto` representing the created user.
+   * creates a new user in the system by generating a unique ID, encrypting the password,
+   * and sending an email confirmation token to the user's registered email address.
    * 
-   * @param request UserDto object containing the user's information to be created,
-   * which is then used to create a new user in the repository and send an email
-   * confirmation token to the user's registered email address.
+   * @param request UserDto object containing the details of the user to be created,
+   * which is used to create a new user in the application and send an email confirmation
+   * token to the user's registered email address.
    * 
-   * 	- `request.getEmail()`: The email address of the new user.
-   * 	- `userRepository.findByEmail(request.getEmail())`: Checks if a user with the
-   * same email address already exists in the repository. If yes, returns the existing
-   * user. If no, proceeds to the next step.
-   * 	- `generateUniqueUserId(request)`: Generates a unique ID for the new user.
-   * 	- `encryptUserPassword(request)`: Encrypts the password of the new user.
-   * 	- `createUserInRepository(request)`: Creates a new user object in the repository.
-   * 	- `securityTokenService.createEmailConfirmToken(newUser)`: Creates an email
-   * confirmation token for the new user.
-   * 	- `mailService.sendAccountCreated(newUser, emailConfirmToken)`: Sends an email
-   * to the new user's registered email address with the email confirmation token.
+   * 	- `getEmail()`: retrieves the email address of the user to be created
+   * 	- `getPassword()`: retrieves the password of the user to be created
+   * 	- `generateUniqueUserId()`: generates a unique identifier for the user
+   * 	- `encryptUserPassword()`: encrypts the user password using a specified algorithm
+   * 	- `createUserInRepository()`: creates a new user object in the repository
+   * 	- `securityTokenService.createEmailConfirmToken()`: creates an email confirmation
+   * token for the newly created user
+   * 	- `mailService.sendAccountCreated()`: sends an email to the user's registered
+   * email address with the email confirmation token
    * 
-   * @returns an `Optional<UserDto>` containing a `UserDto` object representing the
-   * created user.
+   * @returns an optional `UserDto` object representing the newly created user.
    * 
-   * 	- `Optional<UserDto> createUser(UserDto request)`: This is the method that takes
-   * in a `UserDto` object and creates a new user in the system.
-   * 	- `if (userRepository.findByEmail(request.getEmail()) == null)`: If no user with
-   * the same email address already exists in the system, then this code block is executed.
-   * 	- `generateUniqueUserId(request);`: This method generates a unique ID for the new
-   * user.
-   * 	- `encryptUserPassword(request);`: The password of the new user is encrypted using
-   * a security token service.
-   * 	- `createUserInRepository(request)`: This method creates a new user object in the
-   * repository.
-   * 	- `SecurityToken emailConfirmToken = securityTokenService.createEmailConfirmToken(newUser);`:
-   * An email confirmation token is generated and stored in the security token service.
-   * 	- `mailService.sendAccountCreated(newUser, emailConfirmToken);`: The account
-   * creation email is sent to the new user's email address using the mail service.
-   * 	- `UserDto newUserDto = userMapper.userToUserDto(newUser);`: A UserDto object is
-   * created from the newly created user object.
-   * 	- `return Optional.of(newUserDto);`: The returned value is an `Optional` containing
-   * the `UserDto` object of the newly created user.
+   * 	- `Optional<UserDto>`: This indicates that the function may return an optional
+   * value representing a `UserDto`, which is a data transfer object (DTO) representing
+   * a user entity.
+   * 	- `createUserInRepository(request)`: This method creates a new `User` entity in
+   * the repository, using the provided `UserDto` as a parameter. The returned `User`
+   * entity is stored in the repository.
+   * 	- `securityTokenService.createEmailConfirmToken(newUser)`: This method creates
+   * an email confirmation token for the newly created `User`. The token is used to
+   * verify the user's email address during account creation.
+   * 	- `mailService.sendAccountCreated(newUser, emailConfirmToken)`: This method sends
+   * an email notification to the user's registered email address with a link to confirm
+   * their email address.
+   * 	- `userMapper.userToUserDto(newUser)`: This method maps the newly created `User`
+   * entity to a `UserDto`, which is a DTO representing the user entity. The resulting
+   * `UserDto` object contains the same data as the original `User` entity.
    */
   @Override
   public Optional<UserDto> createUser(UserDto request) {
@@ -116,23 +110,15 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * returns a set of users, retrieved from a database using a paginated query.
+   * in Java returns a set of `User` objects based on a page request parameter.
    * 
-   * @returns a set of `User` objects.
+   * @returns a set of all users in the application.
    * 
-   * The output is a `Set` of `User` objects. This means that the function returns a
-   * collection of user objects, where each user object represents a unique user in the
-   * system.
-   * 
-   * The `Set` is implemented using a `HashSet`, which means that the function guarantees
-   * that no duplicate user objects will be returned.
-   * 
-   * The `List<User>` returned by the function contains up to 200 user objects, as
-   * specified by the `PageRequest`. If there are fewer than 200 user objects in the
-   * system, the list will contain only those user objects.
-   * 
-   * The order of the user objects in the list is determined by the `PageRequest`, which
-   * allows for paging through the list of users.
+   * 	- The type of the output is Set<User>. This indicates that the function returns
+   * a set of User objects.
+   * 	- The parameter "PageRequest.of(0, 200)" is used to specify the page number and
+   * maximum number of items to return. This parameter determines the pagination of the
+   * output.
    */
   @Override
   public Set<User> listAll() {
@@ -140,28 +126,25 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * returns a set of all users stored in the `userRepository`. It uses the `findAll`
-   * method to retrieve a pageable list of users and converts it to a set for efficient
-   * use.
+   * returns a set of all users retrieved from the `userRepository`. It uses the
+   * `pageable` parameter to filter and sort the results as desired.
    * 
-   * @param pageable pagination information for the users, allowing the listAll method
-   * to fetch a subset of the user data from the repository based on the specified page
-   * number and size.
+   * @param pageable pagination information for retrieving a subset of users from the
+   * database.
    * 
-   * The `Pageable` object provided as an argument to this function is a parameter for
-   * filtering and paging user entities. It contains the page number and size (represented
-   * by the integer values `pageNumber` and `pageSize`, respectively) that specify the
-   * range of users to be retrieved. These values determine which user entities are
-   * returned in response.
+   * The `Pageable` interface is used to represent a page of data that can be paginated.
+   * It has two methods: `getPageNumber()` and `getPageSize()`, which indicate the
+   * current page number and the number of items per page, respectively. These values
+   * can be modified to change the way the list is displayed or sorted.
    * 
-   * @returns a set of all users retrieved from the user repository.
+   * @returns a set of `User` objects retrieved from the database.
    * 
-   * 	- The output is a `Set` of `User` objects, indicating that the method returns a
-   * collection of user objects.
-   * 	- The `pageable` parameter passed to the `findAll` method is used to specify how
-   * the users should be retrieved, with options for pagination and sorting.
-   * 	- The `toSet` method is used to convert the `List<User>` returned by `findAll`
-   * into a `Set`, which ensures that no duplicates are present in the output.
+   * 	- `Set<User>` represents a set of user objects, containing the list of users
+   * retrieved from the database.
+   * 	- `userRepository.findAll(pageable)` is the method call that retrieves the list
+   * of users from the database using the specified pageable parameter.
+   * 	- The returned set contains the list of users, which can be further processed or
+   * manipulated as per the requirements.
    */
   @Override
   public Set<User> listAll(Pageable pageable) {
@@ -169,24 +152,24 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * retrieves a user's details from the database and their community membership
-   * information, then maps them to a `UserDto` object and returns an optional instance
-   * of `UserDto`.
+   * retrieves user details from the database and maps them to a `UserDto` object,
+   * including community IDs.
    * 
-   * @param userId identifier of the user for whom the detailed user information is
-   * being retrieved.
+   * @param userId id of the user for whom the user details are being retrieved.
    * 
-   * @returns an optional `UserDto` object containing the user's community IDs and details.
+   * @returns an optional object containing a user details DTO with community IDs and
+   * a user details DTO without community IDs if no user is found.
    * 
-   * 	- `Optional<UserDto>`: This represents an optional result, which means that the
-   * function may return `None` if no user details are found.
-   * 	- `userOptional`: This is an optional reference to a `User` object, which is
-   * obtained from the `userRepository`. If no user is found, this will be `None`.
-   * 	- `communityIds`: This is a set of strings that represent the IDs of the communities
-   * to which the user belongs.
-   * 	- `userMapper`: This is a function that maps a `User` object to a `UserDto` object.
-   * The resulting `UserDto` object contains the same properties as the original `User`
-   * object, but with simplified attributes.
+   * 	- The output is an `Optional` object, indicating that the user details may or may
+   * not be available.
+   * 	- If the output is non-empty, it contains a `UserDto` object representing the
+   * user details.
+   * 	- The `UserDto` object has a `setCommunityIds()` method that sets the community
+   * IDs of the user.
+   * 	- The `UserDto` object also has a `userMapper` attribute that maps the original
+   * user entity to the DTO format.
+   * 	- The function returns an `Optional` object with the `UserDto` object as its
+   * contents, or an empty `Optional` if no user details are available.
    */
   @Override
   public Optional<UserDto> getUserDetails(String userId) {
@@ -203,21 +186,25 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * returns an Optional<UserDto> object containing a user's details and community IDs.
-   * It first retrieves the user from the repository, then maps the user to a UserDto
-   * object with community IDs.
+   * retrieves a UserDto object containing community IDs from the user repository and
+   * maps them to the original User object using the user mapper.
    * 
-   * @param userEmail email address of the user for whom the repository is being queried,
-   * and it is used to filter the results of the `findByEmail()` method.
+   * @param userEmail email address of the user to search for in the user repository.
    * 
-   * @returns an `Optional` containing a `UserDto` object with community IDs.
+   * @returns an `Optional` object containing a `UserDto` instance with community IDs.
    * 
-   * 	- The function returns an `Optional` object containing a `UserDto` instance, which
-   * represents the user with their communities' IDs.
-   * 	- The `UserDto` object has a field called `communities`, which is a set of strings
-   * representing the IDs of the communities the user belongs to.
-   * 	- The `userMapper` is responsible for mapping the original `User` entity to a
-   * `UserDto` instance.
+   * 	- `Optional<UserDto>` represents an optional user object, where `UserDto` is a
+   * custom data transfer object (DTO) containing information about the user.
+   * 	- The method returns an `Optional` instance that may contain a non-null `UserDto`
+   * object or `null`, depending on whether a user with the provided email exists in
+   * the database.
+   * 	- The `findByEmail` method of the `userRepository` class is called to retrieve a
+   * `User` object based on the input `userEmail`.
+   * 	- The `map` method of the `Optional` instance is used to transform the retrieved
+   * `User` object into a `UserDto` object, which contains a set of community IDs
+   * associated with the user.
+   * 	- The `userMapper` class is responsible for mapping the original `User` object
+   * to the custom `UserDto` object.
    */
   public Optional<UserDto> findUserByEmail(String userEmail) {
     return Optional.ofNullable(userRepository.findByEmail(userEmail))
@@ -233,40 +220,34 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * handles password reset requests by finding the user with the provided email,
-   * creating a new security token, and sending a password recovery code to the user's
-   * registered email address.
+   * in Java is responsible for sending a password recovery code to a user's registered
+   * email address upon request. It retrieves the user's token from the repository,
+   * creates a new security token, and adds it to the user's tokens. Finally, it sends
+   * an email with the recovery code to the user.
    * 
-   * @param forgotPasswordRequest request for password reset sent by the user, and it
-   * contains the email address of the user to whom the password reset link should be
-   * sent.
+   * @param forgotPasswordRequest ForgotPasswordRequest object containing information
+   * about the user who wants to reset their password.
    * 
-   * 	- `Optional.ofNullable(forgotPasswordRequest)`: This line returns an `Optional`
-   * object containing the `ForgotPasswordRequest` instance or `null`, depending on
-   * whether one was provided in the function call.
-   * 	- `map(ForgotPasswordRequest::getEmail)`: If the `ForgotPasswordRequest` instance
-   * is non-null, this line calls the `getEmail()` method on it and returns its result
-   * as an `Optional` object.
-   * 	- `flatMap(email -> userRepository.findByEmailWithTokens(email))`: This line
-   * performs a second level of mapping by calling the `findByEmailWithTokens()` method
-   * on the `userRepository`, passing in the result of the previous `map()` operation
-   * (i.e., the email address). The method returns an `Optional` object containing the
-   * `User` instance or `null`, depending on whether one was found with the matching
+   * 	- `forgotPasswordRequest`: The Forgot Password Request object containing the email
+   * address of the user requesting password reset.
+   * 	- `getEmail()`: Returns the email address of the user in the input object.
+   * 	- `userRepository.findByEmailWithTokens(email)`: This method is used to find the
+   * user record based on the provided email address, and it returns a `Optional` object
+   * containing the user record if found, or an empty `Optional` otherwise. The
+   * `withTokens` parameter indicates that the user record should be fetched along with
+   * any password reset tokens associated with the email address.
+   * 	- `map(user -> {...})`: This method maps the user record to a new `User` object
+   * containing additional properties, such as the user's name and surname. The resulting
+   * `User` object is then used to create a new password reset token using the
+   * `securityTokenService.createPasswordResetToken()` method.
+   * 	- `userRepository.save(user)`: This method saves the updated `User` object in the
+   * repository, which persists the changes made to the user record.
+   * 	- `mailService.sendPasswordRecoverCode(user, newSecurityToken.getToken())`: This
+   * method sends an email containing the password reset token to the user's registered
    * email address.
-   * 	- `map(user -> { ... })`: If a `User` instance is returned by the `findByEmailWithTokens()`
-   * method, this line maps it to a new `SecurityToken` object using the
-   * `securityTokenService.createPasswordResetToken()` method. The resulting `SecurityToken`
-   * instance contains the user's ID and token value.
-   * 	- `userRepository.save(user)`: This line saves the updated `User` instance in the
-   * repository, so that its changes are persisted to the database.
-   * 	- `orElse(false)`: If the previous mappings do not produce a non-null result,
-   * this line returns `false`.
    * 
-   * In summary, the function takes a `ForgotPasswordRequest` instance as input and
-   * uses various mapping operations to retrieve a user's security token for password
-   * reset.
-   * 
-   * @returns a boolean value indicating whether the password reset process was successful.
+   * @returns a boolean value indicating whether a password reset link was successfully
+   * sent to the user's email address.
    */
   @Override
   public boolean requestResetPassword(ForgotPasswordRequest forgotPasswordRequest) {
@@ -283,20 +264,53 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * resets a user's password by retrieving their user token from the repository,
-   * validating it with the given token, saving a new token for the user, and sending
-   * a notification to the user's registered email address.
+   * receives a `ForgotPasswordRequest`, checks if a user with the provided email exists,
+   * retrieves their security token, verifies its validity, and updates the user's
+   * password by sending an email notification.
    * 
-   * @param passwordResetRequest Forgot Password request from the user, containing the
-   * email address and the reset token.
+   * @param passwordResetRequest ForgotPasswordRequest object containing the user's
+   * email and a token generated by the application, which is used to retrieve the
+   * user's security token and update their password.
    * 
-   * 	- `ForgotPasswordRequest passwordResetRequest`: This class represents a request
-   * to reset a user's password. It contains an email address belonging to the user who
-   * wants their password reset.
-   * 	- `getEmail()`: returns the email address of the user who made the request.
-   * 	- `getToken()`: returns the security token provided by the user for resetting
-   * their password.
-   * 	- `getNewPassword()`: returns the new password that the user wants to set.
+   * 	- `ForgotPasswordRequest passwordResetRequest`: This object contains information
+   * about the user attempting to reset their password, including their email address
+   * and the token provided for authentication.
+   * 	- `getEmail()`: This method returns the email address of the user associated with
+   * the request.
+   * 	- `getToken()`: This method returns the token provided by the user for authentication.
+   * 	- `SecurityTokenType.RESET`: This is an enumeration value representing the type
+   * of token being reset, indicating that the token was previously generated by the
+   * system for password reset purposes.
+   * 
+   * The function then processes the input using a series of intermediate steps:
+   * 
+   * 1/ `Optional<User> userWithToken =
+   * Optional.ofNullable(passwordResetRequest).map(ForgotPasswordRequest::getEmail).flatMap(userRepository::findByEmailWithTokens);`:
+   * This step retrieves the user associated with the input request from the database,
+   * using the email address provided in the `getEmail()` method. If no user is found,
+   * the function returns `Optional.empty()`.
+   * 2/ `final Optional<User> user = userWithToken.flatMap(user ->
+   * findValidUserToken(passwordResetRequest.getToken(), user, SecurityTokenType.RESET));`:
+   * This step retrieves the security token associated with the user and the provided
+   * token, using the `findValidUserToken()` method. If no valid token is found, the
+   * function returns `Optional.empty()`.
+   * 3/ `final Optional<SecurityToken> securityToken = user.flatMap(user ->
+   * findTokenForUser(user, SecurityTokenType.RESET));`: This step retrieves the security
+   * token associated with the user and the provided token, using the `findTokenForUser()`
+   * method. If no valid token is found, the function returns `Optional.empty()`.
+   * 4/ `final Optional<Boolean> result = securityToken.map(token -> useToken(token));`:
+   * This step uses the retrieved security token to generate a new password for the
+   * user, using the `useToken()` method. The resulting password is then saved in the
+   * database using the `saveTokenForUser()` method.
+   * 5/ `final Optional<Boolean> result = result.map(token -> sendPasswordSuccessfullyChanged());`:
+   * This step sends an email to the user informing them that their password has been
+   * successfully changed, using the `sendPasswordSuccessfullyChanged()` method. If no
+   * email can be sent, the function returns `Optional.empty()`.
+   * 
+   * In summary, the `resetPassword` function processes a password reset request by
+   * retrieving the associated user and security token, using the provided token to
+   * generate a new password, and then saving the updated password in the database and
+   * sending an email to the user confirming the change.
    * 
    * @returns a boolean value indicating whether the password reset was successful.
    */
@@ -314,31 +328,33 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * verifies an email address's confirmation status by querying a repository, filtering
-   * user objects based on their token status, and invoking a `useToken` method to
-   * confirm the email address if necessary. It returns a boolean value indicating
-   * whether the email address is confirmed.
+   * verifies if an email address is confirmed for a user based on a token retrieved
+   * from the user repository, and updates the user's email confirmation status accordingly.
    * 
-   * @param userId unique identifier of the user for whom the email confirmation status
-   * is being checked.
+   * @param userId unique identifier of a user for whom the email confirmation is to
+   * be checked.
    * 
-   * @param emailConfirmToken token for confirming the user's email address.
+   * @param emailConfirmToken token issued by the system to confirm the user's email address.
    * 
    * @returns a boolean value indicating whether the email confirmation process was
-   * successful for the provided user ID and token.
+   * successful or not.
    * 
-   * 	- `userWithToken`: An optional `User` object that contains information about the
-   * user whose email is being confirmed.
-   * 	- `emailToken`: An optional `SecurityToken` object that represents the email
-   * confirmation token for the specified user.
-   * 	- `token`: A `SecurityToken` object that represents the email confirmation token
-   * for the specified user.
-   * 	- `useToken`: A `SecurityToken` object that represents the email confirmation
-   * token for the specified user, which is used to confirm the email address.
+   * 	- `map(token -> true).orElse(false)` returns `true` if the email confirmation was
+   * successful, otherwise `false`.
+   * 	- The `Optional` object represents the possibility that there may not be a valid
+   * email confirmation token found.
+   * 	- The `filter` method is used to filter the user list to only include users who
+   * have not confirmed their email.
+   * 	- The `map` method is used to map the filtered user list to a SecurityToken, which
+   * is then used to confirm the email.
+   * 	- The `useToken` method is called on the resulting SecurityToken object to confirm
+   * the email.
    * 
-   * The function returns a boolean value indicating whether the email confirmation was
-   * successful or not. If the `emailToken` is present and has a non-null value, the
-   * function returns `true`. Otherwise, it returns `false`.
+   * The output of the `confirmEmail` function can be destructured as follows:
+   * 
+   * 	- If the output is `true`, it means that the email confirmation was successful.
+   * 	- If the output is `false`, it means that there was an error in the email
+   * confirmation process.
    */
   @Override
   public Boolean confirmEmail(String userId, String emailConfirmToken) {
@@ -356,14 +372,14 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * retrieves a user from the repository based on their ID, resets their email
-   * confirmation status if necessary, and sends an email confirmation token via the
-   * mail service.
+   * retrieves a user from the repository, checks if their email is confirmed, and
+   * resends an email confirmation token if necessary.
    * 
-   * @param userId User ID of the user for whom the email confirmation should be resent.
+   * @param userId User ID of the user for whom the email confirmation status needs to
+   * be checked.
    * 
-   * @returns a boolean value indicating whether an email confirmation token was sent
-   * to the user.
+   * @returns a boolean value indicating whether an email confirmation token was
+   * successfully sent to the user.
    */
   @Override
   public boolean resendEmailConfirm(String userId) {
@@ -381,25 +397,24 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * saves a user's encrypted password to the repository after updating the user object
-   * with the new password.
+   * encodes a new password for a user using a password encoder and saves the updated
+   * user object in the repository.
    * 
    * @param user User object to be updated with a new encrypted password.
    * 
-   * 	- `user`: This represents an object of the `User` class, which contains properties
-   * such as `id`, `username`, `email`, and `password`.
-   * 	- `newPassword`: A string that represents the new password to be saved for the user.
+   * 	- `user`: The User object contains properties such as `id`, `username`, `email`,
+   * and `password`, which are essential for authentication purposes.
    * 
-   * @param newPassword encrypted password for the user that is being saved.
+   * @param newPassword encrypted password for the user, which is generated and saved
+   * in the `saveTokenForUser` function.
    * 
-   * @returns a saved User object with an encrypted password.
+   * @returns a saved `User` object with an updated encrypted password.
    * 
-   * 	- `user`: The user object that is being updated with the new password.
-   * 	- `newPassword`: The new password to be saved for the user.
-   * 	- `passwordEncoder`: A password encoder used to encode the new password before
-   * saving it in the database.
-   * 	- `userRepository`: The repository where the user object is being saved after
-   * updating its encrypted password.
+   * 	- `user`: The updated user object with an encrypted password.
+   * 	- `passwordEncoder`: A reference to the password encoder used for encrypting the
+   * new password.
+   * 	- `userRepository`: A reference to the user repository where the updated user
+   * object is saved.
    */
   private User saveTokenForUser(User user, String newPassword) {
     user.setEncryptedPassword(passwordEncoder.encode(newPassword));
@@ -407,56 +422,47 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * searches for a valid SecurityToken within a User's tokens based on specified
-   * criteria, including token type and value matching, and expiration date being after
-   * the current date.
+   * searches for an unused security token belonging to a specific user and with the
+   * same token type and value as a given token, and whose expiration date is after the
+   * current date. It returns an optional instance of `SecurityToken`.
    * 
-   * @param token token that needs to be validated against the user's tokens.
+   * @param token token to be verified for validity and matching with the provided
+   * `user` and `securityTokenType`.
    * 
-   * @param user User object whose user tokens are being searched for a valid token.
+   * @param user User object that is being searched for a valid security token.
    * 
-   * 	- `user`: A `User` object containing information about the user, such as their
-   * username and email address.
-   * 	- `token`: A string representing the user's token.
-   * 	- `securityTokenType`: An enumeration value indicating the type of security token
-   * (e.g., password reset token).
+   * 	- `user`: A `User` object representing the user for whom the token is being checked.
+   * 	- `token`: The token to be validated.
+   * 	- `securityTokenType`: The type of security token being checked.
    * 
-   * The function then filters through the `user.getUserTokens()` stream to find a token
-   * that meets the specified criteria:
+   * The function then streams through the user's tokens, filters them based on several
+   * conditions, and finds the first token that matches all the conditions.
    * 
-   * 	- `isUsed()`: Whether the token has been used before.
-   * 	- `tokenType()`: The type of security token (e.g., password reset token).
-   * 	- `token()`: The actual token value.
-   * 	- `expiryDate()`: The expiration date of the token, measured in LocalDate format.
+   * @param securityTokenType type of security token being searched for, and is used
+   * to filter the stream of user tokens to only include those with the specified type.
    * 
-   * Finally, the function returns an `Optional` containing the found token if it meets
-   * all the criteria, otherwise returns `Optional.empty()`.
+   * 	- `isUsed()` - indicates whether the token has been used already or not.
+   * 	- `tokenType` - represents the type of security token.
+   * 	- `token` - stores the value of the security token.
+   * 	- `expiryDate` - marks the expiration date of the token.
    * 
-   * @param securityTokenType token type to filter the user tokens by, which is used
-   * to determine which tokens are eligible for password reset.
+   * These properties are utilized in the filtering and finding process of the function
+   * to locate a valid user token.
    * 
-   * 	- `isUsed`: a boolean indicating whether the token has been used or not.
-   * 	- `tokenType`: an enumeration representing the type of security token, which can
-   * be one of the constants defined in the class.
-   * 	- `token`: a string representing the token value.
-   * 	- `expiryDate`: a `LocalDate` object representing the expiration date of the token.
+   * @returns an `Optional` containing a `SecurityToken` object if a valid token is
+   * found, or `None` otherwise.
    * 
-   * @returns an `Optional` containing a `SecurityToken` if one exists and meets the
-   * specified criteria.
-   * 
-   * 	- `Optional<SecurityToken>`: This is a container for holding a `SecurityToken`
-   * object, which represents a valid user token. The `Optional` class provides a way
-   * to safely handle null or non-existent values.
-   * 	- `SecurityToken`: This is the actual token that is being searched for, which has
-   * various attributes such as `tokenType`, `token`, and `expiryDate`.
-   * 	- `user`: This is the user object that the token belongs to, which contains other
-   * attributes such as `id` and `password`.
-   * 	- `securityTokenType`: This is the type of security token being searched for,
-   * which can be one of the predefined constants in the code.
-   * 
-   * Overall, this function provides a way to find a valid user token based on certain
-   * criteria, such as the token not being used yet, having the correct type, and
-   * matching the provided token value.
+   * 	- `Optional<SecurityToken>`: The output is an optional Security Token, which means
+   * it may or may not be present depending on the input conditions.
+   * 	- `userPasswordResetToken`: This variable contains a Security Token that belongs
+   * to the specified user.
+   * 	- `isUsed()`: This method checks whether the token has been used or not. If it
+   * has been used, the token is no longer valid for password reset.
+   * 	- `getTokenType()`: This method returns the type of Security Token.
+   * 	- `getToken()`: This method returns the actual Security Token value.
+   * 	- `getExpiryDate().isAfter(LocalDate.now())`: This method checks whether the
+   * expiry date of the token is after the current date. If the token has expired, it
+   * cannot be used for password reset.
    */
   private Optional<SecurityToken> findValidUserToken(String token, User user, SecurityTokenType securityTokenType) {
     Optional<SecurityToken> userPasswordResetToken = user.getUserTokens()
@@ -470,21 +476,23 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * creates a new User object from a `UserDto` input and saves it to the repository
-   * for persistence.
+   * creates a new user object from a `UserDto` object and saves it to the repository
+   * using the `save()` method.
    * 
-   * @param request UserDto object containing the data for the user to be saved, which
-   * is mapped by the `userMapper` to a corresponding `User` object before being saved
-   * into the repository.
+   * @param request UserDto object containing the data for creating a new user in the
+   * repository.
    * 
-   * 	- `request.getId()` represents the unique identifier for the user being created.
+   * 	- `request.getId()`: an integer representing the unique identifier for the user
+   * being created
+   * 	- `userMapper.userDtoToUser(request)`: a conversion process to map the input DTO
+   * to a corresponding `User` object
    * 
-   * @returns a saved user object in the repository.
+   * @returns a saved User object in the repository.
    * 
-   * 	- `User user`: The created user object, containing the data from the `request`
-   * parameter and any additional information stored in the repository.
-   * 	- `userRepository.save(user)`: The method call that saves the user object to the
-   * repository, which persists the data to a storage system.
+   * 	- User user: The created user object saved in the repository.
+   * 	- Id: The unique identifier assigned to the user.
+   * 	- Log trace message: A log statement with the format "saving user with id[{} to
+   * repository".
    */
   private User createUserInRepository(UserDto request) {
     User user = userMapper.userDtoToUser(request);
@@ -493,17 +501,20 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * updates a user's email status to confirmed and sends a notification to the mail
-   * service, then saves the updated user record in the repository.
+   * updates a user's email confirmation status to `true`, sends an account confirmation
+   * notification to the user via the mail service, and saves the updated user object
+   * in the repository.
    * 
-   * @param user User object that contains the email address to be confirmed and is
-   * used to update the `emailConfirmed` field to `true`, send an account confirmation
-   * notification using the `mailService`, and save the updated User object in the repository.
+   * @param user User object that contains information about the user whose email is
+   * being confirmed, and it is used to update the user's `emailConfirmed` field and
+   * send a notification to the mail service.
    * 
-   * 	- `setEmailConfirmed(true)` sets the `emailConfirmed` field to `true`.
+   * 	- `user.setEmailConfirmed(true)` sets a Boolean value indicating if the user's
+   * email is confirmed or not.
    * 	- `mailService.sendAccountConfirmed(user)` sends an account confirmation notification
-   * using the `mailService`.
-   * 	- `userRepository.save(user)` saves the updated user object in the repository.
+   * to the user's registered email address.
+   * 	- `userRepository.save(user)` saves the modified user object in the repository
+   * for further processing.
    */
   private void confirmEmail(User user) {
     user.setEmailConfirmed(true);
@@ -512,12 +523,14 @@ public class UserSDJpaService implements UserService {
   }
 
   /**
-   * encrypts a user's password by encoding it using a password encoder.
+   * encrypts a user's password by encoding it using the provided password encoder.
    * 
-   * @param request UserDto object containing the user's password to be encrypted.
+   * @param request UserDto object containing the user's password, which is then encrypted
+   * and its encrypted value is set as the new value of the `encryptedPassword` field.
    * 
-   * 	- `request.setEncryptedPassword`: The method sets an encrypted password for the
-   * user by calling `passwordEncoder.encode()` on the original password.
+   * 	- `request`: It is an object of type `UserDto`.
+   * 	- `setEncryptedPassword()`: This method sets the `encryptedPassword` attribute
+   * of `request` to a password that has been encrypted using `passwordEncoder.encode()`.
    */
   private void encryptUserPassword(UserDto request) {
     request.setEncryptedPassword(passwordEncoder.encode(request.getPassword()));
@@ -525,12 +538,13 @@ public class UserSDJpaService implements UserService {
 
   /**
    * generates a unique user ID for a given `UserDto` object using the `UUID.randomUUID()`
-   * method and assigns it to the `UserId` field of the request object.
+   * method and assigns it to the `UserDto` object's `userId` field.
    * 
-   * @param request `UserDto` object containing information about the user for whom a
-   * unique ID is being generated.
+   * @param request UserDto object that contains the user's information and is used to
+   * generate a unique user ID for the user.
    * 
-   * 	- `request`: an instance of `UserDto`, which contains user-related information.
+   * 	- `request`: An instance of the `UserDto` class, containing various attributes
+   * and properties relevant to user data.
    */
   private void generateUniqueUserId(UserDto request) {
     request.setUserId(UUID.randomUUID().toString());

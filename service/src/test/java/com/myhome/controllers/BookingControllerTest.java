@@ -16,10 +16,8 @@ import static org.mockito.Mockito.verify;
 
 /**
  * is a unit test class for the BookingController class, with tests for deleting
- * bookings. The class has a mocked BookingService interface injected into the
- * BookingController, and uses Mockito to verify the calls made to the service. The
- * tests include assertions for the response body and status code after calling the
- * deleteBooking method.
+ * bookings using a mocked BookingService interface. The tests include assertions for
+ * the response body and status code after calling the deleteBooking method.
  */
 public class BookingControllerTest {
 
@@ -33,8 +31,8 @@ public class BookingControllerTest {
   private BookingController bookingController;
 
   /**
-   * initializes mock objects using MockitoAnnotations, enabling the use of mocking
-   * functionalities throughout the test class.
+   * initializes mock objects using MockitoAnnotations, allowing for more effective
+   * unit testing.
    */
   @BeforeEach
   private void init() {
@@ -42,10 +40,9 @@ public class BookingControllerTest {
   }
 
   /**
-   * tests the deletion of a booking by providing the ammenity ID and the booking ID
-   * to the `bookingController`, which then calls the `bookingSDJpaService` to delete
-   * the booking. The test verifies that the booking is deleted successfully and returns
-   * a `ResponseEntity` with no body and a status code of `HttpStatus.NO_CONTENT`.
+   * tests the deleteBooking method of the BookingController class by providing a given
+   * implementation of the deleteBooking method of the BookingSDJpaService interface
+   * and verifying the outcome of the actual deleteBooking method call.
    */
   @Test
   void deleteBooking() {
@@ -65,8 +62,8 @@ public class BookingControllerTest {
 
   /**
    * tests whether deleting a non-existent booking returns a `HttpStatus.NOT_FOUND`
-   * response and verifies that the method call to `bookingSDJpaService.deleteBooking()`
-   * was made.
+   * response and verifies that the `bookingSDJpaService` method was called with the
+   * correct parameters.
    */
   @Test
   void deleteBookingNotExists() {

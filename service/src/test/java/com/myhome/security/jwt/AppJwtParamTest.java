@@ -21,15 +21,15 @@ import org.junit.jupiter.api.Test;
 
 /**
  * is a test class that utilizes the AppJwt builder to create customized JWT parameters
- * with a user ID and expiration time. The builder method allows for modification of
- * the JWT parameters before creation, and the resulting object is printed to the console.
+ * with a user ID and expiration time. The resulting object is printed to the console
+ * using System.out.println().
  */
 class AppJwtParamTest {
 
   /**
-   * builds an instance of the `AppJwt` class with user ID, expiration time, and current
-   * date and time using the `builder()` method. The resulting object is then printed
-   * to the console using `System.out.println()`.
+   * creates an instance of the `AppJwt` class using a builder-style approach, allowing
+   * for customization of the resulting object's properties. The method takes advantage
+   * of Java's default constructor syntax to create the instance with the specified values.
    */
   @Test
   void testParamCreationBuilder() {

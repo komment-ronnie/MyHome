@@ -24,12 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * is an implementation of the EmailSender interface in Spring Boot application,
- * providing email sending functionality using Thymeleaf templates and the JPA
- * framework. The class provides methods for sending emails, including account confirmed
- * emails, and utilizes the `mailSender` object to send emails. Additionally, it uses
- * a `LocaleContextHolder` to manage the current locale and a `messageSource` to
- * retrieve localized messages.
+ * is responsible for sending emails through Java mail API using Thymeleaf templates
+ * for email bodies. It provides methods for sending emails with customizable subject
+ * lines, email bodies, and attachments. The service also handles security tokens for
+ * email confirmation links and provides localized messages from a message source
+ * using the current locale.
  */
 @Service
 @ConditionalOnProperty(value = "spring.mail.devMode", havingValue = "false", matchIfMissing = false)
@@ -43,17 +42,17 @@ public class MailSDJpaService implements MailService {
   private final MailProperties mailProperties;
 
   /**
-   * sends a password recovery code via email to the registered email address of a user.
+   * generates a random password recovery code for a user and sends it to their registered
+   * email address via an email with a customized subject.
    * 
    * @param user user for whom the password recovery code is being generated and sent.
    * 
-   * 	- `user.getName()`: The user's name.
-   * 	- `randomCode`: A randomly generated code for password recovery.
+   * 	- `user.getName()`: Returns the user's name as a string.
+   * 	- `user.getEmail()`: Returns the user's email address as a string.
    * 
-   * @param randomCode 6-digit code that will be sent to the user's registered email
-   * address for password recovery.
+   * @param randomCode 6-digit code sent to the user's email address for password recovery.
    * 
-   * @returns a boolean value indicating whether an email was sent successfully to the
+   * @returns a boolean value indicating whether an email was successfully sent to the
    * user's registered email address.
    */
   @Override
@@ -68,16 +67,19 @@ public class MailSDJpaService implements MailService {
   }
 
   /**
-   * maps a user object to a map of variables and then sends an email with a personalized
-   * subject based on a localized message and a template file named `PASSWORD_CHANGED`.
-   * The function returns whether the mail was sent successfully.
+   * maps a user's name and email to a password change notification subject and sends
+   * an email with the template contents.
    * 
-   * @param user user for whom the password change notification email is to be sent.
+   * @param user user whose password is being sent a notification of successful change.
    * 
-   * 	- `user.getName()` represents the user's name.
-   * 	- `user.getEmail()` holds the user's email address.
+   * 	- `user`: The input parameter, representing a `User` object containing information
+   * about the user whose password has been successfully changed.
+   * 	- `getName()`: A method of the `User` class returning the user's name.
+   * 	- `getEmail()`: A method of the `User` class returning the user's email address.
+   * 	- `getLocalizedMessage()`: A method of the `user` object returning a localized
+   * message for the specified key.
    * 
-   * @returns a boolean value indicating whether an email was sent successfully to the
+   * @returns a boolean value indicating whether an email was successfully sent to the
    * user's registered email address.
    */
   @Override
@@ -96,24 +98,26 @@ public class MailSDJpaService implements MailService {
    * 
    * @param user user whose account is being created and confirmed.
    * 
-   * 	- `user.getName()` - the user's name
-   * 
-   * The function first creates a `Map` containing the user's name and the email
-   * confirmation link (`emailConfirmLink`). Then, it sends an email with the subject
-   * `getLocalizedMessage("locale.EmailSubject.accountCreated")` using the
-   * `MailTemplatesNames.ACCOUNT_CREATED.filename` template file. The function returns
-   * a boolean value indicating whether the email was sent successfully.
+   * 	- `user`: A `User` object containing information about the user who created an
+   * account. Its properties include `getName()` (a string representing the user's
+   * name), and `getEmail()` (a string representing the user's email address).
    * 
    * @param emailConfirmToken email confirmation token sent to the user's email address
-   * for verifying their account creation, which is used as the link in the email
-   * notification to confirm the account creation.
+   * for verifying their email address during account creation.
    * 
-   * 	- `user`: A `User` object representing the user whose account has been created.
-   * 	- `emailConfirmToken`: An instance of `SecurityToken` containing the email
-   * confirmation link for the newly created account.
+   * 	- `User user`: The user whose account was created.
+   * 	- `SecurityToken emailConfirmToken`: A token used to confirm the user's email address.
+   * 	- `getAccountConfirmLink(user, emailConfirmToken)`: A function that generates a
+   * link for the user to confirm their email address.
+   * 	- `getLocalizedMessage("locale.EmailSubject.accountCreated")`: A function that
+   * returns a localized message for the subject of an email sent to confirm the user's
+   * account creation.
+   * 	- `send(user.getEmail(), accountCreatedSubject, MailTemplatesNames.ACCOUNT_CREATED.filename,
+   * templateModel)`: A function that sends an email to confirm the user's account
+   * creation using a pre-defined template file named `MailTemplatesNames.ACCOUNT_CREATED`.
    * 
-   * @returns a boolean value indicating whether an email was successfully sent to
-   * confirm the account creation.
+   * @returns a boolean value indicating whether an email was sent successfully to
+   * confirm the user's account creation.
    */
   @Override
   public boolean sendAccountCreated(User user, SecurityToken emailConfirmToken) {
@@ -133,21 +137,12 @@ public class MailSDJpaService implements MailService {
    * @param user User object containing the user's name and email address for sending
    * an account confirmation email.
    * 
-   * 	- `username`: A String representing the user's name.
+   * 	- `user`: A `User` object representing the user for whom account confirmation is
+   * being sent. The `User` class has properties such as `getName()`, `getEmail()` and
+   * others.
    * 
-   * The function then performs the following operations:
-   * 
-   * 1/ Creates a new `Map` object called `templateModel`.
-   * 2/ Adds a key-value pair to the `templateModel`, where the key is "username" and
-   * the value is the deserialized input `user.getName()`.
-   * 3/ Sets the subject of the email to be sent using the localized message "locale.EmailSubject.accountConfirmed".
-   * 4/ Uses the `send` function to send an email to the user's registered email address
-   * with the specified subject and filename.
-   * 5/ Returns a boolean value indicating whether the email was successfully sent or
-   * not.
-   * 
-   * @returns a boolean value indicating whether an email was sent to the user's email
-   * address.
+   * @returns a boolean value indicating whether an email was successfully sent to the
+   * user's registered email address.
    */
   @Override
   public boolean sendAccountConfirmed(User user) {
@@ -160,14 +155,13 @@ public class MailSDJpaService implements MailService {
   }
 
   /**
-   * sends an HTML-formatted email message to a recipient using a MailSender object.
+   * sends an HTML-formatted message through a messaging system using the `mailSender`.
    * 
-   * @param to email address of the recipient to whom the HTML message should be sent.
+   * @param to email address of the recipient to whom the HTML message is being sent.
    * 
-   * @param subject subject line of the sent email in the `MimeMessage` object created
-   * by the `mailSender.createMimeMessage()` method.
+   * @param subject subject of an email that is being sent through the `mailSender` object.
    * 
-   * @param htmlBody HTML content of the message that will be sent to the recipient.
+   * @param htmlBody HTML message body that will be sent to the recipient through email.
    */
   private void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
     MimeMessage message = mailSender.createMimeMessage();
@@ -180,30 +174,28 @@ public class MailSDJpaService implements MailService {
   }
 
   /**
-   * sends an HTML email message to a specified recipient based on a provided template
-   * name and model.
+   * takes an email address, subject line, template name, and a map of template model
+   * variables as input. It uses Thymeleaf to process the template and generates an
+   * HTML message body, which is then sent via email using the `sendHtmlMessage` method.
+   * If any errors occur during email sending, the function returns `false`.
    * 
-   * @param emailTo email address of the recipient to whom the message will be sent.
+   * @param emailTo email address to which the email message will be sent.
    * 
    * @param subject subject line of the email to be sent.
    * 
    * @param templateName name of the Thymeleaf template to be processed and rendered
-   * into HTML content for sending as an email message.
+   * into an HTML message.
    * 
-   * @param templateModel mapping of Thymeleaf variables to be used in the email template,
-   * which is passed to the `emailTemplateEngine.process()` method for rendering the
-   * email template into an HTML body.
+   * @param templateModel map of data that is used to populate the Thymeleaf template,
+   * which is then rendered as an HTML message and sent via email.
    * 
-   * 	- `LocaleContextHolder`: A class that provides a way to access the current locale.
-   * 	- `Map<String, Object>`: A map of key-value pairs where each key is a string and
-   * each value is an object.
-   * 	- `emailTo`: A string representing the email address to send the message to.
-   * 	- `subject`: A string representing the subject of the message.
-   * 	- `templateName`: A string representing the name of the Thymeleaf template to use
-   * for the message body.
-   * 	- `htmlBody`: A string representing the HTML content of the message body, generated
-   * by calling the `process` method of an `emailTemplateEngine` object with the
-   * `thymeleafContext` as input.
+   * 	- `LocaleContextHolder`: The Locale context holder is used to obtain the current
+   * locale.
+   * 	- `TemplateEngine`: An instance of the `EmailTemplateEngine` class, which is
+   * responsible for rendering the email template.
+   * 	- `Map<String, Object>`: A map containing key-value pairs representing the variables
+   * that can be used in the template. These variables are passed as arguments to the
+   * `process()` method of the `EmailTemplateEngine` instance.
    * 
    * @returns a boolean value indicating whether the email was sent successfully or not.
    */
@@ -221,26 +213,26 @@ public class MailSDJpaService implements MailService {
   }
 
   /**
-   * generates a URL for email confirmation of a user's account based on the current
-   * context path and the user's ID, and token provided.
+   * generates a unique URL for email confirmation of a user's account based on the
+   * current context path and the user's ID, using a predefined format string.
    * 
    * @param user User object containing information about the user for whom the
    * confirmation link is being generated.
    * 
-   * 1/ `user`: A `User` object representing a user in the application. The `User` class
-   * has attributes such as `userId`, `email`, and `password`.
-   * 2/ `token`: A `SecurityToken` object representing a security token used for
-   * authentication purposes. The `SecurityToken` class has attributes such as `token`
-   * and `expiresAt`.
+   * 	- `user`: A `User` object containing information about the user whose email
+   * confirmation link is being generated. The object may have attributes such as
+   * `UserId`, `Email`, and `Username`.
+   * 	- `token`: An instance of `SecurityToken` representing the token used to generate
+   * the confirmation link. The token may contain properties such as `Token` and `Issuer`.
    * 
-   * @param token email confirmation token for the specified user, which is used to
-   * construct the URL for the email confirmation page.
+   * @param token SecurityToken returned by the email confirmation endpoint, which is
+   * used to verify the user's identity and retrieve their email confirmation status.
    * 
-   * 	- `token.getToken()`: This is a unique identifier for the user's email confirmation
-   * request.
+   * 	- `user`: The user object passed as an argument, which contains the `UserId` property.
+   * 	- `SecurityToken`: The token object that contains additional attributes such as
+   * `token`, `expiresIn`, and `iat`.
    * 
-   * @returns a URL string containing the base URL and the user ID and security token
-   * parameters.
+   * @returns a URL string that includes the user ID and security token for email confirmation.
    */
   private String getAccountConfirmLink(User user, SecurityToken token) {
     String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -251,14 +243,13 @@ public class MailSDJpaService implements MailService {
   }
 
   /**
-   * takes a string parameter `prop` and returns a localized message from a message
-   * source using the `getMessage` method. If an exception occurs, it returns a default
-   * message indicating a localization error.
+   * retrieves a localized message from a message source based on a given property name,
+   * handling exceptions and providing a fallback message when localization fails.
    * 
-   * @param prop message key to be localized.
+   * @param prop property key to be localized, which is passed to the `getMessage()`
+   * method of the `MessageSource` interface to retrieve the localized message.
    * 
-   * @returns a localized message for a given property name, generated from a message
-   * source using the current locale.
+   * @returns a localized message for a given property name.
    */
   private String getLocalizedMessage(String prop) {
     String message = "";

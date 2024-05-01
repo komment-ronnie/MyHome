@@ -35,21 +35,24 @@ import lombok.ToString;
 import lombok.With;
 
 /**
- * represents an amenity that can be booked by guests at a community or community
- * house, with fields for its unique ID, name, description, price, and relationships
- * to the community and community house.
+ * represents an amenity bookable by guests at a community or community house, with
+ * fields for its unique ID, name, description, price, and relationships to the
+ * community and community house.
  * Fields:
- * 	- amenityId (String): represents a unique identifier for an amenity within the
- * Amenity entity.
- * 	- name (String): represents the name of an amenity.
- * 	- description (String): represents a brief summary of an amenity's features or characteristics.
- * 	- price (BigDecimal): represents a decimal value indicating the cost of an amenity.
- * 	- community (Community): represents a community entity associated with each amenity
- * instance.
- * 	- communityHouse (CommunityHouse): represents a reference to a Community House
- * object within an Amenity entity.
- * 	- bookingItems (Set<AmenityBookingItem>): is a set of AmenityBookingItem objects
- * associated with each amenity instance.
+ * 	- amenityId (String): represents an identifier for each amenity instance within
+ * its respective community or community house.
+ * 	- name (String): in the Amenity entity represents a string value that identifies
+ * the name of an amenity.
+ * 	- description (String): in the Amenity class represents a brief summary of an
+ * amenity's features or characteristics.
+ * 	- price (BigDecimal): represents the cost of an amenity.
+ * 	- community (Community): in the Amenity class represents an association between
+ * an amenity and a community entity.
+ * 	- communityHouse (CommunityHouse): in the Amenity class represents a reference
+ * to a Community House object associated with each amenity instance.
+ * 	- bookingItems (Set<AmenityBookingItem>): in the Amenity class contains a set of
+ * AmenityBookingItem objects representing bookings made by guests at the community
+ * or community house associated with each amenity instance.
  */
 @Entity
 @AllArgsConstructor

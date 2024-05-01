@@ -33,7 +33,7 @@ import org.mapstruct.Mapping;
 /**
  * defines a mapping between various data structures related to communities in a
  * MyHome platform, including creating and retrieving community details, administrators,
- * houses, and house details.
+ * houses, and house details through different methods and mappings.
  */
 @Mapper
 public interface CommunityApiMapper {

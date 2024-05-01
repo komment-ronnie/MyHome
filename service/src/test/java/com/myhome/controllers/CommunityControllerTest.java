@@ -129,26 +129,14 @@ class CommunityControllerTest {
   }
 
   /**
-   * creates a new instance of the `CommunityHouse` class with the provided `Community`
-   * object, name, ID, and empty sets of members and staff.
+   * Creates a new instance of the `CommunityHouse` class with the provided community,
+   * name, ID, and initial member and group sets.
    * 
-   * @param community Community object that the created CommunityHouse will belong to.
+   * @param community Community object that provides the context for the creation of a
+   * new CommunityHouse instance.
    * 
-   * 	- `Community`: This represents an object of type `Community`, which is the root
-   * class of the community hierarchy.
-   * 	- `COMMUNITY_HOUSE_NAME`: A string representing the name of the community house.
-   * 	- `COMMUNITY_HOUSE_ID`: An integer representing the unique identifier of the
-   * community house.
-   * 	- `<HashSet>`: Two sets of objects, which are used to store additional data for
-   * the community house.
-   * 
-   * @returns a `CommunityHouse` object containing the specified community, name, ID,
-   * and empty sets of members and buildings.
-   * 
-   * 	- The created CommunityHouse instance has a name (`COMMUNITY_HOUSE_NAME`) and an
-   * ID (`COMMUNITY_HOUSE_ID`).
-   * 	- It has no members in its `members` set.
-   * 	- It has no groups in its `groups` set.
+   * @returns a `CommunityHouse` object representing the test community house with a
+   * unique ID and name.
    */
   private CommunityHouse createTestCommunityHouse(Community community) {
     return new CommunityHouse(community, COMMUNITY_HOUSE_NAME, COMMUNITY_HOUSE_ID, new HashSet<>(),
@@ -746,38 +734,12 @@ class CommunityControllerTest {
   }
 
   /**
-   * creates a mock Community object with set admins, houses and other attributes, and
-   * adds it to a set of communities.
+   * Creates a mock Community object with pre-defined admins, houses, and district. It
+   * returns the created Community object.
    * 
-   * @param admins Set of User objects that will be assigned as administrators for the
-   * generated Community object.
+   * @param admins set of users who will be admins for the generated mock community.
    * 
-   * 	- `Set<User> admins`: A set of user objects representing the community administrators.
-   * 	+ Each user object has the following attributes:
-   * 		- `String name`: The username of the administrator.
-   * 		- `Integer id`: A unique identifier for the administrator.
-   * 		- `Email address`: The email address of the administrator.
-   * 		- `Boolean isAdmin`: A boolean value indicating whether the user is an administrator.
-   * 		- `Password`: The password of the administrator (not serialized).
-   * 		- `HashSet<String> roles`: A set of role names that the administrator is assigned
-   * to.
-   * 		- `HashSet<String> districts`: A set of district names that the administrator
-   * is responsible for.
-   * 
-   * @returns a mock Community object containing admins and houses.
-   * 
-   * 	- `Community community`: This is the mock community object that is created with
-   * the given set of admins. It has the necessary attributes to represent a community
-   * in the system.
-   * 	- `User admin`: This is one of the admins for the community, added to the list
-   * of admins for the community.
-   * 	- `CommunityHouse communityHouse`: This is a mock community house object that is
-   * associated with the community. It has the necessary attributes to represent a
-   * community house in the system.
-   * 
-   * Overall, the function creates a new community object and associates it with an
-   * existing admin user, as well as creating a new community house object and linking
-   * it to the community.
+   * @returns a mock Community object with admins and a House.
    */
   private Community getMockCommunity(Set<User> admins) {
     Community community =

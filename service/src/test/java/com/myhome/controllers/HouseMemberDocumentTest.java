@@ -34,18 +34,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a unit test for the House Member Document controller in Spring Boot. The test
- * class verifies various scenarios related to uploading, downloading, updating,
- * deleting, and searching for house member documents, including:
- * 
- * 	- Verifying that uploading a document returns a `HttpStatus.NO_CONTENT` status
- * code when the document is successfully uploaded to the service.
- * 	- Testing whether the `getHouseMemberDocument` method returns a `HttpStatus.NOT_FOUND`
- * status code when the document is not found in the service.
- * 	- Verifying that updating a house member document returns a `HttpStatus.NO_CONTENT`
- * status code when the update is successful.
- * 	- Testing whether the `deleteHouseMemberDocument` method returns a `HttpStatus.NOT_FOUND`
- * status code when the document to be deleted is not found in the database.
+ * is a unit test for the HouseMemberDocumentController class. It verifies various
+ * scenarios related to uploading, downloading, updating, and deleting house member
+ * documents, including successful responses, errors, and missing documents. The test
+ * class uses JUnit to run the tests and verify the correct behavior of the controller.
  */
 class HouseMemberDocumentTest {
 
@@ -63,7 +55,8 @@ class HouseMemberDocumentTest {
   private HouseMemberDocumentController houseMemberDocumentController;
 
   /**
-   * initializes mock objects using MockitoAnnotations.
+   * initializes mock objects using MockitoAnnotations, making the class mock-friendly
+   * for testing purposes.
    */
   @BeforeEach
   private void init() {
@@ -71,8 +64,9 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * verifies that the `getHouseMemberDocument` endpoint returns the correct house
-   * member document content and media type when the ID is valid.
+   * tests the `getHouseMemberDocument` method of the `HouseMemberDocumentController`.
+   * It verifies that the method returns a response with the correct status code,
+   * document content, and content type when the house member document is found.
    */
   @Test
   void shouldGetDocumentSuccess() {
@@ -90,8 +84,8 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * verifies that a request to retrieve a house member document returns a `NOT_FOUND`
-   * status code if the document is not found in the service.
+   * tests whether calling `getHouseMemberDocument()` on a non-existent member ID returns
+   * a `HttpStatus.NOT_FOUND` response and verifies the call to `findHouse MemberDocumentService`.
    */
   @Test
   void shouldGetDocumentFailure() {
@@ -107,8 +101,9 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * verifies that the `uploadHouseMemberDocument` method creates a new house member
-   * document and returns it successfully without any errors.
+   * tests whether uploading a house member document via the controller returns a
+   * successful response with no content and verifies that the service creates the
+   * document successfully.
    */
   @Test
   void shouldPostDocumentSuccess() {
@@ -124,8 +119,9 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * verifies that uploading a house member document fails with a `HttpStatus.NOT_FOUND`
-   * status code when the document is not found in the database.
+   * verifies that when a document is uploaded but cannot be created due to an error,
+   * the API returns a `HttpStatus.NOT_FOUND` response and simulates the creation of
+   * the document using the given `houseMemberDocumentService`.
    */
   @Test
   void shouldPostDocumentFailureNotFound() {
@@ -141,9 +137,9 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * tests the updateHouseMemberDocument method by providing a multipart file and member
-   * ID to the controller, then verifying that the method calls the house Member Document
-   * Service with the correct parameters and returns a successful response.
+   * tests the updateHouseMemberDocument method by providing a multipart file and
+   * verifying that the house member document is updated successfully, with the correct
+   * status code and service call executed.
    */
   @Test
   void shouldPutDocumentSuccess() {
@@ -159,8 +155,10 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * tests the behavior of the `houseMemberDocumentController` when updating a house
-   * member document and the document cannot be found.
+   * verifies that if the update House Member Document operation fails due to a document
+   * not found exception, then the response status code is set to `HttpStatus.NOT_FOUND`.
+   * Additionally, it verifies that the `houseMemberDocumentService.updateHouseMemberDocument()`
+   * method is called with the correct parameters.
    */
   @Test
   void shouldPutDocumentFailureNotFound() {
@@ -176,9 +174,9 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * tests the deleteHouseMemberDocument method of HouseMemberDocumentController by
-   * providing a given situation, calling the method, verifying the response status
-   * code and the call to the underlying service.
+   * tests the delete House Member Document controller's functionality by given a member
+   * ID and verifying that when the controller deletes the document, the response status
+   * code is NO_CONTENT and the house Member Document Service method is called.
    */
   @Test
   void shouldDeleteDocumentSuccess() {
@@ -194,9 +192,10 @@ class HouseMemberDocumentTest {
   }
 
   /**
-   * verifies that when a document cannot be deleted, the response status code is
-   * `HttpStatus.NOT_FOUND`. Additionally, it triggers the verify method to ensure the
-   * correct call to the House Member Document Service was made.
+   * tests the behavior of the `houseMemberDocumentController` when the document to be
+   * deleted cannot be found. It uses mocked dependencies to simulate a `false` return
+   * value from the `deleteHouseMemberDocument` method and asserts that the resulting
+   * response entity has a status code of `HttpStatus.NOT_FOUND`.
    */
   @Test
   void shouldDeleteDocumentFailureNotFound() {

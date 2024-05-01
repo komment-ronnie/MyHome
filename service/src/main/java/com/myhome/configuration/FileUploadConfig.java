@@ -24,9 +24,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
 
 /**
- * is a configuration class that sets maximum file size and request size limits for
- * multipart requests in Spring Boot. The class creates a `MultipartConfig` instance
- * with configuration settings for maximum file size and request size, respectively.
+ * is a Spring Boot configuration class that sets maximum file and request size limits
+ * for multipart requests. The class creates a `MultipartConfig` instance with
+ * customized maximum file and request sizes, allowing efficient handling of multipart
+ * requests in a Spring Boot application.
  */
 @Configuration
 public class FileUploadConfig {
@@ -35,17 +36,23 @@ public class FileUploadConfig {
   private int maxSizeKBytes;
 
   /**
-   * creates a `MultipartConfig` instance with customized maximum file and request
-   * sizes, allowing for efficient handling of multipart requests in a Spring Boot application.
+   * creates a `MultipartConfig` object with customized settings for maximum file and
+   * request sizes, returning the created instance.
    * 
-   * @returns a `MultipartConfig` object, which can be used to configure multipart form
-   * data processing in a Spring Boot application.
+   * @returns a `MultipartConfig` object that configures the maximum file size and
+   * request size for multipart requests.
    * 
-   * The MultipartConfigFactory object creates a new instance of MultipartConfig, which
-   * is an immutable configuration object that manages file uploads in a web application.
-   * The setMaxFileSize() method sets the maximum size of files that can be uploaded
-   * in kilobytes (KB), while the setMaxRequestSize() method sets the maximum total
-   * size of all files and data in the request in KB.
+   * 	- `MultipartConfigFactory`: This is the class that creates and manages multipart
+   * requests in Spring WebFlux.
+   * 	- `setMaxFileSize()`: This sets the maximum file size allowed in a multipart
+   * request, measured in kilobytes (KB).
+   * 	- `setMaxRequestSize()`: This sets the maximum request size allowed in a multipart
+   * request, also measured in KB.
+   * 	- `createMultipartConfig()`: This method creates a new instance of `MultipartConfig`
+   * with the specified maximum file and request sizes.
+   * 
+   * Overall, this function is used to configure the maximum size of multipart requests
+   * in Spring WebFlux.
    */
   @Bean
   public MultipartConfigElement multipartConfigElement() {

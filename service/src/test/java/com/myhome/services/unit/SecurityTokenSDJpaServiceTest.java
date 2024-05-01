@@ -25,11 +25,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * is a testing framework for the SecurityTokenSDJpaService class, which is responsible
- * for creating and managing security tokens in a database. The test class provides
- * methods to create new security tokens, verify their properties and ownership, and
- * save them to the repository. It also provides tests for specific scenarios such
- * as password reset, email confirmation, and verifying the token's validity and lifetime.
+ * provides testing utilities for the SecurityTokenSDJpaService class, including
+ * initialization and mocking of dependencies, creation and verification of security
+ * tokens, and email confirm token generation and save to repository. The test class
+ * sets up mocks with Mockito and verify the execution of the service's methods by
+ * calling them directly or indirectly through method calls.
  */
 public class SecurityTokenSDJpaServiceTest {
 
@@ -42,8 +42,8 @@ public class SecurityTokenSDJpaServiceTest {
   private SecurityTokenSDJpaService securityTokenSDJpaService;
 
   /**
-   * initializes mocks with MockitoAnnotations and sets fields on a `securityTokenSDJpaService`
-   * object to configure its behavior for testing purposes.
+   * initializes MockitoAnnotations and sets field values for a security token SDJpa
+   * service, including pass reset token time and email confirm token time.
    */
   @BeforeEach
   private void init() {
@@ -55,8 +55,10 @@ public class SecurityTokenSDJpaServiceTest {
   }
 
   /**
-   * creates a new security token for a user using a given token type, saves it to a
-   * repository, and returns the created token object.
+   * creates a new security token for a user and saves it to the repository. It takes
+   * into account the user's details, token type, creation date, expiry date, and
+   * lifetime. The function also verifies the token ownership and its existence in the
+   * repository.
    */
   @Test
   void createSecurityToken() {
@@ -83,8 +85,8 @@ public class SecurityTokenSDJpaServiceTest {
   }
 
   /**
-   * creates a new security token for password reset and saves it to the repository,
-   * returning the created token object.
+   * creates a new security token for password reset with a unique ID, token type,
+   * creation date, expiry date, and lifetime, and saves it to the repository.
    */
   @Test
   void createPasswordResetToken() {
@@ -110,9 +112,8 @@ public class SecurityTokenSDJpaServiceTest {
   }
 
   /**
-   * generates an email confirm token for a user and saves it in the repository. The
-   * token has a unique ID, creation date, expiry date, and owner, as well as a lifetime
-   * equal to the test value.
+   * generates an email confirm token for a user and saves it to the repository, checking
+   * its validity and ownership.
    */
   @Test
   void createEmailConfirmToken() {

@@ -25,7 +25,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * provides a set of methods for interacting with Community entities in a Spring Data
+ * offers a set of methods for interacting with Community entities in a Spring Data
  * JPA environment, including finding specific communities by communityId, querying
  * for communities with houses, admins, or amenities, and checking if a community exists.
  */

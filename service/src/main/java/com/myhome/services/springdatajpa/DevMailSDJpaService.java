@@ -9,10 +9,12 @@ import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 
 /**
- * is a mail service implementation that sends password recovery codes, account
- * confirmation messages, and account creation messages to users via email. It also
- * provides methods for sending password successfully changed notifications and email
- * confirmation tokens for newly created accounts.
+ * is a Java class that provides mail services for sending various messages to users
+ * in a Spring Boot application. It implements the MailService interface and provides
+ * four methods for sending password recover codes, account confirmation messages,
+ * password change success messages, and account creation messages. The class uses
+ * log4j2 for logging and conditionally enables the service based on a property in
+ * the application configuration.
  */
 @Slf4j
 @Service
@@ -20,21 +22,19 @@ import org.springframework.stereotype.Service;
 public class DevMailSDJpaService implements MailService {
 
   /**
-   * sends a password recover code to a specified user via log messages and returns `true`.
+   * sends a password recovery code to a specified user via logging the event and
+   * returning `true`.
    * 
-   * @param user User object containing the details of the user for whom the password
-   * recovery code is being sent.
-   * 
-   * 	- `user.getUserId()`: This property returns the user ID of the user for whom the
+   * @param user User object that contains information about the user for whom the
    * password recovery code is being sent.
    * 
-   * The function then logs an information message using the `log.info()` method, which
-   * includes the user ID and the random code generated for password recovery. Finally,
-   * the function returns `true`.
+   * 	- `User user`: This parameter represents an object of type `User`, which has
+   * fields such as `getUserId()` and `randomCode()`.
    * 
-   * @param randomCode 4-digit password recover code sent to the user via email.
+   * @param randomCode 6-digit password recover code that is sent to the user via email.
    * 
-   * @returns a string representing the password recover code sent to the specified user.
+   * @returns a success message indicating that the password recover code has been sent
+   * to the user.
    */
   @Override
   public boolean sendPasswordRecoverCode(User user, String randomCode) throws MailSendException {
@@ -43,18 +43,15 @@ public class DevMailSDJpaService implements MailService {
   }
 
   /**
-   * sends a message to a user with their ID when the account is confirmed.
+   * sends a message to a user confirming their account status.
    * 
    * @param user User object containing information about the user whose account
-   * confirmation message is being sent.
+   * confirmation message should be sent.
    * 
-   * 	- `user.getUserId()` returns an integer representing the user's unique identifier.
+   * 	- `user.getUserId()`: The unique identifier for the user.
    * 
-   * The function logs an informative message using the `log.info()` method and then
-   * returns `true`.
-   * 
-   * @returns a message indicating that the account has been confirmed for the provided
-   * user with their ID.
+   * @returns a boolean value indicating that the account confirmation message was
+   * successfully sent to the user.
    */
   @Override
   public boolean sendAccountConfirmed(User user) {
@@ -63,16 +60,18 @@ public class DevMailSDJpaService implements MailService {
   }
 
   /**
-   * informs a user via a log message that their password has been successfully changed.
+   * sends a message to a user indicating that their password has been successfully changed.
    * 
-   * @param user User object containing information about the user for whom the password
-   * change was successfuly completed.
+   * @param user User object containing information about the user whose password has
+   * been successfully changed.
    * 
-   * 	- `user.getUserId()` - returns the user ID of the user whose password has been
-   * successfully changed.
+   * 	- `user.getUserId()`: This property retrieves the user ID of the user whose
+   * password has been successfully changed.
+   * 	- `log.info()`: This method logs an informational message to the application's
+   * log file, providing details about the successful change of the user's password.
    * 
    * @returns a message indicating that the password has been successfully changed,
-   * along with the user's ID.
+   * with the user's ID included.
    */
   @Override
   public boolean sendPasswordSuccessfullyChanged(User user) {
@@ -82,29 +81,27 @@ public class DevMailSDJpaService implements MailService {
 
 
   /**
-   * sends a message to a user upon account creation, logging the event and returning
-   * `true`.
+   * sends an account creation message to a user upon successful email confirmation.
    * 
-   * @param user User object containing information about the created account, which
-   * is passed to the function for processing.
+   * @param user user whose account has been created and is used to log an information
+   * message in the application's logger.
    * 
-   * 	- `user`: The user object contains several attributes such as `UserId`, `Email`,
-   * `DisplayName`, and `SecurityToken`.
-   * 	- `UserId`: A unique identifier for the user.
-   * 	- `Email`: The email address associated with the user's account.
-   * 	- `DisplayName`: The user's display name.
-   * 	- `SecurityToken`: An email confirmation token generated by the system to verify
-   * the user's identity.
+   * 	- `user.getUserId()`: This property represents the unique identifier of the user.
+   * 
+   * The function logs an informational message in the application log using `log.info()`.
+   * The message includes the value of `user.getUserId()`, which is the primary key of
+   * the user entity.
    * 
    * @param emailConfirmToken email confirmation token sent to the user's registered
-   * email address for verification purposes before their account is activated.
+   * email address for account verification purposes.
    * 
-   * 	- `User user`: A `User` object representing the user whose account was created.
-   * 	- `SecurityToken emailConfirmToken`: An instance of `SecurityToken` that contains
-   * information about the user's email confirmation token.
+   * 	- `SecurityToken emailConfirmToken`: This represents an object that contains a
+   * unique token for email confirmation, which is used to verify the user's identity
+   * and authenticate their account creation. The token may contain attributes such as
+   * the user ID, email address, and a one-time password or verification code.
    * 
-   * @returns a message indicating that an account has been created and sent to the
-   * user with their ID.
+   * @returns a boolean value indicating that the account creation message was successfully
+   * sent to the user.
    */
   @Override
   public boolean sendAccountCreated(User user, SecurityToken emailConfirmToken) {

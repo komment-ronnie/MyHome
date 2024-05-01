@@ -22,9 +22,7 @@ import java.util.Set;
 import org.mapstruct.Mapper;
 
 /**
- * defines a set of mapping methods between sets of HouseMembers and related data
- * structures, including converting between House Member objects and their corresponding
- * DTOs, as well as adding new HouseMembers to a response.
+ * defines a set of mapping methods between sets of HouseMembers and related data structures.
  */
 @Mapper
 public interface HouseMemberMapper {

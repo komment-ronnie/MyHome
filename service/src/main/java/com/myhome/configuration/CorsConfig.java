@@ -29,10 +29,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * to add CORS mappings to the registry.
  */
 /**
- * is a configuration class for CORS (Cross-Origin Resource Sharing) that allows
- * requests from any origin to access resources from the server. The class provides
- * methods for adding CORS mappings to a registry, allowing incoming requests from
- * any origin and specifying allowed methods, headers, and credentials.
+ * is a configuration class for handling Cross-Origin Resource Sharing (CORS) requests
+ * in a web application. It allows incoming requests from any origin and specifies
+ * allowed methods, headers, and credentials. The class provides a method to add CORS
+ * mappings to a registry, allowing requests from any origin and specifying allowed
+ * methods, headers, and credentials.
  */
 @Configuration
 public class CorsConfig {
@@ -63,30 +64,11 @@ public class CorsConfig {
    * cookies, authorization) should be allowed for the CORS mappings.
    */
   /**
-   * adds CORS mappings to a registry, allowing incoming requests from any origin and
-   * specifying allowed methods, headers, and credentials.
+   * adds CORS mappings to a registry, allowing requests from any origin and specifying
+   * allowed methods, headers, and credentials.
    * 
-   * @returns a configuration for CORS mappings that allows incoming requests from any
-   * origin and specifies allowed methods, headers, and credentials.
-   * 
-   * 	- `registry`: This is an instance of `CorsRegistry`, which represents the set of
-   * CORS mappings for a server.
-   * 	- `addMapping`: This method adds a new mapping to the existing set of mappings
-   * in `registry`. The mapping includes the URL pattern `"**"`, which means that the
-   * mapping applies to all URLs.
-   * 	- `allowedOrigins`: An array of allowed origins, which specifies the domains or
-   * subdomains that are allowed to make CORS requests to the server.
-   * 	- `allowedMethods`: An array of allowed HTTP methods, which specifies the methods
-   * that are allowed to be used in CORS requests to the server. The value `"*" means
-   * that all methods are allowed.
-   * 	- `allowedHeaders`: An array of allowed headers, which specifies the headers that
-   * can be included in CORS responses from the server. The value `"*" means that all
-   * headers are allowed.
-   * 	- `exposedHeaders`: An array of exposed headers, which specifies the headers that
-   * can be included in CORS responses from the server and are visible to clients. The
-   * values `"token"` and `"userId"` indicate that these two specific headers are exposed.
-   * 	- `allowCredentials`: A boolean value that indicates whether CORS requests with
-   * credentials (such as cookies or authentication tokens) are allowed.
+   * @returns a set of CORS mappings that allow requests from any origin and specify
+   * allowed methods, headers, and credentials.
    */
   @Bean
   public WebMvcConfigurer corsConfigurer() {
@@ -118,24 +100,26 @@ public class CorsConfig {
        */
       /**
        * adds CORS mappings to a registry, allowing requests from any origin and specifying
-       * allowed methods, headers, and credentials.
+       * which methods, headers, and credentials are allowed for all resources.
        * 
        * @param registry Cors registry that the method adds mappings to.
        * 
-       * 	- `registry`: A `CorsRegistry` object that represents the configuration for
-       * handling Cross-Origin Resource Sharing (CORS) requests.
-       * 	- `addMapping`: Adds a mapping to the CORS configuration, allowing certain resources
-       * to be accessed from specified origins using specific methods and headers.
-       * 	- `allowedOrigins`: An array of allowed origins, which are IP addresses or
-       * subdomains that can access the resources.
-       * 	- `allowedMethods`: An array of allowed HTTP methods (GET, POST, PUT, DELETE,
-       * etc.) that can be used to access the resources.
-       * 	- `allowedHeaders`: An array of allowed headers that can be used with the accessed
-       * resources.
-       * 	- `exposedHeaders`: An array of exposed headers, which are headers that can be
-       * accessed by clients in responses.
-       * 	- `allowCredentials`: A boolean value indicating whether credentials (such as
-       * cookies or Authorization headers) should be allowed for the CORS configuration.
+       * 	- `registry`: This is an instance of the `CorsRegistry` class, which contains
+       * metadata about CORS (Cross-Origin Resource Sharing) settings for a particular resource.
+       * 	- `addMapping`: This method adds a mapping to the registry, specifying the URL
+       * pattern that the mapping applies to. In this case, the mapping is applied to all
+       * URLs (`"/**"`).
+       * 	- `allowedOrigins`: An array of strings representing the origins (domain names
+       * or IP addresses) from which the requested resource can be accessed.
+       * 	- `allowedMethods`: An array of strings representing the HTTP methods (such as
+       * GET, POST, PUT, DELETE, etc.) that are allowed to access the resource. In this
+       * case, all methods are allowed.
+       * 	- `allowedHeaders`: An array of strings representing the headers that are allowed
+       * to be exposed in responses from the resource. In this case, two headers (`token`
+       * and `userId`) are allowed.
+       * 	- `allowCredentials`: A boolean value indicating whether the resource supports
+       * CORS credentials (such as cookies, tokens, or HTTP authorization). In this case,
+       * the value is `true`.
        */
       @Override
       public void addCorsMappings(CorsRegistry registry) {

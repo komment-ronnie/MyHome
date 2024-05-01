@@ -24,7 +24,7 @@ import org.springframework.data.repository.CrudRepository;
 
 /**
  * provides methods for interacting with the HouseMember entity in a Spring Data
- * repository context.
+ * repository context, including finding and listing members by various criteria.
  */
 public interface HouseMemberRepository extends CrudRepository<HouseMember, Long> {
   Optional<HouseMember> findByMemberId(String memberId);

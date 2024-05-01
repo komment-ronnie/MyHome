@@ -50,10 +50,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * is a test class for the HouseController class, which handles various house-related
- * operations such as listing all members of a house, adding new members, and deleting
- * existing members. The test class verifies the functionality of these operations
- * through various tests, including unit tests and integration tests.
+ * is a unit test for the HouseController class, which is responsible for handling
+ * member related operations in the application. The test class provides test data
+ * and mock services to verify the behavior of the HouseController under different
+ * scenarios. The tests cover adding members to an existing house, deleting a member
+ * from a house, and verifying the response status code and body in both successful
+ * and unsuccessful scenarios.
  */
 class HouseControllerTest {
 
@@ -74,8 +76,8 @@ class HouseControllerTest {
   private HouseController houseController;
 
   /**
-   * initializes mocking annotations for the current class using the `MockitoAnnotations.initMocks()`
-   * method.
+   * initializes mock objects using MockitoAnnotations, allowing for more effective
+   * unit testing by simulating the behavior of classes and methods.
    */
   @BeforeEach
   private void init() {
@@ -83,8 +85,9 @@ class HouseControllerTest {
   }
 
   /**
-   * tests the listAllHouses method of the HouseController class by providing a set of
-   * test houses and verifying that the expected response is returned.
+   * queries the House service to retrieve a list of houses and maps them to a REST API
+   * response using the HouseApiMapper. The resulting response is then returned as a
+   * ResponseEntity with an OK status code and the expected response body.
    */
   @Test
   void listAllHouses() {
@@ -110,8 +113,8 @@ class HouseControllerTest {
   }
 
   /**
-   * retrieves the details of a specific house given its ID and maps it to a rest API
-   * response.
+   * retrieves the details of a house with a given ID from the service and maps it to
+   * a response object using a mapper, returning the response as a `ResponseEntity`.
    */
   @Test
   void getHouseDetails() {
@@ -142,9 +145,8 @@ class HouseControllerTest {
   }
 
   /**
-   * tests the scenario where the house with the given ID does not exist in the database,
-   * returning a `HttpStatus.NOT_FOUND` response and null body. It also verifies the
-   * calls to the `houseService` and `houseApiMapper`.
+   * tests the `getHouseDetails` method by providing a non-existent house ID and verifying
+   * the response status code and the absence of a response body.
    */
   @Test
   void getHouseDetailsNotExists() {
@@ -167,8 +169,8 @@ class HouseControllerTest {
   }
 
   /**
-   * queries the house members for a given house ID and returns them as a list of REST
-   * API response objects.
+   * retrieves all members of a house, given the house ID, and maps them to a Rest API
+   * response. It uses mocking to stub the underlying services and verify their calls.
    */
   @Test
   void listAllMembersOfHouse() {
@@ -202,8 +204,8 @@ class HouseControllerTest {
   }
 
   /**
-   * tests whether a non-existent house returns a `HttpStatus.NOT_FOUND` response and
-   * an empty list of members when called on the HouseController.
+   * verifies that when a house with the given ID does not exist, it returns a
+   * `HttpStatus.NOT_FOUND` response and an empty list of members.
    */
   @Test
   void listAllMembersOfHouseNotExists() {
@@ -223,9 +225,9 @@ class HouseControllerTest {
   }
 
   /**
-   * takes a request with members to be added to a house, maps the members to the House
-   * Member model, adds them to the house using the service, and returns the updated
-   * house members in a REST API response.
+   * adds members to a house using a set of member objects and returns the added members
+   * as a response entity with a `HttpStatus.CREATED` status code and an expected
+   * response body.
    */
   @Test
   void addHouseMembers() {
@@ -268,8 +270,9 @@ class HouseControllerTest {
   }
 
   /**
-   * tests the AddHouseMembers API endpoint by adding a set of HouseMembers to an
-   * existing house and verifying that none are added.
+   * tests the `AddHouseMembers` endpoint by providing a set of members to be added to
+   * a house, verifying that no new members are added, and checking the response status
+   * code and body.
    */
   @Test
   void addHouseMembersNoMembersAdded() {
@@ -312,9 +315,9 @@ class HouseControllerTest {
   }
 
   /**
-   * tests the deletion of a member from a house through the `houseController`. It
-   * verifies that the response status code is `HttpStatus.NO_CONTENT` and the response
-   * body is `null`.
+   * tests the delete member from house endpoint. It given a test house id and member
+   * id to the house service, then it call the controller method to delete the member,
+   * and then it check the status code and body of the response to ensure it is as expected.
    */
   @Test
   void deleteHouseMemberSuccess() {
@@ -331,9 +334,8 @@ class HouseControllerTest {
   }
 
   /**
-   * tests the delete member from house method by providing a false return value from
-   * the given mock service, and then verifies the expected HTTP status code and response
-   * body using assertion.
+   * tests the deletion of a member from a house when the service method returns false,
+   * by verifying the HTTP status code and the absence of a response body.
    */
   @Test
   void deleteHouseMemberFailure() {

@@ -42,12 +42,12 @@ import org.springframework.stereotype.Service;
  * Implements {@link PaymentService} and uses Spring Data JPA Repository to do its work
  */
 /**
- * is responsible for managing payments in a Java-based application. It provides
- * methods for retrieving and creating payments, as well as mapping between payment
- * data and the corresponding `PaymentDto` objects. The service uses JPA (Java
- * Persistence API) to interact with the database and perform CRUD (Create, Read,
- * Update, Delete) operations on payments. Additionally, it provides a method for
- * generating unique payment IDs.
+ * is responsible for handling payment related operations in the application. It
+ * provides methods to create a new payment entity and save it to the appropriate
+ * repositories, as well as generate a unique UUID string as the payment ID for a
+ * given `PaymentDto` request. Additionally, it defines an interface `pageable` that
+ * is used in the `getPaymentsByAdmin` method to iterate over the payment data based
+ * on various criteria.
  */
 @Service
 @Slf4j
@@ -59,26 +59,26 @@ public class PaymentSDJpaService implements PaymentService {
   private final HouseMemberRepository houseMemberRepository;
 
   /**
-   * generates a payment ID and creates a payment record in the repository.
+   * generates a payment ID and creates a new payment record in the repository using
+   * the provided request details.
    * 
-   * @param request PaymentDto object containing information related to payment scheduling,
-   * which is used to generate a unique payment ID and create a new payment record in
-   * the repository.
+   * @param request payment details to be scheduled, which includes the amount and other
+   * relevant information.
    * 
-   * 	- `generatePaymentId`: The first step is to generate a unique payment ID for the
-   * scheduled payment.
-   * 	- `createPaymentInRepository`: The second step is to create a new payment instance
-   * in the repository using the provided details from `request`.
+   * 	- `generatePaymentId`: A method that generates a unique payment ID for the request.
+   * 	- `createPaymentInRepository`: A method that creates a new payment entity in the
+   * repository based on the provided `request`.
    * 
-   * @returns a payment DTO object containing the scheduled payment details.
+   * @returns a payment DTO containing the scheduled payment details.
    * 
-   * 	- `generatePaymentId`: This method generates a unique payment ID for the scheduled
-   * payment.
-   * 	- `createPaymentInRepository`: This method creates a new payment object in the
-   * repository, where the payment details are stored.
-   * 
-   * The output of the function is a `PaymentDto` object that contains the generated
-   * payment ID and the created payment object in the repository.
+   * 	- `PaymentDto`: This is the type of the output parameter, which represents a
+   * payment request.
+   * 	- `generatePaymentId(request)`: This is a method call that generates a unique
+   * identifier for the payment request.
+   * 	- `createPaymentInRepository(request)`: This is a method call that creates a new
+   * payment record in the repository. The exact properties of the payment record depend
+   * on the implementation of the `createPaymentInRepository` method, but it typically
+   * includes information such as the payment amount, payment date, and payment status.
    */
   @Override
   public PaymentDto schedulePayment(PaymentDto request) {
@@ -87,22 +87,23 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * retrieves a payment's details from the repository, maps them to a `PaymentDto`
-   * object using a mapper, and returns an optional instance of `PaymentDto`.
+   * retrieves a `PaymentDto` object from the payment repository based on the provided
+   * `paymentId`. It maps the retrieved payment data to a `PaymentDto` object using the
+   * `paymentMapper` function.
    * 
-   * @param paymentId identifier of a payment, which is used to retrieve the corresponding
-   * payment details from the repository.
+   * @param paymentId identifier of a payment to be retrieved from the repository.
    * 
-   * @returns an Optional<PaymentDto> containing the payment details for the specified
+   * @returns an Optional<PaymentDto> containing the payment details of the specified
    * payment ID.
    * 
-   * 	- `Optional<PaymentDto>` represents an optional payment details object, which
-   * means that if no payment details are found, the function will return an empty Optional.
-   * 	- `paymentRepository.findByPaymentId(paymentId)` is a method that retrieves a
-   * Payment object based on its payment ID.
-   * 	- `map(paymentMapper::paymentToPaymentDto)` is a method that maps the retrieved
-   * Payment object to a PaymentDto object, which contains additional attributes and
-   * properties not present in the Payment object.
+   * 	- `Optional<PaymentDto>` represents an optional object of type `PaymentDto`. This
+   * indicates that the function may return `None` if no payment details are found for
+   * the given payment ID.
+   * 	- `paymentRepository.findByPaymentId(paymentId)` is a call to the repository's
+   * `findByPaymentId` method, which retrieves a `Payment` object based on the provided
+   * payment ID.
+   * 	- `map(paymentMapper::paymentToPaymentDto)` applies a mapping function to the
+   * retrieved `Payment` object, transforming it into an instance of `PaymentDto`.
    */
   @Override
   public Optional<PaymentDto> getPaymentDetails(String paymentId) {
@@ -111,17 +112,20 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * retrieves a `HouseMember` object from the repository based on the input `memberId`.
+   * retrieves a `HouseMember` object based on its `memberId`. It delegates the task
+   * to the `houseMemberRepository` and returns an optional instance of `HouseMember`.
    * 
-   * @param memberId ID of the House Member to be retrieved from the repository.
+   * @param memberId unique identifier of a HouseMember that is being retrieved.
    * 
    * @returns an optional instance of `HouseMember`.
    * 
-   * Optional<HouseMember>: This is an instance of the Optional class, which represents
-   * either an existing HouseMember or none (absent). The presence of an element in the
-   * Optional indicates whether a HouseMember exists with the provided memberId.
-   * HouseMember: This class represents a member of a house, containing properties such
-   * as the member's ID, name, and address.
+   * 	- `Optional<HouseMember>` is a type-safe wrapper class that represents an optional
+   * value of type `HouseMember`. It provides a safe way to handle null or non-existent
+   * values.
+   * 	- `houseMemberRepository` is a database or data storage component used to retrieve
+   * the `House Member` object.
+   * 	- `findByMemberId(memberId)` is a method that retrieves a `House Member` object
+   * based on its `memberId`.
    */
   @Override
   public Optional<HouseMember> getHouseMember(String memberId) {
@@ -129,21 +133,28 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * retrieves a set of payments associated with a given member ID from the payment repository.
+   * queries the payment repository to retrieve a set of payments associated with a
+   * specific member ID.
    * 
-   * @param memberId member ID of the payments to be retrieved.
+   * @param memberId unique identifier of the member whose payments are to be retrieved.
    * 
-   * @returns a set of payment objects retrieved from the database based on the member
-   * ID provided.
+   * @returns a set of `Payment` objects that match the specified member ID.
    * 
-   * 	- The Set<Payment> is constructed by calling the `findAll()` method on the `paymentRepository`.
-   * 	- The method takes an `Example<Payment>` as its argument, which is created using
-   * the `Example.of()` method and passed to the `ignoringMatcher` method.
-   * 	- The `ignoringMatcher` method returns a new `ExampleMatcher` instance that ignores
-   * certain properties of the Payment objects. In this case, it ignores the `paymentId`,
-   * `charge`, `type`, `description`, `recurring`, `dueDate`, and `admin` properties.
-   * 	- The resulting `Example<Payment>` is then passed to the `findAll()` method, which
-   * returns a Set of Payment objects that match the specified example.
+   * 	- `Set<Payment>`: This is the type of the returned output, which is a set of
+   * payment objects.
+   * 	- `Payment`: This is the type of each element in the set, which represents a
+   * payment made by a member.
+   * 	- `memberId`: This is the attribute of each payment object that matches the input
+   * parameter `memberId`. It represents the ID of the member who made the payment.
+   * 	- `ExampleMatcher`: This is an instance of `ExampleMatcher`, which is used to
+   * filter the payments based on their member ID. The matcher defines a set of matching
+   * rules for the `memberId` attribute, including ignoring cases and matching only
+   * elements that start with the input value.
+   * 	- `paymentRepository`: This is the repository responsible for storing and retrieving
+   * payment objects. It is used to find all payments that match the input parameter `memberId`.
+   * 
+   * Overall, the function returns a set of payments made by a specific member, filtered
+   * based on their ID.
    */
   @Override
   public Set<Payment> getPaymentsByMember(String memberId) {
@@ -162,46 +173,34 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * retrieves a page of payments for an administrator based on their ID, using a custom
-   * matcher to ignore certain fields.
+   * retrieves a list of payments for a specific administrator by matching on the
+   * `adminId`. It ignores certain fields such as `paymentId`, `charge`, `type`, and
+   * `description`. The resulting list is returned pageable.
    * 
-   * @param adminId user ID of the administrator for whom the payments are being retrieved.
+   * @param adminId ID of the administrator who is authorized to view the payments.
    * 
    * @param pageable pagination information for the query, allowing the function to
-   * retrieve a subset of the payments matching the specified criteria in a specific
-   * page or set of pages.
+   * retrieve a specific page of results from the database.
    * 
-   * 	- `Pageable`: This is an interface in Java that defines a page-oriented iteration
-   * over a collection. It has several methods to define how to iterate over the
-   * collection based on various criteria such as size, index, and sorted order.
-   * 	- `size()`: This method returns the number of elements in the collection.
-   * 	- `getNumber()`: This method returns the index of the current page in the iteration.
-   * 	- `isLast()`: This method returns a boolean indicating whether the current page
-   * is the last page in the iteration.
-   * 	- `getSort()`: This method returns the sorting order of the pages in the iteration.
+   * 	- `Pageable`: This interface provides methods for navigating and manipulating
+   * pages of data. The `pageable` argument is used to specify the pagination settings
+   * for the query.
+   * 	- `pageNumber`: The current page number being queried, which determines which
+   * subset of data is returned.
+   * 	- `pageSize`: The number of items to be retrieved per page.
+   * 	- `sort`: The field by which the data should be sorted.
+   * 	- `direction`: The sort order (ascending or descending).
    * 
-   * In summary, `pageable` is an interface that provides methods to iterate over a
-   * collection based on various criteria, and it is used in the `getPaymentsByAdmin`
-   * function to define how to iterate over the payment data.
+   * @returns a page of Payment objects filtered based on the admin ID.
    * 
-   * @returns a page of Payment objects filtered based on the admin ID and ignoring
-   * certain fields.
-   * 
-   * 	- `Page<Payment>`: This is a page of payments, where each payment is represented
-   * by an instance of the `Payment` class.
-   * 	- `payments`: This is a list of payments that match the specified admin ID.
-   * 	- `pageable`: This is the page request, which contains information about the
-   * number of payments to display on each page and the total number of payments in the
-   * result set.
-   * 
-   * The `ExampleMatcher` used in the function is responsible for defining the matching
-   * criteria for the payments. It ignores certain fields in the `Payment` class, such
-   * as `paymentId`, `charge`, `type`, `description`, `recurring`, and `dueDate`. The
-   * remaining fields are matched using a combination of exact matches and startsWith()
-   * method.
-   * 
-   * The `paymentRepository` is responsible for fetching the payments from the database
-   * based on the matching criteria defined by the `ExampleMatcher`.
+   * 	- `Page<Payment>`: This is the type of the return value, which is a pageable list
+   * of payments filtered by the admin ID.
+   * 	- `paymentExample`: This is an example instance of the Payment entity, used to
+   * match the desired fields in the database query.
+   * 	- `paymentRepository`: This is the repository responsible for storing and retrieving
+   * Payment entities from the database.
+   * 	- `pageable`: This is a Pageable object, which provides a way to page the list
+   * of payments based on the admin ID.
    */
   @Override
   public Page<Payment> getPaymentsByAdmin(String adminId, Pageable pageable) {
@@ -220,37 +219,26 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * creates a new payment entity and saves it to the appropriate repositories, returning
-   * the corresponding payment DTO.
+   * takes a `PaymentDto` object as input and creates a new `Payment` entity by mapping
+   * the provided `PaymentDto` fields to the corresponding `Payment` fields. It then
+   * saves both the `Admin` and `Payment` entities in separate repositories, and finally
+   * maps the created `Payment` back to a `PaymentDto` object for return.
    * 
-   * @param request PaymentDto object containing the necessary information for creating
-   * a payment instance, which is then converted into a corresponding payment entity
-   * and saved in the repository.
+   * @param request PaymentDto object that contains the details of the payment to be processed.
    * 
-   * 	- `paymentMapper`: This is an instance of `PaymentMapper`, which maps between a
-   * payment DTO and a payment entity.
-   * 	- `paymentRepository`: This is an instance of `PaymentRepository`, which manages
-   * payment entities.
-   * 	- `adminRepository`: This is an instance of `AdminRepository`, which manages admin
-   * entities.
-   * 
-   * The function takes in a `PaymentDto` object as input, and performs the following
-   * operations:
-   * 
-   * 1/ Deserializes the `request` into a `Payment` entity using the `paymentMapper`.
-   * 2/ Saves the admin entity associated with the payment entity to the `adminRepository`.
-   * 3/ Saves the payment entity itself to the `paymentRepository`.
-   * 4/ Maps the saved payment entity back to a `PaymentDto` object using the
-   * `paymentMapper`, and returns it as output.
+   * 	- PaymentDto request is transformed into a Payment object by calling the
+   * `paymentMapper.paymentDtoToPayment()` method.
+   * 	- An admin and payment objects are created using the `adminRepository.save()` and
+   * `paymentRepository.save()` methods, respectively.
+   * 	- The created payment object is then transformed back into a PaymentDto object
+   * using the `paymentMapper.paymentToPaymentDto()` method.
    * 
    * @returns a `PaymentDto` object representing the created payment.
    * 
-   * 	- The PaymentDto object is converted into a Payment object using the
-   * `paymentMapper.paymentDtoToPayment()` method.
+   * 	- The PaymentDto object is transformed into a Payment object using the `paymentMapper`.
    * 	- The admin and payment objects are saved in the repository using the
    * `adminRepository.save()` and `paymentRepository.save()` methods, respectively.
-   * 	- The returned output is the Payment object that has been converted back to a
-   * PaymentDto format using the `paymentMapper.paymentToPaymentDto()` method.
+   * 	- The PaymentDto object is transformed back into a Payment object using the `paymentMapper`.
    */
   private PaymentDto createPaymentInRepository(PaymentDto request) {
     Payment payment = paymentMapper.paymentDtoToPayment(request);
@@ -262,14 +250,12 @@ public class PaymentSDJpaService implements PaymentService {
   }
 
   /**
-   * generates a unique UUID string as the payment ID for a given `PaymentDto` request.
+   * generates a unique payment ID for a given `PaymentDto` request using the
+   * `UUID.randomUUID()` method and returns it as a string.
    * 
-   * @param request `PaymentDto` object that contains information about the payment,
-   * and it is used to set the `paymentId` field of the object to a randomly generated
-   * UUID string.
+   * @param request PaymentDto class and is used to set the payment ID of the request.
    * 
-   * 	- `request`: A `PaymentDto` object that contains the required information for
-   * generating a payment ID.
+   * 	- `UUID.randomUUID().toString()` generates a unique random ID for payment.
    */
   private void generatePaymentId(PaymentDto request) {
     request.setPaymentId(UUID.randomUUID().toString());

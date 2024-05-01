@@ -34,7 +34,7 @@ public class AuthenticationControllerTest {
   private AuthenticationController authenticationController;
 
   /**
-   * is used to initialize mock objects using MockitoAnnotations.
+   * initializes Mockito Annotations for testing purposes by calling `MockitoAnnotations.initMocks(this)`.
    */
   @BeforeEach
   private void init() {
@@ -42,9 +42,9 @@ public class AuthenticationControllerTest {
   }
 
   /**
-   * tests the login functionality of the authentication controller by providing a valid
-   * login request and verifying the response status code, headers, and the execution
-   * of the `login` method of the authentication service.
+   * verifies that the `AuthenticationController#login` method logs in a user successfully,
+   * returns a `HttpStatus.OK` response with the correct headers and calls the
+   * `AuthenticationService#login` method.
    */
   @Test
   void loginSuccess() {
@@ -68,29 +68,24 @@ public class AuthenticationControllerTest {
   }
 
   /**
-   * creates a new `LoginRequest` instance with predefined email and password for testing
-   * purposes.
+   * creates a default `LoginRequest` object with email `TEST_EMAIL` and password `TEST_PASSWORD`.
    * 
-   * @returns a `LoginRequest` object with predefined email and password values.
+   * @returns a `LoginRequest` object with pre-defined email and password values.
    * 
-   * 	- The function returns a new instance of the `LoginRequest` class.
-   * 	- The `email` field is set to `TEST_EMAIL`, which represents an email address for
-   * the login request.
-   * 	- The `password` field is set to `TEST_PASSWORD`, which represents the password
-   * for the login request.
+   * 	- `email`: The email address associated with the login request.
+   * 	- `password`: The password associated with the login request.
    */
   private LoginRequest getDefaultLoginRequest() {
     return new LoginRequest().email(TEST_EMAIL).password(TEST_PASSWORD);
   }
 
   /**
-   * creates a default instance of the `AuthenticationData` class with a token and test
-   * ID.
+   * creates a new `AuthenticationData` object with a token and test ID.
    * 
-   * @returns an instance of `AuthenticationData` containing the token and test ID.
+   * @returns an `AuthenticationData` object containing the token and test ID.
    * 
-   * 	- `TOKEN`: This is a string value representing an authentication token.
-   * 	- `TEST_ID`: This is an integer value used to identify a specific test.
+   * 	- `TOKEN`: This is an integer value that represents a token for authentication purposes.
+   * 	- `TEST_ID`: This is a unique identifier assigned to the authentication data.
    */
   private AuthenticationData getDefaultAuthenticationData() {
     return new AuthenticationData(TOKEN, TEST_ID);

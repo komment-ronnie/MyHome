@@ -24,9 +24,9 @@ import java.util.Set;
 import org.mapstruct.Mapper;
 
 /**
- * defines a set of mapping methods between various data types related to amenities,
- * including converting from an Amenity object to a GetAmenityDetailsResponse object,
- * and vice versa.
+ * defines a set of mapping methods between data types related to amenities, including
+ * converting from an Amenity object to a GetAmenityDetailsResponse object and vice
+ * versa.
  */
 @Mapper
 public interface AmenityApiMapper {

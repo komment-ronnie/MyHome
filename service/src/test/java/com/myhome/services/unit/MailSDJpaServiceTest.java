@@ -29,15 +29,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
 /**
- * is a unit test for the MailSDJpaService class, which sends emails using the JavaMail
- * API and Spring Security's EmailTemplateEngine. The test class sets up mock objects
- * for the EmailTemplateEngine and MailSender services, and then tests various scenarios
- * where an exception is thrown when sending an email. The tests include testing
- * whether an exception is thrown when attempting to send a password recover code via
- * email, when sending an email for a successfully changed password notification,
- * when sending a confirmed mail for an account, and when creating an email message.
- * Each test method sets up the necessary mock objects and then asserts that an
- * exception was thrown when sending the email.
+ * is a test class for testing the MailSDJpaService class, which is responsible for
+ * sending emails using JPA and other dependencies. The test class sets up mock objects
+ * and simulates HTTP requests to test the behavior of the MailSDJpaService class in
+ * various scenarios, including sending password recover codes, confirming email
+ * addresses, and handling mail send exceptions. The tests verify that the MailSDJpaService
+ * class throws a MailSendException when encountering issues during email sending,
+ * such as invalid security tokens or missing emails.
  */
 class MailSDJpaServiceTest {
 
@@ -54,9 +52,10 @@ class MailSDJpaServiceTest {
   private MailProperties mailProperties = TestUtils.MailPropertiesHelper.getTestMailProperties();
 
   /**
-   * initializes mock objects and sets up a MockHttpServletRequest to simulate HTTP
-   * requests for testing purposes. It also creates an instance of `MailSDJpaService`
-   * for sending emails using JPA and other dependencies.
+   * initializes mock objects for unit testing and sets up a MockHttpServletRequest
+   * instance for use in tests. It also creates a new instance of the `MailSDJpaService`
+   * class with dependencies on email templates, mail sender, message source, and mail
+   * properties.
    */
   @BeforeEach
   private void init() {
@@ -71,8 +70,8 @@ class MailSDJpaServiceTest {
   }
 
   /**
-   * tests whether an exception is thrown when sending a password recover code via email
-   * using the `mailSender` service.
+   * tests the mail sender service's ability to send a password recover code email in
+   * case of an exception.
    */
   @Test
   void sendPasswordRecoverCodeMailException() {
@@ -93,8 +92,8 @@ class MailSDJpaServiceTest {
   }
 
   /**
-   * tests whether an exception is thrown when sending a password successfully changed
-   * email using the `mailSDJpaService`.
+   * tests whether a Mail Send Exception occurs when sending an email to inform the
+   * user that their password has been successfully changed.
    */
   @Test
   void sendPasswordSuccessfullyChangedMailException() {
@@ -115,8 +114,9 @@ class MailSDJpaServiceTest {
   }
 
   /**
-   * tests the mail sender service's ability to handle MailSendException when sending
-   * an email confirmation to a user.
+   * tests the scenario where an exception occurs while sending an email through the
+   * `mailSender` service. It verifies that the method returns false when an exception
+   * occurs and captures the exception using a doThrow() block.
    */
   @Test
   void sendEmailConfirmedMailException() {
@@ -137,8 +137,8 @@ class MailSDJpaServiceTest {
   }
 
   /**
-   * tests whether the `mailSDJpaService.sendAccountCreated` method throws a
-   * `MailSendException` when a security token is invalid or missing.
+   * tests whether an exception is thrown when sending an email with a created mail
+   * message using the `mailSender` service.
    */
   @Test
   void sendEmailCreatedMailException() {
@@ -161,15 +161,12 @@ class MailSDJpaServiceTest {
   }
 
   /**
-   * creates a new `User` object and assigns an email address to it.
+   * creates a new `User` object and sets its email to "test-email". The created user
+   * is returned.
    * 
    * @returns a `User` object with an email address of "test-email".
    * 
-   * 	- The `User` object represents a fictional user with an email address of "test-email".
-   * 	- The `setEmail()` method is used to assign the value "test-email" to the `email`
-   * attribute of the user object.
-   * 	- The returned user object has all the attributes and methods defined in the
-   * `User` class.
+   * 	- `email`: A String attribute representing the email address of the test user.
    */
   private User getTestUser() {
     User user = new User();

@@ -19,15 +19,15 @@ import java.time.LocalDate;
  * 	- tokenType (SecurityTokenType): represents an enumeration of SecurityTokenType
  * enums used to identify the type of security token being represented by the
  * SecurityToken class.
- * 	- token (String): in the SecurityToken class represents the classification of the
- * security token, which is an enumeration of SecurityTokenType enums.
+ * 	- token (String): represents a unique identifier for a security token, which can
+ * be of various types (represented by the `tokenType` field) and has attributes such
+ * as creation and expiry dates, and a flag indicating whether it has been used.
  * 	- creationDate (LocalDate): represents the date when the security token was created.
  * 	- expiryDate (LocalDate): represents the date after which the security token is
  * no longer valid.
- * 	- isUsed (boolean): in the SecurityToken class indicates whether a security token
- * has been used or not.
- * 	- tokenOwner (User): represents a user who owns or has access to a security token
- * in question.
+ * 	- isUsed (boolean): in SecurityToken indicates whether a security token has been
+ * used or not.
+ * 	- tokenOwner (User): represents a user who owns or has access to a security token.
  */
 @Entity
 @Data

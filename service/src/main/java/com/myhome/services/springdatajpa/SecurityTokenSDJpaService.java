@@ -14,11 +14,11 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * provides methods for creating and managing security tokens used in the application's
- * authentication process. It offers functionality for generating new security tokens,
- * confirming email addresses, resetting passwords, and marking tokens as used and
- * saving them to a repository for future reference. The class also includes utility
- * methods for calculating the number of days between two dates.
+ * is an implementation of the SecurityToken Service interface in a Java Persistence
+ * API (JPA) application. It provides methods for creating, updating, and using
+ * security tokens, as well as checking if a token is valid and verifying its owner.
+ * The class also includes a `getDateAfterDays` method that calculates the date after
+ * adding a specified number of days to a given `LocalDate`.
  */
 @Service
 @RequiredArgsConstructor
@@ -32,56 +32,46 @@ public class SecurityTokenSDJpaService implements SecurityTokenService {
   private Duration emailConfirmTokenTime;
 
   /**
-   * creates a new security token with a unique identifier, creation date, expiry date,
-   * and owner. It saves the token to a repository for later use.
+   * creates a new security token with a random UUID, creation and expiry dates, and
+   * sets the owner of the token. It then saves the token to the repository for later
+   * retrieval.
    * 
    * @param tokenType type of security token being created, which determines the format
    * and content of the token.
    * 
    * 	- `SecurityTokenType`: This represents the type of security token being created,
-   * such as `Active` or `Inactive`.
-   * 	- `Duration liveTimeSeconds`: This is the duration in seconds for which the
-   * security token is valid.
-   * 	- `User tokenOwner`: This is the user who owns the security token.
+   * which can be one of several predefined types (e.g., `Basic`, `Confidential`, `Digest`).
+   * 	- `liveTimeSeconds`: The duration for which the security token is valid, represented
+   * as a `Duration` object.
    * 
-   * The function then creates a new `SecurityToken` instance with the specified
-   * properties and saves it to the repository using the `save()` method.
+   * @param liveTimeSeconds duration of time, in seconds, that the security token will
+   * be valid for.
    * 
-   * @param liveTimeSeconds duration of time that the generated security token will be
-   * valid for, in seconds.
+   * 	- `LocalDate.now()`: This function generates a current date and time, which
+   * represents the moment when the token is created.
+   * 	- `getDateAfterDays(LocalDate.now(), liveTimeSeconds)`: This function calculates
+   * the expiration date of the token based on the `liveTimeSeconds` parameter. The
+   * result is a `LocalDate` object representing the date after `liveTimeSeconds` days
+   * have passed from the current date.
    * 
-   * 	- `liveTimeSeconds`: This is an instance of the `Duration` class, representing
-   * the lifetime of the security token in seconds. The `Duration` class has several
-   * attributes, including the number of seconds, nanoseconds, and microseconds.
-   * 	- `LocalDate creationDate`: This represents the date and time when the security
-   * token was created. It is an instance of the `LocalDate` class, which represents a
-   * date in the Java world. The `LocalDate` class has several attributes, including
-   * the year, month, day of the week, day of the month, and hour of the day.
-   * 	- `LocalDate expiryDate`: This represents the date and time when the security
-   * token will expire. It is also an instance of the `LocalDate` class. The `expiryDate`
-   * property has the same attributes as the `creationDate`.
+   * @param tokenOwner user associated with the generated security token.
    * 
-   * @param tokenOwner user who owns the newly created security token.
+   * 	- `tokenOwner`: A `User` object representing the owner of the security token.
+   * 	+ `tokenOwner.getUsername()`: The username of the token owner.
+   * 	+ `tokenOwner.getEmail()`: The email address of the token owner.
    * 
-   * 	- `tokenOwner`: A `User` object that represents the owner of the security token.
-   * It contains attributes such as `id`, `username`, `password`, and any other relevant
-   * information for user authentication and authorization purposes.
+   * @returns a new SecurityToken instance with its properties set and saved in the repository.
    * 
-   * @returns a newly created security token instance containing the specified information.
+   * 	- `token`: A unique token string generated using the `UUID` class.
+   * 	- `creationDate`: The current date and time when the token was created.
+   * 	- `expiryDate`: The date and time after which the token will expire, calculated
+   * by subtracting the `liveTimeSeconds` from the current date.
+   * 	- `tokenOwner`: The user who owns the token.
+   * 	- `SecurityToken`: An object of the `SecurityToken` class, representing the
+   * security token.
    * 
-   * 	- `token`: A unique token identifier generated using the `UUID` class.
-   * 	- `creationDate`: The date and time when the security token was created, represented
-   * as a `LocalDate`.
-   * 	- `expiryDate`: The date and time after which the security token will expire,
-   * calculated by subtracting the `liveTimeSeconds` from the current date using the
-   * `getDateAfterDays` method. Also represented as a `LocalDate`.
-   * 	- `tokenOwner`: The user who owns the security token, represented as an instance
-   * of the `User` class.
-   * 	- `SecurityToken`: An object representing the security token, containing all its
-   * properties and attributes.
-   * 
-   * Note: The `securityTokenRepository` is not explained as it is not part of the
-   * function's output.
+   * The `securityTokenRepository` is responsible for saving the newly created security
+   * token in the database.
    */
   private SecurityToken createSecurityToken(SecurityTokenType tokenType, Duration liveTimeSeconds, User tokenOwner) {
     String token = UUID.randomUUID().toString();
@@ -94,22 +84,19 @@ public class SecurityTokenSDJpaService implements SecurityTokenService {
   }
 
   /**
-   * creates a security token for an email confirmation process with a specific time
-   * stamp and reference to the token owner.
+   * creates a security token for an user, with a specified time and owner.
    * 
-   * @param tokenOwner User object that owns the token being created.
+   * @param tokenOwner user for whom an email confirmation token is being generated.
    * 
-   * 	- `tokenOwner`: The user object for which an email confirmation token is being
-   * generated. This object contains various attributes, such as `username`, `email`,
-   * and `password`.
+   * 	- `tokenOwner`: A `User` object representing the user for whom an email confirmation
+   * token is being generated.
    * 
-   * @returns a security token of type `EMAIL_CONFIRM`.
+   * @returns a security token with the specified type and expiration time, created
+   * using the provided user's information.
    * 
-   * 	- `SecurityTokenType`: This is an enumeration value indicating that the token is
-   * for email confirmation.
-   * 	- `emailConfirmTokenTime`: This is a long value representing the time at which
-   * the token was created.
-   * 	- `tokenOwner`: This is the user whose security token is being generated.
+   * 	- `SecurityTokenType`: The type of token created, which is `EMAIL_CONFIRM`.
+   * 	- `emailConfirmTokenTime`: The time when the token was created.
+   * 	- `tokenOwner`: The user for whom the token was created.
    */
   @Override
   public SecurityToken createEmailConfirmToken(User tokenOwner) {
@@ -117,26 +104,21 @@ public class SecurityTokenSDJpaService implements SecurityTokenService {
   }
 
   /**
-   * creates a security token for password reset with a specified expiration time and
-   * owner user.
+   * creates a security token for password reset purposes. It generates a unique token
+   * based on the user's ID and a time stamp, then returns it to the user.
    * 
-   * @param tokenOwner user for whom the password reset token is being generated.
+   * @param tokenOwner user for whom the password reset token is being created.
    * 
-   * 	- `tokenOwner`: The user whose password is being reset.
-   * 	- `passResetTokenTime`: The time when the password reset token was generated.
+   * 	- `tokenOwner`: This parameter represents a `User` object that contains information
+   * about the user who is requesting a password reset. The `User` class has attributes
+   * such as `username`, `email`, and `passwordHash`.
    * 
-   * The function creates a security token using the `createSecurityToken` method and
-   * passes it as an argument to the constructor of the `SecurityToken` class, along
-   * with the `SecurityTokenType.RESET`, `passResetTokenTime`, and `tokenOwner`.
+   * @returns a SecurityToken instance representing a password reset token.
    * 
-   * @returns a SecurityToken instance representing a password reset token with a
-   * specified expiration time and owner user.
-   * 
-   * 	- The SecurityToken object `createPasswordResetToken` returns is of type `SecurityTokenType.RESET`.
-   * 	- The `passResetTokenTime` parameter represents the time when the password reset
-   * token was generated, which is included in the SecurityToken's attributes.
-   * 	- The `tokenOwner` parameter represents the user for whom the password reset token
-   * is being created, and is also included in the SecurityToken's attributes.
+   * 	- The SecurityToken object that is created represents a password reset token.
+   * 	- The `SecurityTokenType` field indicates that this is a password reset token.
+   * 	- The `passResetTokenTime` field specifies the time when the token was generated.
+   * 	- The `tokenOwner` field refers to the user for whom the token was generated.
    */
   @Override
   public SecurityToken createPasswordResetToken(User tokenOwner) {
@@ -144,24 +126,25 @@ public class SecurityTokenSDJpaService implements SecurityTokenService {
   }
 
   /**
-   * updates a security token by marking it as used and saving it to the repository,
-   * returning the updated token.
+   * updates a provided SecurityToken instance, marks it as used, and saves it to the
+   * repository. It returns the updated SecurityToken instance.
    * 
-   * @param token SecurityToken object that is being processed and updated by the
-   * `useToken` method.
+   * @param token SecurityToken object that is being used by the function, and its
+   * `used` field is set to `true` before saving it into the repository.
    * 
-   * 	- `setUsed(true)` sets the `used` attribute of the token to `true`.
-   * 	- `securityTokenRepository.save(token)` saves the token in the security token
-   * repository after updating its `used` attribute.
+   * 	- `setUsed(true)` marks the token as used.
+   * 	- `securityTokenRepository.save(token)` persists the token in the repository.
    * 
-   * @returns a modified SecurityToken object, with the `used` field set to `true` and
-   * persisted in the repository.
+   * @returns a new SecurityToken object with updated `used` field set to true and saved
+   * in the repository.
    * 
-   * 	- The `setUsed(true)` method sets the `used` field of the token to `true`. This
-   * indicates that the token has been used and cannot be reused.
-   * 	- The `save()` method saves the modified token in the security token repository.
-   * 	- The returned token is a persisted instance of the `SecurityToken` class, which
-   * contains its own unique identifier and other attributes specific to the application.
+   * 	- The `setUsed(true)` method sets the `used` field of the `SecurityToken` object
+   * to `true`, indicating that the token has been used.
+   * 	- The `securityTokenRepository.save(token)` method saves the `SecurityToken`
+   * object in the repository, allowing it to be retrieved and reused later.
+   * 
+   * The output of the `useToken` function is a `SecurityToken` object with its `used`
+   * field set to `true`, and saved in the repository for future use.
    */
   @Override
   public SecurityToken useToken(SecurityToken token) {
@@ -171,33 +154,31 @@ public class SecurityTokenSDJpaService implements SecurityTokenService {
   }
 
   /**
-   * takes a `LocalDate` and a `Duration` as inputs and returns the date that is
-   * `liveTime` days after the original date.
+   * takes a `LocalDate` and a `Duration` as inputs, and returns a new `LocalDate` that
+   * is `liveTime` days after the original date.
    * 
-   * @param date LocalDate object to be adjusted by adding the specified number of days.
+   * @param date initial date to which the `liveTime` is added in days.
    * 
-   * LocalDate represents a date with no time part. It is a type-safe representation
-   * of a date with millisecond precision. Date and Time classes are combined into one
-   * class in Java to form LocalDate. The day of the month, month of the year, and year
-   * are among the properties that make up this date.
-   * Additionally, `liveTime` represents a duration of time measured in days, which is
-   * multiplied by the `date` object's days attribute to produce the output date.
+   * 	- `LocalDate date`: Represents a specific date in the format `YYYY-MM-DD`.
+   * 	- `Duration liveTime`: Represents the number of days to add to the initial date.
    * 
-   * @param liveTime duration of time that the `date` should be after it is modified
-   * by the function, and it is used to calculate the number of days to add to the `date`.
+   * @param liveTime number of days to add to the given `LocalDate`, resulting in the
+   * new date after the specified duration has passed.
    * 
-   * 	- `toDays()`: This method returns the duration of `liveTime` in days.
+   * 	- `toDays()` - Returns the duration of liveTime in days.
    * 
-   * @returns a new LocalDate that represents the date after adding the specified number
-   * of days to the input date.
+   * @returns a new LocalDate instance representing the date that is `days` later than
+   * the original input date.
    * 
-   * The returned output is a `LocalDate` object, indicating that it represents a date
-   * in the local calendar system.
-   * The output is created by adding the specified `Duration` (in days) to the input
-   * `LocalDate`. This operation transforms the original date by the specified number
-   * of days.
-   * Therefore, the output represents the date that is `liveTime` days after the original
-   * input date.
+   * 	- `LocalDate`: The return type is `LocalDate`, indicating that the method returns
+   * a date with the same level of granularity as a calendar date (i.e., no smaller
+   * time units like milliseconds).
+   * 	- `date`: The input parameter `date` is a `LocalDate` object, which represents a
+   * date in the local calendar system.
+   * 	- `liveTime`: The input parameter `liveTime` is a `Duration` object, which
+   * represents a period of time in the local calendar system.
+   * 	- `plusDays`: The method used to calculate the returned output is `plusDays`,
+   * which adds the specified number of days to the input date.
    */
   private LocalDate getDateAfterDays(LocalDate date, Duration liveTime) {
     return date.plusDays(liveTime.toDays());

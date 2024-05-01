@@ -17,10 +17,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * is a subclass of Servlet Filter that checks if the current user has administrative
- * privileges for a community based on the request URL. If not authorized, it sets
- * the status code to HTTP 401 Unauthorized and returns. Otherwise, it delegates to
- * the superclass's `doFilterInternal` method.
+ * is used to check if an HTTP request has administrative privileges for a specific
+ * community based on the user ID and community ID in the request URL. If the user
+ * is not an administrator, it sets the response status to SC_UNAUTHORIZED. If the
+ * user is an administrator, it delegates the processing to the parent `doFilterInternal`
+ * method of the filter chain.
  */
 public class CommunityAuthorizationFilter extends BasicAuthenticationFilter {
     private final CommunityService communityService;
@@ -35,53 +36,44 @@ public class CommunityAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     /**
-     * in the given Java code checks if the request URI matches a pattern for administrative
-     * requests and whether the user is an administrator or not. If the user is not an
-     * administrator, it sets the response status to `SC_UNAUTHORIZED`. If the user is
-     * an administrator, it delegates the processing to the parent `doFilterInternal`
-     * method of the filter chain.
+     * performs authentication and authorization for incoming requests to a Servlet-based
+     * web application. It checks if the request URI matches a pattern defined by the
+     * `addAdminRequestPattern` field, and if the user is not an administrator, it sets
+     * the status code to HTTP 401 (Unauthorized) and stops the chain of filters from
+     * processing further.
      * 
      * @param request HTTP request being processed by the filter.
      * 
-     * 	- `request.getRequestURI()` returns the request URL, which is matched against the
-     * pattern `addAdminRequestPattern`.
-     * 	- `urlMatcher.find()` checks if the URL matches the pattern, and returns `true`
-     * if it does.
-     * 	- `!isUserCommunityAdmin(request)` checks whether the user has administrative
-     * privileges for the community, and returns `true` if they do not have such privileges.
+     * 	- `getRequestURI()`: Returns the requested resource's URL.
+     * 	- `isUserCommunityAdmin()`: Checks whether the current user is an administrator
+     * for a specific community.
      * 
-     * The remaining portion of the function is executed after these checks are performed.
+     * The function then proceeds to perform authentication checks and sets the response
+     * status code accordingly.
      * 
-     * @param response HttpServletResponse object that will be used to handle the filtered
-     * request.
+     * @param response HttpServletResponse object that is being filtered by the
+     * doFilterInternal method.
      * 
-     * 	- `request`: The incoming HTTP request from the client, which is passed as an
-     * argument to this method.
-     * 	- `chain`: The next Servlet filter in the chain that should be executed.
-     * 	- `isUserCommunityAdmin`: A boolean value indicating whether the user is a community
-     * admin or not.
-     * 	- `response`: The output response object, which may be modified by this method.
-     * Its properties are:
-     * 	+ `setStatus()`: Sets the status code of the response, which can be an HTTP status
-     * code (e.g., 200, 404, etc.).
-     * 	+ `getStatus()`: Returns the current status code of the response.
+     * 	- `HttpServletResponse response`: This is an instance of `HttpServletResponse`,
+     * which represents the HTTP response object for the current request. It contains
+     * information about the request, such as the status code, headers, and other attributes.
+     * 	- `FilterChain chain`: This is a reference to the chain of filters that are applied
+     * to the current request. The `doFilterInternal` function is called recursively
+     * through this chain until the last filter is reached.
+     * 	- `HttpServletRequest request`: This is an instance of `HttpServletRequest`, which
+     * represents the HTTP request object for the current request. It contains information
+     * about the request, such as the URL, method, and other attributes.
      * 
-     * @param chain next filter in the filtering chain to be executed after the current
-     * filter has completed its operation.
+     * @param chain next filter in the chain that needs to be executed after the current
+     * filter is applied.
      * 
-     * 	- `HttpServletRequest request`: The current HTTP request.
-     * 	- `HttpServletResponse response`: The current HTTP response.
-     * 	- `FilterChain chain`: A filter chain object that represents the sequence of
-     * filters in the filter chain.
-     * 
-     * The `chain` object has various attributes and methods, including:
-     * 
-     * 	- `doFilter`(): Performs the actual filtering of the request.
-     * 	- `getNext()`: Returns the next filter in the chain or `null` if there are no
-     * more filters.
-     * 	- `setNext()`: Sets the next filter in the chain.
-     * 	- `add`(): Adds a new filter to the end of the chain.
-     * 	- `remove`(): Removes a filter from the chain.
+     * 	- `HttpServletRequest request`: The current HTTP request being processed by the
+     * filter.
+     * 	- `HttpServletResponse response`: The current HTTP response being generated by
+     * the filter.
+     * 	- `FilterChain chain`: A reference to the chain of filters that this filter is
+     * part of, which can be used to manipulate or ignore the subsequent filters in the
+     * chain.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -98,33 +90,41 @@ public class CommunityAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     /**
-     * determines if a user is an administrator of a community based on their user ID and
-     * the community ID in the request URL. It retrieves the list of community admins
-     * from the database and filters them to find the user's admin status. If the user
-     * is an admin, the function returns `true`, otherwise it returns `false`.
+     * determines whether a user is an administrator of a community based on their user
+     * ID and the community ID in the request URL. It retrieves the list of community
+     * admins from the database and filters them based on the user ID to return the admin
+     * status.
      * 
-     * @param request HTTP request being processed and provides the community ID from the
-     * request URI.
+     * @param request HTTP request that triggered the method execution, providing information
+     * about the current user and the community ID.
      * 
-     * 	- `request`: A `HttpServletRequest` object representing an HTTP request.
-     * 	- `getRequestURI()`: Returns the URI of the current request, without any path information.
-     * 	- `split('/')`": Splits the URI into a array of sub-strings using the '/' character
-     * as the delimiter.
-     * 	- `findCommunityAdminsById(communityId, null)`: A method of the `communityService`
-     * class that retrieves a list of community admins for a given community ID. The
-     * `null` parameter represents the absence of any filters or sorting criteria.
-     * 	- `optional`: An optional object representing the result of the method call, which
-     * can be either `Optional<List<User>>` or `Optional<User>`.
-     * 	- `get()`: Extracts the list of community admins from the optional object, if it
-     * is not empty.
-     * 	- `stream()`: Streams the list of community admins to filter out any admin whose
-     * user ID does not match the authenticated user's ID.
-     * 	- `findFirst()`: Finds the first admin in the streamed list that matches the
-     * condition, or returns `null` if no such admin is found.
-     * 	- `orElse(null)`: Returns the admin if a match is found, or `null` otherwise.
+     * 1/ `request`: An instance of `HttpServletRequest`, representing an HTTP request.
+     * 2/ `request.getRequestURI()`: Returns the URI of the request, without any query parameters.
+     * 3/ `request.getParameterValues()`: Returns a map of parameter names to values for
+     * the current request.
+     * 4/ `SecurityContextHolder.getContext().getAuthentication().getPrincipal()`: Returns
+     * the currently authenticated user principal, which is used to determine if the user
+     * is an administrator of a community.
+     * 5/ `communityService.findCommunityAdminsById(communityId, null)`: Calls the
+     * `findCommunityAdminsById` method on the `communityService` class, passing in the
+     * `communityId` and `null` as arguments. This method returns an optional list of
+     * administrators for the specified community.
+     * 6/ `optional`: An instance of `Optional`, which contains a value or is empty.
+     * 7/ `optional.isPresent()`: Returns a boolean indicating whether the `optional`
+     * instance contains a non-empty value.
+     * 8/ `communityAdmins`: An instance of `List<User>`, containing the administrators
+     * for the specified community.
+     * 9/ `communityAdmins.stream().filter(communityAdmin -> communityAdmin.getUserId().equals(userId))`
+     * : Returns a stream of `User` instances, filtered by the user ID.
+     * 10/ `communityAdmins.stream().findFirst()`: Returns the first matching `User`
+     * instance in the stream, or `null` if no match is found.
+     * 
+     * Note that some of these properties are not explicitly mentioned in the code snippet
+     * provided, but can be inferred from the function's purpose and the methods called
+     * within it.
      * 
      * @returns a boolean value indicating whether the current user is an administrator
-     * of a community based on their ID.
+     * of a community.
      */
     private boolean isUserCommunityAdmin(HttpServletRequest request) {
         String userId = (String) SecurityContextHolder

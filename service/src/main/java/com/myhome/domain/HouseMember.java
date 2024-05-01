@@ -39,8 +39,8 @@ import lombok.With;
  * 	- name (String): in the HouseMember class represents a string value that identifies
  * an individual member of a community house.
  * 	- communityHouse (CommunityHouse): in the HouseMember class represents a reference
- * to an instance of the CommunityHouse class, which is likely to be a related or
- * associated entity in the domain model.
+ * to an instance of the CommunityHouse class, which is a related or associated entity
+ * in the domain model.
  */
 @Entity
 @AllArgsConstructor

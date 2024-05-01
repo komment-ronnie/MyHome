@@ -24,19 +24,18 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 /**
- * represents an amenity with a unique identifier (id), along with other relevant
- * attributes such as amenityId, name, description, price, and communityId, using
- * various constructors, builders, and data annotations.
+ * represents an amenity with a unique identifier and various attributes such as name,
+ * description, price, and communityId using different constructors, builders, and
+ * data annotations.
  * Fields:
  * 	- id (Long): in the AmenityDto class represents a unique identifier for each amenity.
- * 	- amenityId (String): represents a unique identifier for a specific amenity within
- * a community.
- * 	- name (String): represents the name of an amenity.
- * 	- description (String): is a string representing a brief summary or description
- * of an amenity.
+ * 	- amenityId (String): represents a unique identifier for an amenity within a
+ * specific community or neighborhood.
+ * 	- name (String): represents a string value representing the name of an amenity.
+ * 	- description (String): represents a brief summary or description of an amenity.
  * 	- price (BigDecimal): represents a decimal value for the cost of an amenity.
- * 	- communityId (String): represents a unique identifier for a specific community
- * or neighborhood associated with an amenity.
+ * 	- communityId (String): in the AmenityDto class represents a unique identifier
+ * for a specific community or neighborhood associated with an amenity.
  */
 @AllArgsConstructor
 @NoArgsConstructor

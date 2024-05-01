@@ -28,10 +28,11 @@ import lombok.Setter;
  * @see CreateUserRequest
  */
 /**
- * represents a response model for creating a user, with three fields: userId, name,
- * and email.
+ * is a response model for creating a user, with three fields representing an identifier,
+ * name, and email address associated with the user created in response to a create
+ * user request.
  * Fields:
- * 	- userId (String): represents an identifier for a user created in response to a
+ * 	- userId (String): represents an identifier for a created user in response to a
  * create user request.
  * 	- name (String): in the CreateUserResponse class represents a string value
  * containing the user's name.

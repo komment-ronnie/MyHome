@@ -33,7 +33,8 @@ import lombok.NoArgsConstructor;
  * serves as a base class for JPA entities with an automatically generated unique
  * identifier (id) field.
  * Fields:
- * 	- id (Long): in BaseEntity represents a unique identifier for each entity instance.
+ * 	- id (Long): in the BaseEntity class represents a unique identifier for each
+ * instance of the entity.
  */
 @Data
 @NoArgsConstructor

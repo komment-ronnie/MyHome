@@ -42,11 +42,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * tests the getPaymentsByAdmin and getPaymentsByMember methods of the PaymentSDJpaService
- * class. The test cases verify that the method finds payments belonging to a specific
- * administrator or member, respectively, by querying the payment repository using
- * JPA. The tests also check that the fields in the captured elements are as expected
- * and that the method returns what is expected.
+ * tests the getPaymentsByMember and getPaymentsByAdmin methods of the PaymentSDJpaService
+ * class using JPA repository queries. The test case performs two executions of the
+ * method, captures the examples passed as parameters, and verifies that the returned
+ * payments match the expected results.
  */
 class PaymentSDJpaServiceTest {
 
@@ -73,7 +72,7 @@ class PaymentSDJpaServiceTest {
   private PaymentSDJpaService paymentSDJpaService;
 
   /**
-   * initializes Mockito annotations for the class, enabling mocking of objects and methods.
+   * initializes mock objects using MockitoAnnotations.
    */
   @BeforeEach
   private void init() {
@@ -81,8 +80,8 @@ class PaymentSDJpaServiceTest {
   }
 
   /**
-   * schedules a payment based on a provided PaymentDto object and associates the user
-   * with the payment, persisting both in the database.
+   * schedules a payment given a PaymentDto object and persists it in the database. It
+   * also associates the user with the payment and saves the payment entity.
    */
   @Test
   void schedulePayment() {
@@ -104,8 +103,8 @@ class PaymentSDJpaServiceTest {
   }
 
   /**
-   * retrieves payment details by ID and verifies the presence and correctness of the
-   * retrieved data through stubs and assertions.
+   * fetches payment details for a given payment ID using repository and mapper functions,
+   * and verifies the presence and correctness of the result.
    */
   @Test
   void getPaymentDetails() {
@@ -127,8 +126,8 @@ class PaymentSDJpaServiceTest {
   }
 
   /**
-   * retrieves a House Member object from the repository based on a given member ID,
-   * and verifies that the retrieved object matches the expected result.
+   * retrieves a House Member from the repository based on a given member ID and asserts
+   * that it is present and equal to an expected Optional value.
    */
   @Test
   void getHouseMember() {
@@ -150,7 +149,7 @@ class PaymentSDJpaServiceTest {
 
   /**
    * queries the payment repository to retrieve payments associated with a given member
-   * ID, and verifies that the retrieved payments match the expected ones.
+   * ID, and verifies that the retrieved payments match the expected return value.
    */
   @Test
   void getPaymentsByMember() {
@@ -186,10 +185,9 @@ class PaymentSDJpaServiceTest {
   }
 
   /**
-   * retrieves a list of payments associated with a given administrator user ID using
-   * JPA repository queries. It performs two executions of the method, capturing the
-   * examples passed as parameters and verifying that the returned payments match the
-   * expected results.
+   * retrieves a list of payments based on the admin user ID passed as a parameter,
+   * using JPA queries and mocking. It verifies the retrieved payments match the expected
+   * user ID and fields, and returns the actual results.
    */
   @Test
   void getPaymentsByAdmin() {
