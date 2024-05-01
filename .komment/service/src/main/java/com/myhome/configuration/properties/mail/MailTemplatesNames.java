@@ -1,1 +1,0 @@
-{"name":"MailTemplatesNames.java","path":"service/src/main/java/com/myhome/configuration/properties/mail/MailTemplatesNames.java","content":{"structured":{"description":"An enum that contains four constant Strings representing different email templates names. Each template name is assigned a unique filename.","items":[]}}}

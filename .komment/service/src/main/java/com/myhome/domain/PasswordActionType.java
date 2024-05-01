@@ -1,1 +1,0 @@
-{"name":"PasswordActionType.java","path":"service/src/main/java/com/myhome/domain/PasswordActionType.java","content":{"structured":{"description":"An enumeration type `PasswordActionType` with two values: `FORGOT` and `RESET`.","items":[]}}}
