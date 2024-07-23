@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 /**
  * Represents paginated data and provides information about the current page of a
  * dataset. It is used to encapsulate pagination metadata such as the current page
