@@ -8,11 +8,6 @@ import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-/**
- * is a data structure that represents the current page and total pages of a paginated
- * dataset, along with the total number of elements in the dataset. It provides a
- * convenient way to pass around this information when working with large datasets.
- */
 @EqualsAndHashCode
 @ToString
 @Getter
