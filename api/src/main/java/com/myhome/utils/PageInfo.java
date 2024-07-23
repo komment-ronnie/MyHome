@@ -9,10 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * Represents paginated data and provides information about the current page of a
- * dataset. It is used to encapsulate pagination metadata such as the current page
- * number, total pages, total elements, and page size. The class has a static factory
- * method that creates a PageInfo object from a Pageable and a Page objects.
+ * Encapsulates pagination metadata, providing a representation of paginated data.
+ * It has a static factory method that creates an instance from Pageable and Page
+ * objects, containing page number, page size, total pages, and total elements. This
+ * class is designed to encapsulate pagination information.
  */
 @EqualsAndHashCode
 @ToString
@@ -25,17 +25,18 @@ public class PageInfo {
   private final long totalElements;
 
   /**
-   * Creates an instance of the `PageInfo` class, initializing it with parameters from
-   * a `Pageable` object and a `Page` object. The resulting `PageInfo` contains page
-   * number, page size, total pages, and total elements from the given pagination data.
+   * Constructs a `PageInfo` object from provided parameters, including the page number,
+   * page size, total pages, and total elements. It takes two inputs: a `Pageable`
+   * instance and a `Page` object. The resulting object contains metadata about the
+   * pagination result.
    * 
-   * @param pageable pagination information, providing methods to retrieve the current
-   * page number and size.
+   * @param pageable pager parameters for pagination, providing the current page number
+   * and size of elements per page to be used for generating the PageInfo object.
    * 
-   * @param page result of the pagination operation, providing information about the
-   * total number of pages and elements.
+   * @param page 1-based paged results, providing total pages and total elements for
+   * pagination purposes.
    * 
-   * @returns a `PageInfo` object containing pagination details.
+   * @returns a `PageInfo` object with four properties.
    */
   public static PageInfo of(Pageable pageable, Page<?> page) {
     return new PageInfo(
